@@ -7,7 +7,7 @@
     "confirmed_at": "2026-10-01T12:58:49+00:00",
     "domain": "site-copy-006: the copy of repoglance.com in the locked layout (design.md v1): voice, structure, specificity and information order of every seed block on / and /testers, judged on the real pages at 375 and 1280 px in both schemes with the layout, imagery, mark and fonts locked; every candidate keeps the honest-copy rules of tests/content.test.mjs",
     "started_at": "2026-10-01T12:31:04+00:00",
-    "status": "confirmed",
+    "status": "inspected",
     "summary": "Maintainer locked the copy hybrid on 2026-10-01 ('lock it'). Implement it in the real site on claude/site-copy: seed/seed.json from .grilltrack/work/copy-hybrid-1/candidates/h.json, the hero heading in scripts/smoke.mjs, design.md v2 (copy resolved), docs/content.md, README status; verify with npm run verify and full-page captures of the production build; exact-source review of the implementation commit; then push and open a pull request against claude/site-foundation. Delivery stays separate: no merge, no deploy, no Cloudflare or DNS change."
   },
   "decisions": [
@@ -530,22 +530,113 @@
           "review_source_identity": null,
           "to": "locked",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:01:36+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:01:36+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "implemented",
+          "implementation_ref": "git:dd526766bb6942c4a9de43f13b976296781e2708 (seed/seed.json from the confirmed hybrid; scripts/smoke.mjs hero heading; design.md v2; docs/content.md; README status)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:08:19+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "verified",
+          "implementation_ref": "git:dd526766bb6942c4a9de43f13b976296781e2708 (seed/seed.json from the confirmed hybrid; scripts/smoke.mjs hero heading; design.md v2; docs/content.md; README status)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on dd52676: audit 82 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; production captures, 7 of 8 byte-identical to the confirmed preview)"
+        },
+        {
+          "at": "2026-10-01T13:08:19+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:dd526766bb6942c4a9de43f13b976296781e2708 (seed/seed.json from the confirmed hybrid; scripts/smoke.mjs hero heading; design.md v2; docs/content.md; README status)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "reject_false_positive"
+          ],
+          "review_ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:dd526766bb6942c4a9de43f13b976296781e2708",
+          "to": "implemented",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on dd52676: audit 82 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; production captures, 7 of 8 byte-identical to the confirmed preview)"
+        },
+        {
+          "at": "2026-10-01T13:08:19+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "implemented",
+          "implementation_ref": "git:8b2381ee35db4938e70c0a2c728989547f14d258 (review round 1 fixes: design.md read-only rule, docs/content.md traceability claim and test-rule list; seed unchanged)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on dd52676: audit 82 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; production captures, 7 of 8 byte-identical to the confirmed preview)"
         }
       ],
       "id": "site-copy-006",
-      "implementation_ref": null,
+      "implementation_ref": "git:8b2381ee35db4938e70c0a2c728989547f14d258 (review round 1 fixes: design.md read-only rule, docs/content.md traceability claim and test-rule list; seed unchanged)",
       "question": "Which copy carries the locked layout on / and /testers: voice, structure, specificity and information order of the seed blocks?",
       "rationale": "Maintainer's mixed pick on round 1 (D for both pages, A's call to action, C's join-page middle), previewed as a precise hybrid and confirmed (proof: .grilltrack/proof/copy-round-1-captures-20261001.md and copy-hybrid-1-captures-20261001.md).",
       "repair_required": false,
       "review_classifications": [],
-      "review_history": [],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
-      "status": "locked",
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "reject_false_positive"
+          ],
+          "ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T13:08:19+00:00",
+          "source_identity": "git:dd526766bb6942c4a9de43f13b976296781e2708"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T13:08:19+00:00",
+          "source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258",
+      "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T12:58:49+00:00",
-      "verification_ref": null
+      "updated_at": "2026-10-01T13:08:19+00:00",
+      "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
     }
   ],
   "last_activation": {
@@ -566,16 +657,16 @@
   "pause": null,
   "recommendation": {
     "alternatives": [
-      "cms-access: the maintainer's hosted bootstrap (Worker, D1, R2, Access application, secrets, staging host) from docs/cms-access.md, then an Access allow-path proof and the CMS-backed render path.",
-      "typography-007: a font-role round (display, reading, labels) now that the layout is locked; system faces are the current lock."
+      "typography-007: a font-role round (display, reading, labels) now that layout and copy are locked; system faces are the current lock.",
+      "cms-access: the maintainer's hosted bootstrap and the Access allow-path proof, in progress on claude/site-hosting (PR #2) and maintainer-gated."
     ],
-    "reason": "The look is locked and verified; the copy was written for the foundation and has not been judged in the final layout, and the site cannot go live without the maintainer's Cloudflare bootstrap.",
-    "recommended": "site-copy-006: a copy round on the locked layout (voice, order and specificity of the seed copy on both pages, judged in the real layout), seeded through seed.json.",
-    "recorded_at": "2026-10-01T12:02:45+00:00"
+    "reason": "Layout and copy are locked and verified; the only visible asset still outside the design contract is the Open Graph image, which every shared link shows; hosting is owned by the parallel branch and gated on the maintainer.",
+    "recommended": "og-image-007: an Open Graph and link-preview image in the decided look (ink band, commit-eye rings, the locked hero line), replacing the Play feature graphic that stands in today; five candidates on the real meta tags, judged in link-preview renderers.",
+    "recorded_at": "2026-10-01T13:08:19+00:00"
   },
   "schema_version": "grilltrack/v0.1",
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T12:58:49+00:00"
+  "updated_at": "2026-10-01T13:08:19+00:00"
 }
