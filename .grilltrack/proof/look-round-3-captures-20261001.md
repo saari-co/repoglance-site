@@ -112,3 +112,9 @@ and the cells placed explicitly. E was re-captured after the fix.
 As in rounds 1 and 2: a capture of the production HTML, Chromium only, no
 CMS runtime. The pick is implemented in `src/styles/site.css`, the block
 components and `design.md` v1 afterwards and verified on the real build.
+
+## Outcome
+
+Pick: B's composition across the board (maintainer, 2026-10-01), with the
+graphite band fill itself still not loved. Round 4 locks the composition and
+varies the band surface: `look-round-4-captures-20261001.md`.
