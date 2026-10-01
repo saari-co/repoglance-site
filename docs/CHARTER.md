@@ -6,7 +6,9 @@ repoglance.com is a small, honest website for the RepoGlance Android app:
 what it is, what it does today, and how to join the closed test on Google
 Play. It is built on EmDash with the Cloudflare adapter so the maintainer can
 edit copy in a CMS later, and it ships with seeded content so the pages work
-before any CMS exists.
+before any CMS exists. Content uses native upstream EmDash blocks (the
+`blocks` field type and `Blocks` from `emdash/ui`); the DinkusKit blocks
+package is being archived and is not a dependency (maintainer, 2026-10-01).
 
 Decided on 2026-10-01 in the `saari-co/RepoGlance` GrillTrack ledger
 (`site-home-048`, `site-pages-049`, `site-signup-link-050`) and adopted here:

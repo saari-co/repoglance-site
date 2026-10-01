@@ -3,12 +3,11 @@
   "created_at": "2026-10-01T10:23:01+00:00",
   "current_focus": {
     "cadence": "sequential",
-    "confirmed": true,
-    "confirmed_at": "2026-10-01T10:23:01+00:00",
-    "domain": "site foundation: adopt the three RepoGlance-ledger decisions (repo, pages, signup link) and build the Astro + EmDash + Cloudflare foundation with seeded content, fail-closed CMS namespace, verify chain and proof; the look stays unresolved",
-    "started_at": "2026-10-01T10:23:01+00:00",
-    "status": "inspected",
-    "summary": "Maintainer confirmed the three adopted decisions on 2026-10-01 (RepoGlance ledger frontier batch 1) and the brief authorises the foundation slice: build it in worktree repoglance-site-foundation on branch claude/site-foundation, verify with npm run verify plus browser captures, keep the look unresolved for the next five-candidate round, deliver as a PR; merges, Cloudflare, DNS, Access, deploys and publishing stay maintainer gates."
+    "confirmed": false,
+    "domain": "site-look-005: layout and visual language of repoglance.com (the first visual round), judged on the real / and /testers pages with the seed copy, sample-mode imagery, the commit-eye mark and system fonts locked",
+    "started_at": "2026-10-01T10:54:17+00:00",
+    "status": "grilling",
+    "summary": "Maintainer 2026-10-01: start the look round on branch claude/site-foundation; native upstream EmDash blocks only, no dinkuskit/blocks. Five materially distinct candidates as deltas on the captured production pages in a dev-only picker (.grilltrack/work/look-round-1), shown on the live preview and captured at 375 and 1280 px in light and dark. The maintainer's pick becomes design.md v1 and the real src/styles/site.css; the picker never ships."
   },
   "decisions": [
     {
@@ -358,6 +357,40 @@
       "superseded_by": null,
       "updated_at": "2026-10-01T10:45:24+00:00",
       "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0 on 6e1dda3: audit 74 files, 0 type errors, 9 content + 9 guard tests, 64 smoke checks; dev editor 302; captures re-taken, mark visible in dark)"
+    },
+    {
+      "baseline_ref": "git:6e1dda367020821ced3879619c6e6fd19c691508",
+      "candidate_refs": [
+        ".grilltrack/work/look-round-1/candidates/a.css",
+        ".grilltrack/work/look-round-1/candidates/b.css",
+        ".grilltrack/work/look-round-1/candidates/c.css",
+        ".grilltrack/work/look-round-1/candidates/d.css",
+        ".grilltrack/work/look-round-1/candidates/e.css"
+      ],
+      "choice": "Unresolved: one of five candidates (A One column, B Tonal grid, C Phone showcase, D Dense glance, E Full-width bands) or a maintainer-described replacement; decided on the live picker.",
+      "context_ref": ".grilltrack/work/look-round-1/picker.json",
+      "created_at": "2026-10-01T10:54:17+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-foundation-004"
+      ],
+      "domain": "site-look-005: layout and visual language of repoglance.com (the first visual round), judged on the real / and /testers pages with the seed copy, sample-mode imagery, the commit-eye mark and system fonts locked",
+      "history": [],
+      "id": "site-look-005",
+      "implementation_ref": null,
+      "question": "Which layout and visual language should repoglance.com take?",
+      "rationale": "The foundation shipped with provisional styling (design.md v0). The round varies composition, hierarchy, density and surface treatment materially, not colour alone, while keeping copy, imagery, mark and fonts locked.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [],
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
+      "status": "proposed",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T10:54:17+00:00",
+      "verification_ref": null
     }
   ],
   "last_activation": {
@@ -379,5 +412,5 @@
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T10:45:24+00:00"
+  "updated_at": "2026-10-01T10:54:17+00:00"
 }

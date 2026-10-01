@@ -7,6 +7,13 @@ assert.equal(manifest.name, '@saari-co/repoglance-site');
 assert.equal(manifest.private, true);
 assert.equal(manifest.dependencies.emdash, '1.0.1');
 assert.equal(manifest.emdash?.seed, 'seed/seed.json');
+// Native upstream EmDash blocks only: the DinkusKit blocks package is being
+// archived for proof purposes and must never become a dependency here.
+for (const group of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
+  for (const name of Object.keys(manifest[group] ?? {})) {
+    assert.ok(!/^@dinkuskit\//.test(name) && name !== 'dinkuskit', `forbidden dependency ${name}`);
+  }
+}
 
 const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'], { encoding: 'utf8' })
   .split('\0')

@@ -26,6 +26,10 @@ closed test. Assume every committed byte is public.
 
 ## Boundaries
 
+- Native upstream EmDash blocks only: block types are declared in
+  `seed/seed.json` and rendered with `Blocks` from `emdash/ui`. No
+  `@dinkuskit/*` package may be added; the DinkusKit blocks package is being
+  archived for proof purposes. `npm run audit:repo` enforces this.
 - EmDash with the Cloudflare adapter (D1, R2, sandbox). Production builds deny
   the whole `/_emdash` namespace unless Cloudflare Access is configured and the
   request carries a valid Access identity (`docs/cms-access.md`). Public pages

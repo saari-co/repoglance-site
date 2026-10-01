@@ -7,7 +7,8 @@
  *   node scripts/capture.mjs <base-url> <out-dir> [path ...]
  *
  * Writes <page>-<scheme>-<width>.png for each path at 375 and 1280 px, light
- * and dark. Output belongs under ignored runs/.
+ * and dark. FULL_PAGE=1 captures the whole document height instead of the
+ * viewport. Output belongs under ignored runs/.
  */
 import { spawn } from 'node:child_process';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
@@ -85,6 +86,12 @@ try {
         await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: scheme }] });
         await cdp.send('Page.navigate', { url: new URL(path, base).href });
         await sleep(1500);
+        if (process.env.FULL_PAGE === '1') {
+          const { result } = await cdp.send('Runtime.evaluate', { expression: 'Math.ceil(Math.max(document.documentElement.scrollHeight, document.body.scrollHeight))', returnByValue: true });
+          const height = Math.min(Math.max(viewport.height, Number(result.value) || viewport.height), 12000);
+          await cdp.send('Emulation.setDeviceMetricsOverride', { width: viewport.width, height, deviceScaleFactor: 1, mobile: viewport.mobile });
+          await sleep(300);
+        }
         const { data } = await cdp.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
         const file = join(outDir, `${name}-${scheme}-${viewport.width}.png`);
         await writeFile(file, Buffer.from(data, 'base64'));
