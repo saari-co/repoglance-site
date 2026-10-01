@@ -1,8 +1,10 @@
 # Design contract: repoglance.com
 
-- **Version:** 1 (2026-10-01): layout and visual language
-  [site-look-005], decided in four five-candidate rounds and a confirmed
-  hybrid. Version 0 (2026-10-01) started the file with constraints only.
+- **Version:** 2 (2026-10-01): the copy in the locked layout
+  [site-copy-006], decided in one five-candidate round and a confirmed
+  hybrid. Version 1 (2026-10-01) locked the layout and visual language
+  [site-look-005] after four rounds and a confirmed hybrid; version 0
+  (2026-10-01) started the file with constraints only.
 - **Canonical path:** `design.md` at the repository root.
 - **Decision history:** `.grilltrack/ledger.json`. Where they disagree, the
   ledger owns history and this file owns the current, implementable design.
@@ -98,18 +100,40 @@
 - **Typography, body:** system sans for headings, reading text and buttons;
   system mono for the eyebrow, navigation, footer, feature heads and the
   join page's checklist. No bundled fonts.
+- **Copy [site-copy-006, "D with A's call to action and C's join-page
+  middle"]:** every sentence lives in `seed/seed.json` and traces to the
+  sources in `docs/content.md`. The home page is written as moments: a
+  hero that states the glance ("Glance at the home screen. Know where your
+  repos stand."), four cards headed by where the moment happens (on the
+  home screen, in the app, in Quick Settings, before you sign in), a fact
+  list of the rules that hold ("What stays true all day", read-only first,
+  "Not yet: a CI column" last) and a plain closing band ("Help test
+  RepoGlance", "How to join"). The join page keeps the same voice in its
+  hero ("Get the test build on your Pixel."), feedback and privacy, and
+  turns terse for the two working blocks: "Three steps, in order" with the
+  intro "Group first, Play second, install third." and a mono "In this
+  build" list with the not-yet line. Rules every edit keeps: read-only
+  stated on both pages, the Google Group link in the hero and step 1, the
+  missing opt-in link stated, the version named, no Play URL, no CI claim
+  beyond "not yet", no "stack"; `tests/content.test.mjs` enforces them.
+  - **Rejected (round 1, do not reintroduce without a new grill):** the
+    foundation's voice at full length (A, except its call to action),
+    the benefit-first second person (B), the facts-first register on the
+    home page (C, kept only for the join page's steps and build list),
+    the formal privacy-led register (E).
 - **Proof:** `.grilltrack/proof/look-round-1-captures-20261001.md` to
   `look-round-4-captures-20261001.md`,
-  `look-hybrid-1-captures-20261001.md`, and the production verification in
-  `.grilltrack/proof/site-look-005-verify-20261001.md`.
+  `look-hybrid-1-captures-20261001.md`, the production verification in
+  `.grilltrack/proof/site-look-005-verify-20261001.md`; for the copy,
+  `copy-round-1-captures-20261001.md`,
+  `copy-hybrid-1-captures-20261001.md` and
+  `site-copy-006-verify-20261001.md`.
 
 ## Unresolved (decided by GrillTrack, one slot per round)
 
 - **Typography roles beyond system faces:** not grilled; system faces are
   the lock until a font round says otherwise.
 - **Motion:** none today; the slider scrolls natively. Not grilled.
-- **Copy in the accepted layout:** the seed copy stands; a copy round is
-  open.
 - **Open Graph image:** still the Play feature graphic. Not grilled.
 
 ## Verification expectations

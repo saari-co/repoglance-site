@@ -7,11 +7,20 @@ Every sentence in `seed/seed.json` traces to one of:
 - `saari-co/RepoGlance` `docs/store-listing.md` (Play copy for
   0.4.0-beta.1),
 - `saari-co/RepoGlance` `proof/play-console-20260930/PROOF.md` (closed test
-  state, Google Group, no opt-in link yet).
+  state, the Google Group and its "Anyone on the web can join" setting, no
+  opt-in link yet, the bundle's API levels 31+, which is "Android 12 or
+  newer").
 
 `tests/content.test.mjs` enforces the rules that follow from those sources:
 no "stack" as a widget name, no CI claims beyond "not yet", no write verbs,
 the privacy link and the Google Group link present, no Play opt-in URL.
+
+The wording was decided in GrillTrack `site-copy-006` (2026-10-01): one
+five-candidate round on the real pages and a confirmed hybrid
+(`.grilltrack/proof/copy-round-1-captures-20261001.md`,
+`copy-hybrid-1-captures-20261001.md`); `design.md` v2 records the voice.
+The hero heading on `/` is also asserted by `scripts/smoke.mjs`, so change
+the seed and that check together.
 
 ## Screenshots
 

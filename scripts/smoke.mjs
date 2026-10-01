@@ -103,7 +103,7 @@ try {
   record('GET / is 200', home.status === 200, `status ${home.status}`);
   record('GET / is HTML', /text\/html/.test(home.headers.get('content-type') ?? ''), home.headers.get('content-type'));
   record('GET / renders from the seed on a fresh database', /data-content-source="seed"/.test(homeBody), homeBody.slice(0, 300));
-  record('GET / carries the hero heading', homeBody.includes('Your GitHub repos, at a glance, on your Pixel home screen.'), '');
+  record('GET / carries the hero heading', homeBody.includes('Glance at the home screen. Know where your repos stand.'), '');
   record('GET / links to the testers page and the privacy policy', homeBody.includes('href="/testers"') && homeBody.includes('https://saari-co.github.io/RepoGlance/privacy/'), '');
   record('GET / shows only sample-mode captures', /\/screenshots\/home-widgets-540\.webp/.test(homeBody) && !/live/i.test(homeBody.match(/alt="[^"]*"/g)?.join(' ') ?? ''), '');
   record('GET / has no scripts', !/<script/i.test(homeBody), 'script tag found');

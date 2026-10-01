@@ -15,7 +15,10 @@ hosted CMS is prepared but not enabled (see below).
   custom domain or Access application exists for repoglance.com yet. Those
   are maintainer steps, listed in [docs/cms-access.md](docs/cms-access.md).
 - **Look:** decided on 2026-10-01 in four GrillTrack rounds and a confirmed
-  hybrid; [design.md](design.md) v1 is the contract.
+  hybrid; [design.md](design.md) is the contract (v2 adds the copy).
+- **Copy:** decided on 2026-10-01 in one GrillTrack round and a confirmed
+  hybrid; every sentence is in `seed/seed.json` and traces to
+  [docs/content.md](docs/content.md).
 
 ## Run locally
 
