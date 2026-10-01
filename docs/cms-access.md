@@ -54,19 +54,65 @@ ids in `wrangler.jsonc` are local placeholders.
 
 ## Human bootstrap order
 
-1. Create the Worker, D1 and R2 for repoglance.com with `workers.dev` and
-   preview URLs off. Do not attach the custom domain yet.
-2. Create the Cloudflare Access application for `repoglance.com/_emdash/*`
-   with a policy naming only the maintainer.
-3. Set the secrets above; keep `EMDASH_OPERATOR_ALLOWLIST` owner-only.
-4. Build with `EMDASH_ACCESS_TEAM_DOMAIN` set and deploy to the staging
-   hostname. Confirm anonymous `/_emdash` still answers 404.
-5. Complete EmDash setup through Access (site title, seed). Confirm setup is
-   closed.
-6. Attach the custom domain and DNS last, after public pages and setup are
-   verified.
+The public site is live from the seed first (see the deploy section below).
+The editor is enabled afterwards, in this order. Steps 1 to 4 are
+maintainer-only: Wrangler's login on the build machine has no Zero Trust
+scope, and secret values must never pass through an agent.
 
-Each step is a hard gate in `AGENTS.md`.
+1. **Zero Trust team.** Cloudflare dashboard, Zero Trust. If the account has
+   no team yet, onboarding asks for a team name; the team domain is
+   `<team>.cloudflareaccess.com` and is shown under Settings, Custom Pages
+   (or in the URL of the Zero Trust dashboard). The free plan covers this.
+2. **Access application.** Zero Trust, Access, Applications, Add an
+   application, Self-hosted:
+   - Application name: `RepoGlance CMS`.
+   - Session duration: 24 hours.
+   - Public hostnames: `repoglance.com` with path `_emdash`, and a second
+     entry `www.repoglance.com` with path `_emdash`.
+   - Identity providers: One-time PIN (the default when no provider is set
+     up).
+   - Policy: name `Owner`, action Allow, include rule Emails with the
+     maintainer's address only. No other rules.
+   - Save, then open the application's Overview and copy the **Application
+     Audience (AUD) tag**.
+3. **Secrets**, from the maintainer's own terminal in a checkout where
+   `npx wrangler whoami` shows the right account. Each command reads the
+   value from the terminal or a pipe; nothing is pasted into chat:
+
+   ```sh
+   npx wrangler secret put CF_ACCESS_AUDIENCE --name repoglance-site
+   npx wrangler secret put EMDASH_OPERATOR_ALLOWLIST --name repoglance-site
+   npx emdash secrets generate --write .local/secrets.env
+   grep '^EMDASH_ENCRYPTION_KEY=' .local/secrets.env | cut -d= -f2- | npx wrangler secret put EMDASH_ENCRYPTION_KEY --name repoglance-site
+   ```
+
+   `CF_ACCESS_AUDIENCE` is the AUD tag; `EMDASH_OPERATOR_ALLOWLIST` is the
+   maintainer's email, owner-only until setup is closed; the encryption key
+   stays in the ignored `.local/secrets.env` and in Cloudflare.
+4. **Team domain for the build.** Add
+   `EMDASH_ACCESS_TEAM_DOMAIN=<team>.cloudflareaccess.com` to the ignored
+   `.local/deploy.env`. It is a build input: it wires EmDash's `access()`
+   and the guard from one value.
+5. **Build and deploy** (agent or maintainer):
+
+   ```sh
+   set -a; . ./.local/deploy.env; set +a
+   npm run build
+   REPOGLANCE_CUSTOM_DOMAIN=repoglance.com,www.repoglance.com npm run prepare:deploy
+   npx wrangler deploy --config dist/server/wrangler.production.json
+   ```
+
+   Then confirm anonymous `https://repoglance.com/_emdash/admin` still
+   answers 404 (no Access JWT, so the guard denies before EmDash).
+6. **First login and setup.** The maintainer opens
+   `https://repoglance.com/_emdash/admin`, passes the one-time PIN, and
+   completes EmDash setup (site title, and include the seed content so the
+   pages switch to the CMS). The first Access login becomes Admin. Confirm
+   setup is closed: a second anonymous request to the setup routes still
+   answers 404, and the pages report `data-content-source="cms"`.
+7. **Second editor**, only after setup is closed: add the email to the
+   Access policy and to `EMDASH_OPERATOR_ALLOWLIST` (a new `secret put`).
+   Their installed EmDash role is `defaultRole` 40.
 
 ## Deploying the public pages (maintainer, gated)
 
