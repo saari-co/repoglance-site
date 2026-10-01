@@ -171,26 +171,73 @@ build-date fold still reaches the route cache; the smoke's ETag proves it),
 that the `version_metadata` binding is a plain binding this Wrangler
 understands, and the Cloudflare claims against the cited pages.
 
-## Live (after the gated deploy)
+## Merge with main and the deploy
 
-Pending the maintainer's deploy OK. Planned checks, each with `curl`:
-`cf-cache-status` MISS on the first request after the deploy, then HIT on
-`/` and `/testers`, with TTFB before and after; `www` 301 after warming the
-apex (proves the `Host` variant); a cookie-bearing request not served from
-the anonymous entry (proves the `Cookie` variant); the anonymous
-`/_emdash/admin` still 302 to Access on both hosts; a conditional `GET`
-with the ETag; page body hashes against the baseline; and, if an editor
-publishes, the page changing within seconds.
+Main merged the copy and imagery decisions (PR #3) while this slice was in
+review. `fe3156e` merges main into the branch with the two ledger files
+replayed over main's; `npm run verify` at `fe3156e` in the sibling worktree
+exit 0 (audit 109 files, `astro check` 0 errors, 9 + 9 + 12 unit tests,
+build, **116 smoke checks**, one added by main), and CI on PR #4 is green at
+that head. The maintainer answered "deploy" on 2026-10-01; the production
+build with the team domain and `prepare:deploy` with both custom domains
+were staged in the sibling worktree at `fe3156e` and
+`npx wrangler deploy --config dist/server/wrangler.production.json` deployed
+Worker version `c07e777e-4732-4949-924e-d3a8b711ef3d` at about 23:21 UTC
+(this Mac's clock), custom domains `repoglance.com` and
+`www.repoglance.com`, cron `0 4 * * *`, bindings `SESSION`, `DB`, `MEDIA`,
+`IMAGES`, `ASSETS`, `CF_VERSION_METADATA`, `EMDASH_SITE_URL`, `LOADER`.
+Secrets untouched; no resource created.
+
+## Live, right after the deploy
+
+`curl` from this Mac at 23:26 UTC, Cloudflare colo PHX in `cf-ray`
+(the baseline went through MIA; both are far from Atlanta).
+
+| Check | Result |
+| --- | --- |
+| first `GET /` after the deploy, then two more | `cf-cache-status: MISS`, then `HIT` with `age`; `cache-control: no-cache`, `last-modified`, `vary: Host, Cookie`; `cloudflare-cdn-cache-control` and `cache-tag` stripped as documented |
+| `GET /testers` twice | `MISS` then `HIT` |
+| TTFB after, 6 samples each (s) | `/` 0.148, 0.187, 0.156, 0.165, 0.140, 0.265; `/testers` 0.182, 0.182, 0.182, 0.238, 0.181, 0.155 (before: 0.24 to 0.33 typical with spikes to 1.41) |
+| `GET https://www.repoglance.com/` three times after the apex was warm; `/testers?x=1`; `/nothing-here` | 301 to the same path on the apex every time, `cf-cache-status: BYPASS` (the 301 is no-store); the cached apex page never answered www, so the `Host` variant holds |
+| anonymous `GET /_emdash/admin` on the apex and on www | 302 to the Access login for that hostname, `cache-control: private, no-store`, no `cf-cache-status`: Access answers before the Worker on both hosts, so on www the Worker's 301 for the namespace applies only after an Access login |
+| `GET /` with `Cookie: CF_Authorization=forged; emdash-edit-mode=true` while the anonymous entry was a HIT | `cf-cache-status: MISS`, `vary: Host, Cookie`: the cookie-bearing request got its own variant, not the anonymous entry |
+| conditional `GET /` with `If-Modified-Since` = the live `last-modified` | 304 from the edge (`cf-cache-status: HIT`) |
+| `GET /nothing-here`; `GET /?v=2` | 404 `BYPASS` (no-store); 200 `MISS` (a query string is its own key) |
+| `HEAD /` | 200 |
+| body hashes | `/` `a16c21ac…f291b`, `/testers` `2c3642f7…7188`: different from the baseline, as expected after the copy and imagery merge and the CMS edits of that round; not caused by this slice |
+
+Not shown live: an `etag` header. Local workerd emitted
+`W/"<version>:<ms>"` and the `astro-version:` tag because the provider read
+`CF_VERSION_METADATA` at module top level there; in production the same
+read yields nothing, so `If-None-Match` answers 200 and only
+`If-Modified-Since` revalidates. Cloudflare's own version keying still
+holds (the first request after the deploy was a MISS). Consequence, see
+Limits. The purge on publish was not exercised: no editor published during
+the window.
+
+No captures were taken: this slice changes headers and the www host, not
+the rendered pages; the pages' bodies changed only through the copy and
+imagery merge, which carries its own captures.
 
 ## Limits
 
 - Cloudflare's Workers Cache is not emulated by local workerd: the smoke
-  proves the headers and the redirect, the HIT itself is proven live only.
-- `Vary: Host` is documented as honoured ("all header names are honored");
-  the live www check after warming the apex is the proof. If it fails, the
-  fallback is a zone Redirect Rule, a maintainer dashboard action.
+  proves the headers and the redirect; the HIT, the variants and the 304
+  were proven live above.
+- `Vary: Host` is documented as honoured ("all header names are honored")
+  and the live www check after warming the apex showed the 301 every time.
 - The purge on publish is EmDash's code path, exercised only by a real
   publish; without one the proven bound is the TTL.
+- No ETag reaches production (above). The seed-render rule still keeps a
+  retired entry's date off the page, but without a version-scoped ETag a
+  browser holding a CMS render dated T1 revalidates with `If-Modified-Since`
+  only; if that entry were unpublished and the seed fallback's build date
+  were older than T1, that browser would get 304 until the next deploy moves
+  the build date past T1. Narrow (an unpublish of one of two pages) and
+  bounded by the next deploy. Follow-up, not in this slice: emit the ETag
+  from a build-time id in `src/page-cache.ts` instead of the runtime
+  binding, so it does not depend on `CF_VERSION_METADATA` being readable at
+  module evaluation.
 - The Worker itself answers 200 to a conditional request (`If-None-Match`,
   `If-Modified-Since`): Astro emits the validators but does not answer 304.
   A 304 to a browser comes from Cloudflare's cache comparing the stored

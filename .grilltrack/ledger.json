@@ -1192,29 +1192,20 @@
     }
   ],
   "last_activation": {
-    "at": "2026-10-01T16:28:51+00:00",
+    "at": "2026-10-01T23:26:11+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
-    "artifact_refs": [
-      ".grilltrack/proof/imagery-hybrid-1-captures-20261001.md",
-      ".grilltrack/work/imagery-hybrid-1/candidates/h.json",
-      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-imagery-hybrid-1-20261001"
-    ],
-    "next_safe_action": "On 'lock it': lock site-imagery-007 with candidates/h.json; copy its assets into public/screenshots/ (dark set), add the slugs to seed/seed.json and src/content/screenshots.ts with dimensions and alt, add data-shot to Screenshot.astro and the cut-out CSS to site.css, amend the imagery rule in AGENTS.md, docs/CHARTER.md, design.md and docs/content.md (showcase captures with made-up data, never a live account, the sign-in code is a fixture), update tests/content.test.mjs and scripts/smoke.mjs, verify in a fresh clone of the commit (the nested worktree's parent checkout now carries a tsconfig that Vite 8 picks up), capture the production build, record implement/verify/review, merge origin/main with the ledger replayed, push, update PR #3.",
-    "paused_at": "2026-10-01T15:54:07+00:00",
-    "reason": "Imagery hybrid preview presented (C with the sign-in code screen on 'Before you sign in' and the join hero) as the replacement for round 1's five; waiting for the maintainer's explicit confirmation before locking.",
-    "resumed_at": "2026-10-01T16:28:15+00:00"
-  },
-  "pause": {
     "artifact_refs": [
       "proof/www-redirect-cache-20261001/PROOF.md",
       "github:saari-co/repoglance-site#4"
     ],
     "next_safe_action": "On the maintainer's deploy OK: in the sibling worktree at the PR head run npx wrangler deploy --config dist/server/wrangler.production.json (build and prepare:deploy staged with .local/deploy.env), then the live checks in the proof's Live section, append them to proof/www-redirect-cache-20261001/PROOF.md, push, and ask separately for the merge.",
     "paused_at": "2026-10-01T23:20:12+00:00",
-    "reason": "waiting_for_human: wrangler deploy is a maintainer gate (AGENTS.md); PR saari-co/repoglance-site#4 carries the slice with the review recorded"
+    "reason": "waiting_for_human: wrangler deploy is a maintainer gate (AGENTS.md); PR saari-co/repoglance-site#4 carries the slice with the review recorded",
+    "resumed_at": "2026-10-01T23:26:11+00:00"
   },
+  "pause": null,
   "recommendation": {
     "alternatives": [
       "site-links-010: point the Play listing's website field and the RepoGlance README at https://repoglance.com (a maintainer Play Console change plus a small PR in saari-co/RepoGlance), now that the apex is the single canonical host.",
@@ -1225,8 +1216,8 @@
     "recorded_at": "2026-10-01T23:20:12+00:00"
   },
   "schema_version": "grilltrack/v0.1",
-  "status": "paused",
+  "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T23:20:12+00:00"
+  "updated_at": "2026-10-01T23:26:11+00:00"
 }
