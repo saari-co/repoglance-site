@@ -16,5 +16,7 @@ dependencies, `.env`, `.dev.vars`, credentials, account or zone identifiers,
 or Access values. `npm run audit:repo` checks the tracked paths and runs in
 `npm run verify`.
 
-Screenshots in `public/screenshots/` are the sample-mode Play listing captures
-and nothing else; `docs/content.md` records their source release and hashes.
+Screenshots in `public/screenshots/` are cuts of RepoGlance's showcase
+captures (made-up repositories under fictional owners, a fixture sign-in
+code) and nothing else; `docs/content.md` records their source release,
+hashes and crops.

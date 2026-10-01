@@ -15,16 +15,46 @@
         {
           "version": 1,
           "fields": [
-            { "slug": "eyebrow", "label": "Eyebrow", "type": "string" },
-            { "slug": "heading", "label": "Heading", "type": "string", "required": true },
-            { "slug": "lead", "label": "Lead", "type": "text", "required": true },
-            { "slug": "primary_label", "label": "Primary link label", "type": "string" },
-            { "slug": "primary_href", "label": "Primary link URL", "type": "url" },
-            { "slug": "secondary_label", "label": "Secondary link label", "type": "string" },
-            { "slug": "secondary_href", "label": "Secondary link URL", "type": "url" },
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "lead",
+              "label": "Lead",
+              "type": "text",
+              "required": true
+            },
+            {
+              "slug": "primary_label",
+              "label": "Primary link label",
+              "type": "string"
+            },
+            {
+              "slug": "primary_href",
+              "label": "Primary link URL",
+              "type": "url"
+            },
+            {
+              "slug": "secondary_label",
+              "label": "Secondary link label",
+              "type": "string"
+            },
+            {
+              "slug": "secondary_href",
+              "label": "Secondary link URL",
+              "type": "url"
+            },
             {
               "slug": "screenshot",
-              "label": "Screenshot (sample mode only)",
+              "label": "Screenshot (showcase capture)",
               "type": "select",
               "validation": {
                 "options": [
@@ -33,9 +63,15 @@
                   "catalog-pinned",
                   "repository-issues-and-prs",
                   "repository-prs",
-                  "owner-filter",
+                  "quick-settings-tile",
                   "connect-or-explore-sample",
-                  "quick-settings-tile"
+                  "widgets-cutout",
+                  "pinned-widget",
+                  "repository-widget",
+                  "catalog-rows",
+                  "repository-rows",
+                  "tile-row",
+                  "signin-code"
                 ]
               }
             }
@@ -52,11 +88,21 @@
         {
           "version": 1,
           "fields": [
-            { "slug": "heading", "label": "Heading", "type": "string", "required": true },
-            { "slug": "body", "label": "Body", "type": "text", "required": true },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "body",
+              "label": "Body",
+              "type": "text",
+              "required": true
+            },
             {
               "slug": "screenshot",
-              "label": "Screenshot (sample mode only)",
+              "label": "Screenshot (showcase capture)",
               "type": "select",
               "validation": {
                 "options": [
@@ -65,9 +111,15 @@
                   "catalog-pinned",
                   "repository-issues-and-prs",
                   "repository-prs",
-                  "owner-filter",
+                  "quick-settings-tile",
                   "connect-or-explore-sample",
-                  "quick-settings-tile"
+                  "widgets-cutout",
+                  "pinned-widget",
+                  "repository-widget",
+                  "catalog-rows",
+                  "repository-rows",
+                  "tile-row",
+                  "signin-code"
                 ]
               }
             }
@@ -84,8 +136,17 @@
         {
           "version": 1,
           "fields": [
-            { "slug": "heading", "label": "Heading", "type": "string", "required": true },
-            { "slug": "intro", "label": "Intro", "type": "text" },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "intro",
+              "label": "Intro",
+              "type": "text"
+            },
             {
               "slug": "items",
               "label": "Items",
@@ -93,7 +154,12 @@
               "required": true,
               "validation": {
                 "subFields": [
-                  { "slug": "text", "label": "Text", "type": "text", "required": true }
+                  {
+                    "slug": "text",
+                    "label": "Text",
+                    "type": "text",
+                    "required": true
+                  }
                 ],
                 "minItems": 1,
                 "maxItems": 12
@@ -112,8 +178,17 @@
         {
           "version": 1,
           "fields": [
-            { "slug": "heading", "label": "Heading", "type": "string", "required": true },
-            { "slug": "intro", "label": "Intro", "type": "text" },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "intro",
+              "label": "Intro",
+              "type": "text"
+            },
             {
               "slug": "steps",
               "label": "Steps",
@@ -121,15 +196,32 @@
               "required": true,
               "validation": {
                 "subFields": [
-                  { "slug": "text", "label": "Text", "type": "text", "required": true },
-                  { "slug": "link_label", "label": "Link label", "type": "string" },
-                  { "slug": "link_href", "label": "Link URL", "type": "url" }
+                  {
+                    "slug": "text",
+                    "label": "Text",
+                    "type": "text",
+                    "required": true
+                  },
+                  {
+                    "slug": "link_label",
+                    "label": "Link label",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "link_href",
+                    "label": "Link URL",
+                    "type": "url"
+                  }
                 ],
                 "minItems": 1,
                 "maxItems": 8
               }
             },
-            { "slug": "note", "label": "Note", "type": "text" }
+            {
+              "slug": "note",
+              "label": "Note",
+              "type": "text"
+            }
           ]
         }
       ]
@@ -143,10 +235,29 @@
         {
           "version": 1,
           "fields": [
-            { "slug": "heading", "label": "Heading", "type": "string", "required": true },
-            { "slug": "body", "label": "Body", "type": "text" },
-            { "slug": "link_label", "label": "Link label", "type": "string", "required": true },
-            { "slug": "link_href", "label": "Link URL", "type": "url", "required": true }
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "body",
+              "label": "Body",
+              "type": "text"
+            },
+            {
+              "slug": "link_label",
+              "label": "Link label",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "link_href",
+              "label": "Link URL",
+              "type": "url",
+              "required": true
+            }
           ]
         }
       ]
@@ -160,10 +271,28 @@
         {
           "version": 1,
           "fields": [
-            { "slug": "heading", "label": "Heading", "type": "string", "required": true },
-            { "slug": "body", "label": "Body", "type": "text", "required": true },
-            { "slug": "link_label", "label": "Link label", "type": "string" },
-            { "slug": "link_href", "label": "Link URL", "type": "url" }
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "body",
+              "label": "Body",
+              "type": "text",
+              "required": true
+            },
+            {
+              "slug": "link_label",
+              "label": "Link label",
+              "type": "string"
+            },
+            {
+              "slug": "link_href",
+              "label": "Link URL",
+              "type": "url"
+            }
           ]
         }
       ]
@@ -174,16 +303,36 @@
       "slug": "pages",
       "label": "Pages",
       "labelSingular": "Page",
-      "supports": ["drafts", "revisions"],
+      "supports": [
+        "drafts",
+        "revisions"
+      ],
       "fields": [
-        { "slug": "title", "label": "Title", "type": "string", "required": true },
-        { "slug": "description", "label": "Description", "type": "text", "required": true },
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "description",
+          "label": "Description",
+          "type": "text",
+          "required": true
+        },
         {
           "slug": "layout",
           "label": "Layout",
           "type": "blocks",
           "validation": {
-            "allowedTypes": ["hero", "feature", "fact_list", "steps", "cta", "text_section"],
+            "allowedTypes": [
+              "hero",
+              "feature",
+              "fact_list",
+              "steps",
+              "cta",
+              "text_section"
+            ],
             "maxItems": 20
           }
         }
@@ -198,15 +347,15 @@
         "status": "published",
         "data": {
           "title": "RepoGlance",
-          "description": "Read-only GitHub widgets, pinned repos, and open issues and PRs at a glance, on your Pixel home screen.",
+          "description": "RepoGlance puts your GitHub repositories on your Pixel home screen: open issues and pull requests, latest pushes, and how old each number is. Read-only, with no server.",
           "layout": [
             {
               "_type": "hero",
               "_version": 1,
               "_key": "home-hero",
-              "eyebrow": "Read-only GitHub widgets for Google Pixels",
-              "heading": "Your GitHub repos, at a glance, on your Pixel home screen.",
-              "lead": "RepoGlance puts the repositories you care about on your home screen: open issue and pull request counts, your pinned repositories by latest push, and a navigator for open issues and pull requests. It is read-only. It never changes anything on GitHub.",
+              "eyebrow": "Read-only GitHub widgets for Pixel",
+              "heading": "Glance at the home screen. Know where your repos stand.",
+              "lead": "Your pinned repositories, latest push first. How many issues and pull requests are open, and how old that count is. One tap and the thread opens in the GitHub app. RepoGlance only reads; it never changes anything on GitHub.",
               "primary_label": "Join the closed test",
               "primary_href": "/testers",
               "secondary_label": "Source on GitHub",
@@ -217,47 +366,59 @@
               "_type": "feature",
               "_version": 1,
               "_key": "home-pin",
-              "heading": "Pin what matters",
-              "body": "Browse the repositories you share with RepoGlance, filter them by account or organization, search, and sort by most recent push. Pin a repository right from its row. Pinned repositories sort first, and they are the only ones RepoGlance refreshes in the background, about every 30 minutes on a network connection.",
-              "screenshot": "catalog-pinned"
+              "heading": "On the home screen",
+              "body": "The Pinned repos widget lists what you pinned, most recent push first. The Repository widget shows a repository's open issue and pull request counts, with the latest items at the taller size. Both say how old their numbers are.",
+              "screenshot": "pinned-widget"
             },
             {
               "_type": "feature",
               "_version": 1,
               "_key": "home-navigator",
-              "heading": "Open issues and pull requests",
-              "body": "Open a repository to see its open issues and pull requests, or just one kind, and search the loaded rows. A tap opens the full thread in the GitHub app.",
-              "screenshot": "repository-issues-and-prs"
+              "heading": "In the app",
+              "body": "Browse every repository you share with RepoGlance, filter by account or organization, search, sort by latest push, and pin from the row. Open one to read its open issues and pull requests; tap to continue in the GitHub app.",
+              "screenshot": "catalog-rows"
             },
             {
               "_type": "feature",
               "_version": 1,
               "_key": "home-widgets",
-              "heading": "Widgets and a Quick Settings tile",
-              "body": "A Repository widget shows open issue and pull request counts, with the latest items at the taller size. A Pinned repos widget lists your pinned repositories, most recent push first. A Quick Settings tile shows your latest push. Every value shows how old it is: when GitHub can't be reached you see the last good value with its age, or no data, never a made-up zero.",
-              "screenshot": "quick-settings-tile"
+              "heading": "In Quick Settings",
+              "body": "The RepoGlance tile shows your latest push with its age. Pinned repositories refresh about every 30 minutes on a network connection; when GitHub can't be reached, you see the last good value or no data, never a made-up zero.",
+              "screenshot": "tile-row"
             },
             {
               "_type": "feature",
               "_version": 1,
               "_key": "home-sample",
-              "heading": "Try it without an account",
-              "body": "Tap Explore with sample data on the first screen to try the catalog, the repository views, the widgets and the Quick Settings tile on made-up repositories, clearly marked SAMPLE. Sample mode makes no network requests.",
-              "screenshot": "connect-or-explore-sample"
+              "heading": "When you sign in",
+              "body": "Sign in on GitHub's own page. RepoGlance shows a short code; Copy code & open GitHub takes you to GitHub to enter it and authorize. RepoGlance never sees your password. No account yet? Tap Explore with sample data instead.",
+              "screenshot": "signin-code"
             },
             {
               "_type": "fact_list",
               "_version": 1,
               "_key": "home-facts",
-              "heading": "Read-only. No server. No tracking.",
-              "intro": "RepoGlance is built to tell the truth about your repositories, and to stay out of the way.",
+              "heading": "What stays true all day",
+              "intro": "The rules RepoGlance keeps, whatever the numbers do.",
               "items": [
-                { "text": "RepoGlance never comments, closes, labels, assigns, merges or re-runs anything on GitHub." },
-                { "text": "There is no RepoGlance server. The app talks only to GitHub, directly from your phone." },
-                { "text": "Sign-in is GitHub's own device flow: you enter a short code on GitHub's page, so RepoGlance never sees your password. Your token is encrypted with Android Keystore and used only to reach GitHub." },
-                { "text": "No ads, no analytics, no trackers. Disconnect GitHub in Settings to delete your session and cached data from the phone." },
-                { "text": "Unknown is never shown as zero. Stale data is labelled with its age. A rate limit is shown, never hidden behind old numbers." },
-                { "text": "Not yet: a CI column. This build does not fetch CI state." }
+                {
+                  "text": "It only reads. RepoGlance never comments, closes, merges or changes anything on GitHub."
+                },
+                {
+                  "text": "It has no server. Your phone talks to GitHub directly."
+                },
+                {
+                  "text": "You sign in on GitHub's own page with a short code; RepoGlance never sees your password. The token is encrypted with Android Keystore."
+                },
+                {
+                  "text": "It carries no ads, analytics or trackers. Disconnect GitHub in Settings and the session and cached data are deleted from the phone."
+                },
+                {
+                  "text": "It never fakes a number: unknown is not zero, stale data wears its age, a rate limit is shown."
+                },
+                {
+                  "text": "Not yet: a CI column. This build does not fetch CI state."
+                }
               ]
             },
             {
@@ -278,27 +439,27 @@
         "status": "published",
         "data": {
           "title": "Join the closed test",
-          "description": "How to join the RepoGlance closed test on Google Play: join the testers group, accept the test, install the app.",
+          "description": "How to get the RepoGlance closed test onto your Pixel: join the testers group, accept the test on Google Play, install.",
           "layout": [
             {
               "_type": "hero",
               "_version": 1,
               "_key": "testers-hero",
               "eyebrow": "Closed testing on Google Play",
-              "heading": "Join the RepoGlance closed test.",
-              "lead": "RepoGlance 0.4.0-beta.1 is a closed test on Google Play. It runs on Android 12 or newer and is made for Pixel phones and foldables. Joining takes a Google account and a few minutes.",
+              "heading": "Get the test build on your Pixel.",
+              "lead": "RepoGlance 0.4.0-beta.1 is a closed test on Google Play for Pixel phones and foldables on Android 12 or newer. Bring the Google account you use on Google Play; the rest takes a few minutes.",
               "primary_label": "Join the testers group",
               "primary_href": "https://groups.google.com/g/repoglance-testers",
               "secondary_label": "Back to the overview",
               "secondary_href": "/",
-              "screenshot": "connect-or-explore-sample"
+              "screenshot": "signin-code"
             },
             {
               "_type": "steps",
               "_version": 1,
               "_key": "testers-steps",
-              "heading": "Three steps",
-              "intro": "Google Play checks membership in the testers group, so the group comes first.",
+              "heading": "Three steps, in order",
+              "intro": "Group first, Play second, install third.",
               "steps": [
                 {
                   "text": "Join the RepoGlance testers Google Group with the Google account you use on Google Play. Anyone on the web can join.",
@@ -309,22 +470,32 @@
                   "text": "Accept the test on Google Play. The opt-in link is not published yet; it will appear here as soon as Google Play shows it."
                 },
                 {
-                  "text": "Install RepoGlance from Google Play. On the first screen, sign in with GitHub, or tap Explore with sample data to try everything on made-up repositories."
+                  "text": "Install RepoGlance from Google Play. First screen: Sign in with GitHub, or Explore with sample data."
                 }
               ],
-              "note": "Joining the group installs nothing. Leave the group at any time to leave the test."
+              "note": "Joining the group installs nothing. Leaving the group leaves the test."
             },
             {
               "_type": "fact_list",
               "_version": 1,
               "_key": "testers-build",
-              "heading": "What this build does",
+              "heading": "In this build",
               "items": [
-                { "text": "Sign in with GitHub's device flow and pin the repositories you share with RepoGlance." },
-                { "text": "Open a repository's issues and pull requests; a tap opens the thread in the GitHub app." },
-                { "text": "Add Repository and Pinned repos widgets from Widgets in the app's menu or from your home screen's widget picker, plus a Quick Settings tile." },
-                { "text": "Explore with sample data to try all of it without an account." },
-                { "text": "Not yet: a CI column." }
+                {
+                  "text": "GitHub device-flow sign-in; the catalog of repositories your installation shares; pin from the row."
+                },
+                {
+                  "text": "Per-repository open issues and pull requests; a tap opens the GitHub app."
+                },
+                {
+                  "text": "Repository widget, Pinned repos widget, Quick Settings tile; sample mode for all three."
+                },
+                {
+                  "text": "Settings: theme (Light, Dark, System default), Manage GitHub access, Disconnect GitHub."
+                },
+                {
+                  "text": "Not yet: a CI column, the latest release, account-wide navigation."
+                }
               ]
             },
             {
@@ -332,7 +503,7 @@
               "_version": 1,
               "_key": "testers-feedback",
               "heading": "Feedback",
-              "body": "Report problems and ideas as GitHub issues. Say which phone and Android version you are on, and whether you were in sample mode or signed in.",
+              "body": "Say what happened in a GitHub issue: which phone, which Android version, and whether you were signed in or in sample mode.",
               "link_label": "Open an issue",
               "link_href": "https://github.com/saari-co/RepoGlance/issues"
             },
@@ -341,7 +512,7 @@
               "_version": 1,
               "_key": "testers-privacy",
               "heading": "Privacy",
-              "body": "RepoGlance has no server and collects nothing. The privacy policy explains what stays on your phone and how to remove it.",
+              "body": "Nothing leaves your phone except requests to GitHub. The privacy policy explains what is stored on the phone and how to remove it.",
               "link_label": "Privacy policy",
               "link_href": "https://saari-co.github.io/RepoGlance/privacy/"
             }

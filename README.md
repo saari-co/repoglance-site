@@ -20,7 +20,10 @@ in EmDash behind Cloudflare Access (see below).
   [proof/cms-access-20261001/](proof/cms-access-20261001/PROOF.md) and
   [proof/www-redirect-cache-20261001/](proof/www-redirect-cache-20261001/PROOF.md).
 - **Look:** decided on 2026-10-01 in four GrillTrack rounds and a confirmed
-  hybrid; [design.md](design.md) v1 is the contract.
+  hybrid; [design.md](design.md) is the contract (v2 adds the copy).
+- **Copy:** decided on 2026-10-01 in one GrillTrack round and a confirmed
+  hybrid; every sentence is in `seed/seed.json` and traces to
+  [docs/content.md](docs/content.md).
 
 ## Run locally
 

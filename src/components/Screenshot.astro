@@ -9,13 +9,13 @@ const { slug, priority = false } = Astro.props;
 const shot = isScreenshotSlug(slug) ? { slug, ...screenshots[slug] } : null;
 ---
 {shot && (
-  <figure class="shot">
+  <figure class="shot" data-shot={shot.slug}>
     <img
       src={`/screenshots/${shot.slug}-540.webp`}
       srcset={`/screenshots/${shot.slug}-540.webp 540w, /screenshots/${shot.slug}-1080.webp 1080w`}
       sizes="(min-width: 760px) 320px, 70vw"
-      width="540"
-      height="960"
+      width={shot.width}
+      height={shot.height}
       alt={shot.alt}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"

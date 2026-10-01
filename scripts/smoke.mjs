@@ -139,12 +139,13 @@ try {
   record('GET / is 200', home.status === 200, `status ${home.status}`);
   record('GET / is HTML', /text\/html/.test(home.headers.get('content-type') ?? ''), home.headers.get('content-type'));
   record('GET / renders from the seed on a fresh database', /data-content-source="seed"/.test(homeBody), homeBody.slice(0, 300));
-  record('GET / carries the hero heading', homeBody.includes('Your GitHub repos, at a glance, on your Pixel home screen.'), '');
+  record('GET / carries the hero heading', homeBody.includes('Glance at the home screen. Know where your repos stand.'), '');
   record('GET / links to the testers page and the privacy policy', homeBody.includes('href="/testers"') && homeBody.includes('https://saari-co.github.io/RepoGlance/privacy/'), '');
-  record('GET / shows only sample-mode captures', /\/screenshots\/home-widgets-540\.webp/.test(homeBody) && !/live/i.test(homeBody.match(/alt="[^"]*"/g)?.join(' ') ?? ''), '');
+  record('GET / shows the showcase captures with made-up data', /\/screenshots\/home-widgets-540\.webp/.test(homeBody) && /\/screenshots\/signin-code-540\.webp/.test(homeBody) && (homeBody.match(/alt="[^"]*"/g) ?? []).every((alt) => /made.up|fixture|Sign in with GitHub/i.test(alt) && !/\blive\b/i.test(alt)), '');
   record('GET / has no scripts', !/<script/i.test(homeBody), 'script tag found');
   record('GET / inlines the brand mark', /<svg class="brand-mark"/.test(homeBody), 'inline mark missing');
   record('GET / has the band hero, the feature row and the band call to action', /class="band band-hero"/.test(homeBody) && /class="showcase"/.test(homeBody) && /class="band band-cta"/.test(homeBody) && (homeBody.match(/class="feature"/g) ?? []).length === 4, 'structure');
+  record('GET / card images are the cut-outs the cards are about', /data-shot="pinned-widget"/.test(homeBody) && /data-shot="catalog-rows"/.test(homeBody) && /data-shot="tile-row"/.test(homeBody), 'card images');
   record('GET / canonical has no trailing slash', /<link rel="canonical" href="https:\/\/repoglance\.com\/"/.test(homeBody), '');
   expectCachedPage('GET /', home, 'astro-path:/');
 
@@ -193,7 +194,7 @@ try {
   }
   for (const host of ['repoglance.com', 'www.repoglance.com.evil.example', 'wwww.repoglance.com']) {
     const served = await hostRequest(port, '/', host);
-    record(`host "${host}" is served, not redirected`, served.status === 200 && served.headers.location === undefined && served.body.includes('Your GitHub repos, at a glance, on your Pixel home screen.'), `status ${served.status} location ${served.headers.location}`);
+    record(`host "${host}" is served, not redirected`, served.status === 200 && served.headers.location === undefined && /<html lang="en" data-page="home"/.test(served.body) && /data-content-source="seed"/.test(served.body), `status ${served.status} location ${served.headers.location}`);
   }
   const withCookie = await hostRequest(port, '/', 'repoglance.com', { cookie: 'CF_Authorization=forged; emdash-edit-mode=true' });
   record('GET / with cookies is served with the same edge policy (the Cookie variant keeps editors on fresh renders)', withCookie.status === 200 && withCookie.headers['cloudflare-cdn-cache-control'] === EDGE_POLICY && /\bcookie\b/i.test(withCookie.headers.vary ?? ''), `status ${withCookie.status} cdn ${withCookie.headers['cloudflare-cdn-cache-control']} vary ${withCookie.headers.vary}`);
