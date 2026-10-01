@@ -108,3 +108,11 @@ were capped at 400 px after a first full-page render ran to 7,488 px.
 - The maintainer's pick is implemented afterwards in `src/styles/site.css`
   and `design.md` v1 and verified on the real build; the picker is not
   that proof.
+
+## Outcome
+
+The maintainer did not pick one of the five. Feedback (2026-10-01): the
+full-width hero of E on both pages, the slider of C on the home page, the
+condensed join page of A, and C's tile grid for "What this build does"
+rejected. Round 2 replaced the five with candidates built on that direction:
+`look-round-2-captures-20261001.md`.
