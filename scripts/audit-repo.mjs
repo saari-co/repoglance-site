@@ -34,10 +34,14 @@ const forbiddenContent = [
   { name: 'Cloudflare account or resource id', pattern: /\b(?!0{8}-0{4}-0{4}-0{4}-0{10}[0-9a-f]{2}\b)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/i },
 ];
 const textFiles = files.filter((path) => /\.(?:mjs|js|ts|astro|json|jsonc|md|yml|yaml|css|txt|svg)$/.test(path));
+// The GrillTrack ledger and committed proof record deployment version ids,
+// which share the UUID shape; everything else in them is still scanned.
+const recordsDeployments = (path) => /^(?:\.grilltrack\/|proof\/)/.test(path);
 const hits = [];
 for (const path of textFiles) {
   const text = readFileSync(path, 'utf8');
   for (const rule of forbiddenContent) {
+    if (rule.name === 'Cloudflare account or resource id' && recordsDeployments(path)) continue;
     if (rule.pattern.test(text)) hits.push(`${path}: ${rule.name}`);
   }
 }

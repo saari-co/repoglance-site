@@ -21,7 +21,8 @@
     "test:content": "node --test tests/content.test.mjs",
     "test:guard": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test tests/namespace-guard.test.mjs",
     "test:smoke": "node scripts/smoke.mjs",
-    "verify": "npm run audit:repo && npm run types:wrangler && npm run typecheck && npm run test:content && npm run test:guard && npm run build && npm run test:smoke"
+    "verify": "npm run audit:repo && npm run types:wrangler && npm run typecheck && npm run test:content && npm run test:guard && npm run build && npm run test:smoke",
+    "prepare:deploy": "node scripts/prepare-deploy.mjs"
   },
   "dependencies": {
     "@astrojs/react": "6.0.5",
