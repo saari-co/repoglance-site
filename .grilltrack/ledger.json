@@ -7,7 +7,7 @@
     "confirmed_at": "2026-10-01T16:43:45+00:00",
     "domain": "site-imagery-007 with the one-card amendment of site-copy-006: the imagery of repoglance.com in the locked layout and copy (RepoGlance showcase captures; cut-out cards; the sign-in code screen on the fourth home card and the join hero), implemented, verified in a fresh clone and reviewed on the exact head",
     "started_at": "2026-10-01T16:43:45+00:00",
-    "status": "confirmed",
+    "status": "inspected",
     "summary": "Maintainer locked the imagery hybrid and the one-card copy amendment on 2026-10-01 ('2'). Implemented in 53a2ede on claude/site-copy, merged with origin/main (ledger replayed) in 0b48c9d, verified in a fresh clone; review round 1 findings fixed in the follow-up commit; then push and refresh PR #3. No merge, no deploy."
   },
   "decisions": [
@@ -898,14 +898,21 @@
           "result": "clean",
           "reviewed_at": "2026-10-01T13:08:19+00:00",
           "source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T16:47:13+00:00",
+          "source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645"
         }
       ],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
+      "review_ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645",
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T16:34:12+00:00",
+      "updated_at": "2026-10-01T16:47:13+00:00",
       "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d; production captures)"
     },
     {
@@ -969,22 +976,85 @@
           "review_source_identity": null,
           "to": "verified",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T16:47:13+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "verified",
+          "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (public/screenshots from the showcase captures; seed slugs; screenshots.ts; Screenshot.astro data-shot and sizes; site.css cut-out cards; AGENTS.md, CHARTER, design.md v3, docs/content.md; content test and smoke)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d: audit 100 files, 0 type errors, 9 content + 9 guard tests, 67 smoke checks; production captures, join page byte-identical to the confirmed preview)"
+        },
+        {
+          "at": "2026-10-01T16:47:13+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (public/screenshots from the showcase captures; seed slugs; screenshots.ts; Screenshot.astro data-shot and sizes; site.css cut-out cards; AGENTS.md, CHARTER, design.md v3, docs/content.md; content test and smoke)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "reject_false_positive"
+          ],
+          "review_ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:53a2ede9950f6770b936bf274167496367326a4f",
+          "to": "implemented",
+          "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d: audit 100 files, 0 type errors, 9 content + 9 guard tests, 67 smoke checks; production captures, join page byte-identical to the confirmed preview)"
+        },
+        {
+          "at": "2026-10-01T16:47:13+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "implemented",
+          "implementation_ref": "git:add4e6992eb859e22350069ecbadf145bb3a4645 (review round 1 fixes: REPO_HYGIENE.md, design.md counts and home-features bullet, seed screenshot labels, smoke and content alt checks, docs/content.md; images, slugs and copy unchanged)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d: audit 100 files, 0 type errors, 9 content + 9 guard tests, 67 smoke checks; production captures, join page byte-identical to the confirmed preview)"
         }
       ],
       "id": "site-imagery-007",
-      "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (public/screenshots from the showcase captures; seed slugs; screenshots.ts; Screenshot.astro data-shot and sizes; site.css cut-out cards; AGENTS.md, CHARTER, design.md v3, docs/content.md; content test and smoke)",
+      "implementation_ref": "git:add4e6992eb859e22350069ecbadf145bb3a4645 (review round 1 fixes: REPO_HYGIENE.md, design.md counts and home-features bullet, seed screenshot labels, smoke and content alt checks, docs/content.md; images, slugs and copy unchanged)",
       "question": "Which imagery carries the locked layout and copy on / and /testers: which capture each slot shows, how it is framed and cropped, and whether it follows the colour scheme?",
       "rationale": "Maintainer, 2026-10-01: 'I prefer C but the Before you sign in image sucks; the second screen where it shows the click to copy code and open GitHub page would look better and depict the sign-in flow better; that same image should also be updated on the Join page in the hero', then '2' (lock it, fix the card text) on the hybrid preview (proof: imagery-round-1-captures-20261001.md, imagery-hybrid-1-captures-20261001.md).",
       "repair_required": false,
       "review_classifications": [],
-      "review_history": [],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "reject_false_positive"
+          ],
+          "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T16:47:13+00:00",
+          "source_identity": "git:53a2ede9950f6770b936bf274167496367326a4f"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T16:47:13+00:00",
+          "source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645",
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T16:34:12+00:00",
-      "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d: audit 100 files, 0 type errors, 9 content + 9 guard tests, 67 smoke checks; production captures, join page byte-identical to the confirmed preview)"
+      "updated_at": "2026-10-01T16:47:13+00:00",
+      "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of add4e6992eb859e22350069ecbadf145bb3a4645; captures byte-identical to the merged head's)"
     }
   ],
   "last_activation": {
@@ -1005,16 +1075,16 @@
   "pause": null,
   "recommendation": {
     "alternatives": [
-      "typography-007: a font-role round (display, reading, labels) now that layout and copy are locked; system faces are the current lock.",
-      "cms-access: the maintainer's hosted bootstrap and the Access allow-path proof, in progress on claude/site-hosting (PR #2) and maintainer-gated."
+      "scheme-matched imagery: the light showcase captures already exist; a round on showing light images on the light scheme (the rejected D of imagery round 1) if the dark images on the light page start to grate.",
+      "typography-010: a font-role round now that layout, copy and imagery are locked; system faces are the current lock."
     ],
-    "reason": "Layout and copy are locked and verified; the only visible asset still outside the design contract is the Open Graph image, which every shared link shows; hosting is owned by the parallel branch and gated on the maintainer.",
-    "recommended": "og-image-007: an Open Graph and link-preview image in the decided look (ink band, commit-eye rings, the locked hero line), replacing the Play feature graphic that stands in today; five candidates on the real meta tags, judged in link-preview renderers.",
-    "recorded_at": "2026-10-01T13:08:19+00:00"
+    "reason": "Layout, copy and imagery are locked and verified; the Open Graph image is the last visible asset still outside the design contract, and every shared link shows it.",
+    "recommended": "og-image-009: an Open Graph and link-preview image in the decided look and imagery (the ink band, the commit-eye rings, the hero line, a showcase cut-out), replacing the Play feature graphic; five candidates on the real meta tags, judged in link-preview renderers.",
+    "recorded_at": "2026-10-01T16:47:13+00:00"
   },
   "schema_version": "grilltrack/v0.1",
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T16:43:45+00:00"
+  "updated_at": "2026-10-01T16:47:13+00:00"
 }

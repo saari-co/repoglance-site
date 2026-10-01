@@ -143,3 +143,11 @@ Findings and adjudication:
 Notes without action: the ledger's focus domain read the reopened copy
 decision after `reopen`; restated for the imagery cycle. Unused slugs get
 the generic card rule (recorded in design.md).
+
+Re-verification on `add4e6992eb859e22350069ecbadf145bb3a4645`: `npm run verify` exit 0 in the fresh
+clone (audit 101 files, 68 scanned; 0 type errors; 9 content and 9 guard
+tests; Cloudflare build; 67 smoke checks); the eight production captures
+are byte-identical to the table above (the fix changed no image, slug or
+rendered string). Re-review of `add4e6992eb859e22350069ecbadf145bb3a4645`: the five corrections match the
+findings, nothing else changed; no further defects; recorded clean for
+both decisions.
