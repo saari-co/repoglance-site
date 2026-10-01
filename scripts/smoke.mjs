@@ -105,7 +105,7 @@ try {
   record('GET / renders from the seed on a fresh database', /data-content-source="seed"/.test(homeBody), homeBody.slice(0, 300));
   record('GET / carries the hero heading', homeBody.includes('Glance at the home screen. Know where your repos stand.'), '');
   record('GET / links to the testers page and the privacy policy', homeBody.includes('href="/testers"') && homeBody.includes('https://saari-co.github.io/RepoGlance/privacy/'), '');
-  record('GET / shows the showcase captures with made-up data', /\/screenshots\/home-widgets-540\.webp/.test(homeBody) && /\/screenshots\/signin-code-540\.webp/.test(homeBody) && (homeBody.match(/alt="[^"]*"/g) ?? []).every((alt) => /made.up|fixture|sign-in/i.test(alt)), '');
+  record('GET / shows the showcase captures with made-up data', /\/screenshots\/home-widgets-540\.webp/.test(homeBody) && /\/screenshots\/signin-code-540\.webp/.test(homeBody) && (homeBody.match(/alt="[^"]*"/g) ?? []).every((alt) => /made.up|fixture|Sign in with GitHub/i.test(alt) && !/\blive\b/i.test(alt)), '');
   record('GET / has no scripts', !/<script/i.test(homeBody), 'script tag found');
   record('GET / inlines the brand mark', /<svg class="brand-mark"/.test(homeBody), 'inline mark missing');
   record('GET / has the band hero, the feature row and the band call to action', /class="band band-hero"/.test(homeBody) && /class="showcase"/.test(homeBody) && /class="band band-cta"/.test(homeBody) && (homeBody.match(/class="feature"/g) ?? []).length === 4, 'structure');

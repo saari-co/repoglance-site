@@ -45,7 +45,10 @@
   display, dark theme, SystemUI demo clock at 9:30), cut into 540 and 1080
   px WebP under `public/screenshots/` (`docs/content.md` has the source
   release, hashes and crops). Thirteen slugs ship so the CMS can pick any:
-  six phone frames (9:16 crops) and seven cut-outs. The pages use: the
+  seven phone frames (9:16 crops) and six cut-outs; only the six slot
+  assignments below were previewed, and an unused slug picked in the CMS
+  renders with the generic card rule (cover from the top, 12 px corners).
+  The pages use: the
   home hero shows the home screen phone with both widgets; the four cards
   show the element each card is about, cut from the capture and set on
   the card with its own corners (the Pinned repos widget, the catalog
@@ -101,9 +104,9 @@
 - **Navigation and footer:** mono at 0.82 rem and 0.78 rem, underlined
   links in ink; the header keeps a hairline below.
 - **Home features [round 2 A]:** a snap-scrolling row of hairline cards
-  (10 px radius, `min(78vw, 300px)` wide) with the phone capture cropped to
-  280 px at the top and a mono 0.8 rem head; the row bleeds to the viewport
-  edge on phones.
+  (10 px radius, `min(78vw, 300px)` wide) with a 280 px image area at the
+  top (since v3 a cut-out set on the card, see Imagery) and a mono 0.8 rem
+  head; the row bleeds to the viewport edge on phones.
   - **Rejected:** stacked sections (round 1 A), 2x2 tonal cards (round 1 B),
     hairline-celled grid (round 1 D), alternating bands (round 1 E), tonal
     borderless cards (round 2 B).

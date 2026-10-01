@@ -4,11 +4,11 @@
   "current_focus": {
     "cadence": "sequential",
     "confirmed": true,
-    "confirmed_at": "2026-10-01T16:28:51+00:00",
-    "domain": "site-copy-006: the copy of repoglance.com in the locked layout (design.md v1): voice, structure, specificity and information order of every seed block on / and /testers, judged on the real pages at 375 and 1280 px in both schemes with the layout, imagery, mark and fonts locked; every candidate keeps the honest-copy rules of tests/content.test.mjs",
-    "started_at": "2026-10-01T16:28:51+00:00",
+    "confirmed_at": "2026-10-01T16:43:45+00:00",
+    "domain": "site-imagery-007 with the one-card amendment of site-copy-006: the imagery of repoglance.com in the locked layout and copy (RepoGlance showcase captures; cut-out cards; the sign-in code screen on the fourth home card and the join hero), implemented, verified in a fresh clone and reviewed on the exact head",
+    "started_at": "2026-10-01T16:43:45+00:00",
     "status": "confirmed",
-    "summary": "Maintainer locked the imagery hybrid and the one-card copy amendment on 2026-10-01 ('2'). Implement on claude/site-copy: the showcase assets into public/screenshots/ (every showcase slug, dark set, 540 and 1080 px), seed/seed.json slugs and the 'When you sign in' card, src/content/screenshots.ts (alt, dimensions), Screenshot.astro (data-shot, per-slug dimensions), site.css (cut-out cards), AGENTS.md, docs/CHARTER.md, design.md v3 and docs/content.md (showcase captures with made-up data, never a live account; the fixture code), tests/content.test.mjs and scripts/smoke.mjs; verify with npm run verify in a fresh clone of the commit (the nested worktree's parent checkout breaks Vite 8's build) and full-page captures of the production build; exact-source review; merge origin/main with the ledger replayed; push; update PR #3. No merge, no deploy."
+    "summary": "Maintainer locked the imagery hybrid and the one-card copy amendment on 2026-10-01 ('2'). Implemented in 53a2ede on claude/site-copy, merged with origin/main (ledger replayed) in 0b48c9d, verified in a fresh clone; review round 1 findings fixed in the follow-up commit; then push and refresh PR #3. No merge, no deploy."
   },
   "decisions": [
     {
@@ -845,10 +845,38 @@
           "review_source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258",
           "to": "locked",
           "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
+        },
+        {
+          "at": "2026-10-01T16:34:12+00:00",
+          "choice": "The confirmed copy hybrid of 2026-10-01 (home in D's voice with A's call to action; join page in D's voice with C's steps and build list), amended on the maintainer's instruction with the imagery lock: the fourth home card now reads 'When you sign in' and describes GitHub's device flow (a short code, Copy code & open GitHub, authorize on GitHub, RepoGlance never sees your password), with Explore with sample data as the no-account alternative, so the card matches its sign-in code image.",
+          "from": "locked",
+          "implementation_ref": "git:8b2381ee35db4938e70c0a2c728989547f14d258 (review round 1 fixes: design.md read-only rule, docs/content.md traceability claim and test-rule list; seed unchanged)",
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "review_result": "clean",
+          "review_source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258",
+          "to": "implemented",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
+        },
+        {
+          "at": "2026-10-01T16:34:12+00:00",
+          "choice": "The confirmed copy hybrid of 2026-10-01 (home in D's voice with A's call to action; join page in D's voice with C's steps and build list), amended on the maintainer's instruction with the imagery lock: the fourth home card now reads 'When you sign in' and describes GitHub's device flow (a short code, Copy code & open GitHub, authorize on GitHub, RepoGlance never sees your password), with Explore with sample data as the no-account alternative, so the card matches its sign-in code image.",
+          "from": "implemented",
+          "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (the home-sample block: 'When you sign in' and the device-flow copy; every other string unchanged)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
         }
       ],
       "id": "site-copy-006",
-      "implementation_ref": "git:8b2381ee35db4938e70c0a2c728989547f14d258 (review round 1 fixes: design.md read-only rule, docs/content.md traceability claim and test-rule list; seed unchanged)",
+      "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (the home-sample block: 'When you sign in' and the device-flow copy; every other string unchanged)",
       "question": "Which copy carries the locked layout on / and /testers: voice, structure, specificity and information order of the seed blocks?",
       "rationale": "Maintainer, 2026-10-01: option 2 of the lock question, 'lock it, fix the card text'. Facts from the RepoGlance README's Auth section and the app's own device-code screen.",
       "repair_required": false,
@@ -872,13 +900,13 @@
           "source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258"
         }
       ],
-      "review_ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
-      "review_result": "clean",
-      "review_source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258",
-      "status": "locked",
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
+      "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T16:28:51+00:00",
-      "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
+      "updated_at": "2026-10-01T16:34:12+00:00",
+      "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d; production captures)"
     },
     {
       "baseline_ref": "git:c0df035 (claude/site-copy; public/screenshots as shipped: sample-mode Play listing captures)",
@@ -913,10 +941,38 @@
           "review_source_identity": null,
           "to": "locked",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T16:34:12+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T16:34:12+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "implemented",
+          "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (public/screenshots from the showcase captures; seed slugs; screenshots.ts; Screenshot.astro data-shot and sizes; site.css cut-out cards; AGENTS.md, CHARTER, design.md v3, docs/content.md; content test and smoke)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
         }
       ],
       "id": "site-imagery-007",
-      "implementation_ref": null,
+      "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (public/screenshots from the showcase captures; seed slugs; screenshots.ts; Screenshot.astro data-shot and sizes; site.css cut-out cards; AGENTS.md, CHARTER, design.md v3, docs/content.md; content test and smoke)",
       "question": "Which imagery carries the locked layout and copy on / and /testers: which capture each slot shows, how it is framed and cropped, and whether it follows the colour scheme?",
       "rationale": "Maintainer, 2026-10-01: 'I prefer C but the Before you sign in image sucks; the second screen where it shows the click to copy code and open GitHub page would look better and depict the sign-in flow better; that same image should also be updated on the Join page in the hero', then '2' (lock it, fix the card text) on the hybrid preview (proof: imagery-round-1-captures-20261001.md, imagery-hybrid-1-captures-20261001.md).",
       "repair_required": false,
@@ -925,10 +981,10 @@
       "review_ref": null,
       "review_result": null,
       "review_source_identity": null,
-      "status": "locked",
+      "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T16:28:51+00:00",
-      "verification_ref": null
+      "updated_at": "2026-10-01T16:34:12+00:00",
+      "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d: audit 100 files, 0 type errors, 9 content + 9 guard tests, 67 smoke checks; production captures, join page byte-identical to the confirmed preview)"
     }
   ],
   "last_activation": {
@@ -960,5 +1016,5 @@
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T16:28:51+00:00"
+  "updated_at": "2026-10-01T16:43:45+00:00"
 }

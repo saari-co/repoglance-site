@@ -133,6 +133,7 @@ test('every screenshot reference is a shipped showcase capture with alt text and
     const start = source.indexOf(`'${option}': {`);
     const entry = source.slice(start, source.indexOf('},', start));
     assert.match(entry, /width: \d+,\s*height: \d+,\s*alt: '[^']*(made.up|fixture|Sign in with GitHub)[^']*'/i, `${option} has dimensions and an alt text that says the data is made up (or shows the sign-in screen)`);
+    assert.ok(!/\blive\b/i.test(entry) && !/HK7N/.test(entry), `${option}: alt text never claims live data and never carries the fixture code`);
   }
   for (const text of allText) {
     assert.ok(!/HK7N/.test(text), 'the fixture code stays out of the copy');

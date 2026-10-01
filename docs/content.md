@@ -21,7 +21,10 @@ no "stack" as a widget name, CI mentioned only as "not yet" or "does not
 fetch", no watched-run notification or production-release claim,
 "read-only" and "never changes anything on GitHub" present, the build
 version named, the privacy, Google Group, repository and issues links
-present, no Play opt-in URL.
+present, no Play opt-in URL; and for the images, every screenshot option
+shipped at both widths with dimensions and an alt text that says the data
+is made up (or shows the sign-in screen), never "live", and the fixture
+code kept out of the copy and the alt text.
 
 The wording was decided in GrillTrack `site-copy-006` (2026-10-01): one
 five-candidate round on the real pages and a confirmed hybrid
@@ -44,8 +47,10 @@ from the app's debug-only preview, never a GitHub-issued code. The
 captures are in the private asset release
 `saari-co/swarm-pr-assets` `repoglance-showcase-048-20261001`; the app's
 proof is `.grilltrack/proof/showcase-048-verify-20261001.md` in
-`saari-co/RepoGlance`. Source SHA-256s (the dark files are the ones cut;
-the light files are kept for a later scheme round):
+`saari-co/RepoGlance` (the two `signin-code` files are recorded in this
+repository's `imagery-hybrid-1-captures-20261001.md`). Source SHA-256s:
+the dark files except the narrow tile captures are the ones cut; the
+light files and the narrow tile captures are kept for a later round:
 
 | Source file | SHA-256 |
 | --- | --- |
