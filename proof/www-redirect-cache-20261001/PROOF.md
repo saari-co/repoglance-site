@@ -69,7 +69,8 @@ worker answered `no-store` with no `Vary`; moving them to the page fixed it.
   folds the build date in; for a CMS render the entry's own date wins when
   newer), `etag: W/"<worker version>:<last-modified ms>"`,
   `cache-control: no-cache` for browsers, and `vary: Host, Cookie`.
-  Cloudflare strips the cache-control and tag headers before the client.
+  Cloudflare strips `cloudflare-cdn-cache-control` and `cache-tag` before
+  the client; `cache-control: no-cache` reaches the browser.
 - A seed-rendered page (before CMS setup, or a CMS error) keeps EmDash's
   tags for purging but never inherits a retired entry's `lastModified`, so a
   browser's conditional request cannot keep a body the page no longer shows;
@@ -79,8 +80,10 @@ worker answered `no-store` with no `Vary`; moving them to the page fixed it.
   `cloudflare-cdn-cache-control: no-store`, the adapter's default once a
   cache provider is configured. The fail-closed guard therefore runs for
   every namespace request; the edge never answers one.
-- Invalidation: EmDash's admin routes call Astro's `cache.invalidate` with
-  the entry and collection tags on every content write. Evidence in
+- Invalidation: EmDash's admin routes call Astro's `cache.invalidate` on
+  every write that changes live content, with the entry and collection tags
+  (a draft-only save does not purge; create and duplicate purge the
+  collection tag, which every render carries). Evidence in
   `node_modules/emdash/dist/astro/routes/api/content/`: `_collection_/index.mjs`
   (create), `_collection_/_id_.mjs` (update, delete), `_id_/publish.mjs`,
   `_id_/unpublish.mjs`, `_id_/schedule.mjs`, `_id_/restore.mjs`,
@@ -94,8 +97,9 @@ worker answered `no-store` with no `Vary`; moving them to the page fixed it.
   `/workers/cache/configuration/`, read 2026-10-01): the key is the path, the
   query string and the Worker version (unless `cross_version_cache` is set),
   not the hostname; `Vary` creates a variant per listed request header value;
-  `cloudflare-cdn-cache-control` has the highest precedence; only `GET` and
-  `HEAD` are cached. So a deploy starts cold, `Vary: Host` keeps the cached
+  `cloudflare-cdn-cache-control` has the highest precedence (the overview and
+  limitations pages add that only `GET` and `HEAD` are cached). So a deploy
+  starts cold, `Vary: Host` keeps the cached
   apex page from answering www requests ahead of the redirect, and
   `Vary: Cookie` keeps EmDash's cookie-driven edit mode on fresh renders
   (its middleware marks an edit-mode render `private, no-store` and opts out
@@ -155,7 +159,17 @@ blockers), adjudicated as follows:
 | `docs/cms-access.md` still said `ContentPage.astro` reads the CMS entry | required_fix | corrected |
 | The smoke counts said 64 before and 49 new | required_fix | 66 before, 49 new after the two ETag checks, 115 total |
 
-Round 2 is recorded in the ledger with the commit it was bound to.
+Round 2, bound to `885bc13cca6de6f00fa17849ab7e1254ee0ff8d0` (the single
+squashed commit of this slice, PR saari-co/repoglance-site#4): clean, no
+blockers, no should-fix; three wording nits (the purge sentence was
+over-general about draft saves and the collection-only purges, the header
+stripping sentence was ambiguous, the GET/HEAD clause was attributed to the
+wrong page), applied in the ledger commit that records the review. The
+reviewer confirmed that `applyPageResponse` is only reachable with a real
+page, that dropping the seed render's validator regresses nothing (the
+build-date fold still reaches the route cache; the smoke's ETag proves it),
+that the `version_metadata` binding is a plain binding this Wrangler
+understands, and the Cloudflare claims against the cited pages.
 
 ## Live (after the gated deploy)
 

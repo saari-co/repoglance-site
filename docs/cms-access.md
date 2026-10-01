@@ -50,9 +50,11 @@ action.
   deploy config (`wrangler.jsonc` declares it too), which turns on Cloudflare's
   Workers Cache: no KV namespace, API token or dashboard rule is involved.
   EmDash's admin routes call Astro's `cache.invalidate` with the entry and
-  collection tags on every content write (create, update, publish, unpublish,
-  schedule, restore, discard draft, duplicate, permanent delete), and the
-  provider purges them through the Workers cache purge binding. Cloudflare
+  collection tags on every write that changes live content (publish,
+  unpublish, schedule, restore, discard draft, permanent delete, and an
+  update when the live content changed; create and duplicate purge the
+  collection tag, which every render carries), and the provider purges them
+  through the Workers cache purge binding. Cloudflare
   keys the cache by Worker version as well, so a deploy starts cold, and the
   `version_metadata` binding (`CF_VERSION_METADATA`, the Worker's own version
   id, not a resource) lets the provider add an `astro-version:` tag and a
