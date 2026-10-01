@@ -55,9 +55,13 @@ ids in `wrangler.jsonc` are local placeholders.
 ## Human bootstrap order
 
 The public site is live from the seed first (see the deploy section below).
-The editor is enabled afterwards, in this order. Steps 1 to 4 are
-maintainer-only: Wrangler's login on the build machine has no Zero Trust
-scope, and secret values must never pass through an agent.
+The editor is enabled afterwards, in this order. Wrangler's login on the
+build machine has no Zero Trust scope, so the Access application is created
+in the maintainer's own dashboard session (an agent may drive the
+maintainer's browser for it, mirroring the existing DinkusKit CMS
+application); secret values are piped into `wrangler secret put` and never
+printed. This was done for repoglance.com on 2026-10-01
+(`proof/cms-access-20261001/PROOF.md`).
 
 1. **Zero Trust team.** Cloudflare dashboard, Zero Trust. If the account has
    no team yet, onboarding asks for a team name; the team domain is
@@ -69,12 +73,13 @@ scope, and secret values must never pass through an agent.
    - Session duration: 24 hours.
    - Public hostnames: `repoglance.com` with path `_emdash`, and a second
      entry `www.repoglance.com` with path `_emdash`.
-   - Identity providers: One-time PIN (the default when no provider is set
-     up).
-   - Policy: name `Owner`, action Allow, include rule Emails with the
-     maintainer's address only. No other rules.
-   - Save, then open the application's Overview and copy the **Application
-     Audience (AUD) tag**.
+   - Identity providers: the maintainer's existing Google provider only, with
+     instant authentication (the DinkusKit CMS pattern).
+   - Policy: add the maintainer's existing reusable owner policy (the one
+     the DinkusKit CMS application uses). No other rules.
+   - Save. The application's audience (AUD) tag is on its settings tab; it is
+     also the `kid` parameter of the login redirect that an anonymous request
+     to the gated path now receives.
 3. **Secrets**, from the maintainer's own terminal in a checkout where
    `npx wrangler whoami` shows the right account. Each command reads the
    value from the terminal or a pipe; nothing is pasted into chat:
@@ -87,8 +92,10 @@ scope, and secret values must never pass through an agent.
    ```
 
    `CF_ACCESS_AUDIENCE` is the AUD tag; `EMDASH_OPERATOR_ALLOWLIST` is the
-   maintainer's email, owner-only until setup is closed; the encryption key
-   stays in the ignored `.local/secrets.env` and in Cloudflare.
+   owner's email (the identity that completes setup), owner-only until setup
+   is closed; the encryption key stays in the ignored `.local/secrets.env`
+   and in Cloudflare. Values may be piped (`printf '%s' "$VALUE" | npx wrangler
+   secret put NAME --name repoglance-site`) as long as nothing prints them.
 4. **Team domain for the build.** Add
    `EMDASH_ACCESS_TEAM_DOMAIN=<team>.cloudflareaccess.com` to the ignored
    `.local/deploy.env`. It is a build input: it wires EmDash's `access()`

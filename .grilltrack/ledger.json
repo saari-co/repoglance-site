@@ -7,7 +7,7 @@
     "confirmed_at": "2026-10-01T13:00:02+00:00",
     "domain": "cms-access-008: the Access-gated EmDash CMS on repoglance.com (Access application, secrets, a build with the team domain, EmDash setup through Access)",
     "started_at": "2026-10-01T12:58:56+00:00",
-    "status": "confirmed",
+    "status": "inspected",
     "summary": "Maintainer asked for the Access-gated CMS on 2026-10-01. Shared understanding: the maintainer does the Zero Trust team, the Access application (repoglance.com and www, path _emdash, owner-only Allow, one-time PIN), the three Worker secrets from their own terminal and the team domain in .local/deploy.env; the agent builds with the team domain, redeploys, proves the deny path; the maintainer completes the first login and EmDash setup with the seed content; the agent verifies the CMS render path."
   },
   "decisions": [
@@ -650,10 +650,38 @@
           "review_source_identity": null,
           "to": "locked",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:30:07+00:00",
+          "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:30:07+00:00",
+          "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+          "from": "implemented",
+          "implementation_ref": "cloudflare:access application RepoGlance CMS (two destinations, the maintainer's reusable owner policy, Google); cloudflare:worker repoglance-site version d074759e-0e92-4db6-864f-d609af44a470 with secrets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST, EMDASH_ENCRYPTION_KEY; file:docs/cms-access.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
         }
       ],
       "id": "cms-access-008",
-      "implementation_ref": null,
+      "implementation_ref": "cloudflare:access application RepoGlance CMS (two destinations, the maintainer's reusable owner policy, Google); cloudflare:worker repoglance-site version d074759e-0e92-4db6-864f-d609af44a470 with secrets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST, EMDASH_ENCRYPTION_KEY; file:docs/cms-access.md",
       "question": "How is the EmDash editor enabled on repoglance.com?",
       "rationale": "AGENTS.md hard gates: Access configuration, secrets and setup are maintainer actions; the guard and access() are wired from one build input so they cannot diverge (review round 1 of the foundation).",
       "repair_required": false,
@@ -662,38 +690,39 @@
       "review_ref": null,
       "review_result": null,
       "review_source_identity": null,
-      "status": "locked",
+      "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T12:58:56+00:00",
-      "verification_ref": null
+      "updated_at": "2026-10-01T13:30:07+00:00",
+      "verification_ref": "file:proof/cms-access-20261001/PROOF.md (anonymous and forged requests 302 to Access; maintainer completed setup; both pages data-content-source=cms; captures in swarm-pr-assets repoglance-site-live-cms-20261001)"
     }
   ],
   "last_activation": {
-    "at": "2026-10-01T12:34:11+00:00",
+    "at": "2026-10-01T13:30:06+00:00",
     "mechanism": "implicit"
   },
-  "last_pause": null,
-  "pause": {
+  "last_pause": {
     "artifact_refs": [
       ".grilltrack/work/gates/cms-access-20261001.md",
       "file:docs/cms-access.md"
     ],
     "next_safe_action": "When the maintainer reports steps 1 to 4 done: build with EMDASH_ACCESS_TEAM_DOMAIN from .local/deploy.env, prepare:deploy with both custom domains, wrangler deploy, prove anonymous /_emdash 404, then hand over the first login (step 6) and verify data-content-source=cms.",
     "paused_at": "2026-10-01T13:00:02+00:00",
-    "reason": "waiting_for_human: Access application, secrets and team domain are maintainer-only steps (docs/cms-access.md steps 1 to 4)"
+    "reason": "waiting_for_human: Access application, secrets and team domain are maintainer-only steps (docs/cms-access.md steps 1 to 4)",
+    "resumed_at": "2026-10-01T13:30:06+00:00"
   },
+  "pause": null,
   "recommendation": {
     "alternatives": [
-      "www-redirect-and-cache: 301 www to the apex and cache the public pages at the edge.",
-      "copy round site-copy-006 (running in its own session)."
+      "Play Console: point the listing's website field at https://repoglance.com (maintainer, Console change) and add the site to the RepoGlance README.",
+      "copy round site-copy-006 (running in its own session); its result is edited in the CMS from now on, so decide whether seed.json or the CMS is the copy's source of truth."
     ],
-    "reason": "The public site is live from the seed; editing it needs the Access-gated CMS, which is the next maintainer-gated step.",
-    "recommended": "cms-access-008: the Access application for repoglance.com/_emdash/*, the secrets, a build with the team domain, and EmDash setup through Access, in the order of docs/cms-access.md, so the maintainer can edit copy in the CMS.",
-    "recorded_at": "2026-10-01T12:35:14+00:00"
+    "reason": "The site is live and editable; the remaining items are polish and the external links to it.",
+    "recommended": "www-redirect-and-cache-009: 301 www.repoglance.com to the apex and cache the public pages at the edge (they are SSR with a D1 query per request).",
+    "recorded_at": "2026-10-01T13:30:07+00:00"
   },
   "schema_version": "grilltrack/v0.1",
-  "status": "paused",
+  "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T13:00:02+00:00"
+  "updated_at": "2026-10-01T13:30:07+00:00"
 }
