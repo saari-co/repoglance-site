@@ -277,22 +277,87 @@
           "review_source_identity": null,
           "to": "verified",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:44:42+00:00",
+          "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+          "from": "verified",
+          "implementation_ref": "file:astro.config.mjs; file:src/emdash-namespace-guard.ts; file:src/namespace-gate.ts; file:src/components/ContentPage.astro; file:scripts/smoke.mjs; file:tests/",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0: audit, types, typecheck, 8 content + 9 guard tests, build, 60 smoke checks; dev editor 302 to setup)"
+        },
+        {
+          "at": "2026-10-01T10:44:42+00:00",
+          "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+          "from": "needs_reverification",
+          "implementation_ref": "file:astro.config.mjs; file:src/emdash-namespace-guard.ts; file:src/namespace-gate.ts; file:src/components/ContentPage.astro; file:scripts/smoke.mjs; file:tests/",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive"
+          ],
+          "review_ref": "proof/site-foundation/PROOF.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:ffe343ebf85daee2d4c2d6df02a165ade9ea2bea",
+          "to": "implemented",
+          "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0: audit, types, typecheck, 8 content + 9 guard tests, build, 60 smoke checks; dev editor 302 to setup)"
+        },
+        {
+          "at": "2026-10-01T10:44:42+00:00",
+          "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+          "from": "implemented",
+          "implementation_ref": "git:6e1dda367020821ced3879619c6e6fd19c691508 (review round 1 fixes: src/content/blocks.ts stringField and safeHref via EmDash isSafeHref, inline mark in src/layouts/Site.astro, canonical without trailing slash, team domain compiled into the guard, test and script cleanups, docs/cms-access.md)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0: audit, types, typecheck, 8 content + 9 guard tests, build, 60 smoke checks; dev editor 302 to setup)"
         }
       ],
       "id": "site-foundation-004",
-      "implementation_ref": "file:astro.config.mjs; file:src/emdash-namespace-guard.ts; file:src/namespace-gate.ts; file:src/components/ContentPage.astro; file:scripts/smoke.mjs; file:tests/",
+      "implementation_ref": "git:6e1dda367020821ced3879619c6e6fd19c691508 (review round 1 fixes: src/content/blocks.ts stringField and safeHref via EmDash isSafeHref, inline mark in src/layouts/Site.astro, canonical without trailing slash, team domain compiled into the guard, test and script cleanups, docs/cms-access.md)",
       "question": "What does the site foundation consist of?",
       "rationale": "Maintainer's brief 2026-10-01: mirror dinkuskit's EmDash way of working, describe only proven behaviour, sample-mode imagery, hard gates on Cloudflare/DNS/deploy/publish.",
       "repair_required": false,
       "review_classifications": [],
-      "review_history": [],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive"
+          ],
+          "ref": "proof/site-foundation/PROOF.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T10:44:42+00:00",
+          "source_identity": "git:ffe343ebf85daee2d4c2d6df02a165ade9ea2bea"
+        },
+        {
+          "classifications": [],
+          "ref": "proof/site-foundation/PROOF.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T10:45:24+00:00",
+          "source_identity": "git:6e1dda367020821ced3879619c6e6fd19c691508"
+        }
+      ],
+      "review_ref": "proof/site-foundation/PROOF.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:6e1dda367020821ced3879619c6e6fd19c691508",
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T10:34:09+00:00",
-      "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0: audit, types, typecheck, 8 content + 9 guard tests, build, 60 smoke checks; dev editor 302 to setup)"
+      "updated_at": "2026-10-01T10:45:24+00:00",
+      "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0 on 6e1dda3: audit 74 files, 0 type errors, 9 content + 9 guard tests, 64 smoke checks; dev editor 302; captures re-taken, mark visible in dark)"
     }
   ],
   "last_activation": {
@@ -314,5 +379,5 @@
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T10:35:17+00:00"
+  "updated_at": "2026-10-01T10:45:24+00:00"
 }

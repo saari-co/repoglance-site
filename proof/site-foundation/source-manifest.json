@@ -2,12 +2,13 @@
   "slice": "site-foundation",
   "captured_at": "2026-10-01",
   "branch": "claude/site-foundation",
+  "source_commit": "6e1dda367020821ced3879619c6e6fd19c691508",
   "excludes": [
     "proof/",
     ".grilltrack/"
   ],
-  "file_count": 68,
-  "manifest_sha256": "16b80b64dd20bf3c5c365b3e8a6ebdc23c1efeb6cc75fe73835eeab203c63ae6",
+  "file_count": 69,
+  "manifest_sha256": "b0b8af176069518296a629e2c0e0e106cbe7bdd617e5899f64788b90d8b74022",
   "files": [
     {
       "path": ".claude/launch.json",
@@ -51,7 +52,7 @@
     },
     {
       "path": "design.md",
-      "sha256": "25465b2e5b4cb5714a835a0cd8be7ad90d34dd1198c0a245cf07816ee668a0fc"
+      "sha256": "e0174c43903b1d24fc23b62cf0620ffbf41a4dcd871e44e2ba675d46dc07f424"
     },
     {
       "path": "docs/CHARTER.md",
@@ -59,7 +60,7 @@
     },
     {
       "path": "docs/cms-access.md",
-      "sha256": "15ba0871df2e90496cffe0f00d2b1f98e0f0eae5ec18b19cfeee05e638e9e3fc"
+      "sha256": "6751753989608fed28f89fb28e33b2f2b45c5821e0691efaa1e978dfb9d67206"
     },
     {
       "path": "docs/content.md",
@@ -167,11 +168,11 @@
     },
     {
       "path": "scripts/capture.mjs",
-      "sha256": "573b29e641d042061a18117cd70bc6439c4898c8d56d1f04320259820af659a6"
+      "sha256": "2314f76e7fa060251895897cace4e2edcf0b0ed0c3fda440f2d500b7814f5c5b"
     },
     {
       "path": "scripts/smoke.mjs",
-      "sha256": "6f3c0fb7d8fc1c1dd643c76f7f536325cfb12b815839d640badc3a26ac0d387a"
+      "sha256": "cb2df0dc9e7fdbe0a42adbf063cb283626e62e7617a52cac7c60c5a0a08ff175"
     },
     {
       "path": "seed/seed.json",
@@ -187,19 +188,19 @@
     },
     {
       "path": "src/components/Cta.astro",
-      "sha256": "1e0d956bc9899a801d561f57143b8e8d9a608fb31a12713ae4d886be0177a2f6"
+      "sha256": "61ca857df8bacf02716f0ef2c3938b211fa475b8b63e7590453ec83f258583e2"
     },
     {
       "path": "src/components/FactList.astro",
-      "sha256": "57958da59e9b20b05f7bb76fe62b10015a95af7b133780e7551b49220935383e"
+      "sha256": "5130597489af940626fb0dffd780a8c4b0e7f1e5927e52127a8ffa35a2aa405b"
     },
     {
       "path": "src/components/Feature.astro",
-      "sha256": "ab3f2956834961b1d922730f13ebf68b191a8fcfa94ba822fbc8cb092807428f"
+      "sha256": "5665761732d31e01edbf88bed07f6f5cf8253e6e9c6d2c79f13d2ba809446a19"
     },
     {
       "path": "src/components/Hero.astro",
-      "sha256": "ac53c1e49de12d1740e200d94f117efe1c8c72ec57d7bdf8972776cd432aaa2b"
+      "sha256": "a201dca05b9c9f06ef5bfec25ec9a747a0067e11b593ad79dbdbd9fa4d909a79"
     },
     {
       "path": "src/components/Screenshot.astro",
@@ -207,11 +208,15 @@
     },
     {
       "path": "src/components/Steps.astro",
-      "sha256": "702261be5c8d3ec9eab27e7eb6b11b2f1074f35502384a46f67f9648484632eb"
+      "sha256": "4752aef97b95ed6c938b1951af28625967c8cd2e014da10d76b05f6a589046fa"
     },
     {
       "path": "src/components/TextSection.astro",
-      "sha256": "2c13f720eda3abd1d67e56c45f952adaef185a5068cb2f040ae406edd97991a1"
+      "sha256": "0e3c58684779316c9572b22e0a629cfbbcf1f23352a8d2b4b953b9559110a321"
+    },
+    {
+      "path": "src/content/blocks.ts",
+      "sha256": "53df5c53f10a3ab02b8e38ea89fd0c380933f6f9377f1d50bb56112b780be810"
     },
     {
       "path": "src/content/screenshots.ts",
@@ -219,11 +224,11 @@
     },
     {
       "path": "src/content/seed-fallback.ts",
-      "sha256": "fc53ae3be4466f596de4d41348564db971a9393163bedba2b5c6d5e1d8808a6a"
+      "sha256": "b0c985b9665ceb090cb4afee3dfa980b7e5de24c1891a697cbfa3a43365b1034"
     },
     {
       "path": "src/emdash-namespace-guard.ts",
-      "sha256": "d0b0bdd4714f6f45fc5a073bb8200eb6674f8a3097b9abc45cff80da3dee4d94"
+      "sha256": "15438b97ceba21cefbf9ebee0d8db84ac8a81e68a60bf4de135176968a1e4e1c"
     },
     {
       "path": "src/env.d.ts",
@@ -231,7 +236,7 @@
     },
     {
       "path": "src/layouts/Site.astro",
-      "sha256": "a2449ad704640f382782c1ba7f69814aed7921ef0b8edbd4a15024e966fd9b53"
+      "sha256": "5d2050fb5de7ea55167df756b7db22da1fa7a576d598974cbf3ecc68d55cb383"
     },
     {
       "path": "src/live.config.ts",
@@ -263,7 +268,7 @@
     },
     {
       "path": "tests/content.test.mjs",
-      "sha256": "a8622126c1e7f378ea7881892711859ec52a665c0ca5b7bef8b29e18be7de8c8"
+      "sha256": "913d0e6ee9fbe5c6d473c50476698f2f02ac431125f13902fc027df899bc90a3"
     },
     {
       "path": "tests/namespace-guard.test.mjs",
