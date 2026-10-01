@@ -105,3 +105,11 @@ re-taken after the fixes.
 As in round 1: a capture of the production HTML, Chromium only, no CMS
 runtime. The pick is implemented in `src/styles/site.css` and `design.md`
 v1 afterwards and verified on the real build.
+
+## Outcome
+
+No pick. Feedback (2026-10-01): on home, A's hero and slider and C's
+centred fact list stay, no call to action convinced; on the join page, A
+looked broken, C was the favourite but needs B's imagery, nothing else
+convinced. Round 3 locks those parts and varies the call to action and the
+join page composition: `look-round-3-captures-20261001.md`.
