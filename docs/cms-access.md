@@ -98,7 +98,8 @@ hard gate from `AGENTS.md`.
    hostname for a first look; `/_emdash` answers 404 there because Access
    is not configured. On a free Workers plan add
    `REPOGLANCE_SANDBOX=false` to drop the `worker_loaders` binding.
-4. Go live: re-run `prepare:deploy` with `REPOGLANCE_CUSTOM_DOMAIN=repoglance.com`
-   (and `REPOGLANCE_WORKERS_DEV` unset) and deploy again. Wrangler creates
-   the DNS record for the custom domain in the zone.
+4. Go live: re-run `prepare:deploy` with
+   `REPOGLANCE_CUSTOM_DOMAIN=repoglance.com,www.repoglance.com` (and
+   `REPOGLANCE_WORKERS_DEV` unset) and deploy again. Wrangler creates the
+   DNS records for the custom domains in the zone and turns workers.dev off.
 5. The CMS stays denied until the Access steps above are done.

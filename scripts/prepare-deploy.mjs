@@ -10,7 +10,8 @@ import { fileURLToPath } from 'node:url';
  *   REPOGLANCE_D1_ID        production D1 database id (required)
  *   REPOGLANCE_D1_NAME      production D1 database name (default repoglance-site-cms)
  *   REPOGLANCE_R2_BUCKET    production R2 bucket name (default repoglance-site-media)
- *   REPOGLANCE_CUSTOM_DOMAIN  optional custom domain to attach (e.g. repoglance.com)
+ *   REPOGLANCE_CUSTOM_DOMAIN  optional custom domains to attach, comma-separated
+ *                            (e.g. repoglance.com,www.repoglance.com)
  *   REPOGLANCE_WORKERS_DEV  "true" to serve on the workers.dev preview hostname
  *   REPOGLANCE_SANDBOX      "false" to drop the Workers Paid worker_loaders binding
  *
@@ -37,8 +38,8 @@ const config = {
   ),
 };
 if (env.REPOGLANCE_SANDBOX === 'false') delete config.worker_loaders;
-const domain = env.REPOGLANCE_CUSTOM_DOMAIN?.trim();
-if (domain) config.routes = [{ pattern: domain, custom_domain: true }];
+const domains = (env.REPOGLANCE_CUSTOM_DOMAIN ?? '').split(',').map((d) => d.trim()).filter(Boolean);
+if (domains.length) config.routes = domains.map((pattern) => ({ pattern, custom_domain: true }));
 else delete config.routes;
 mkdirSync(join(root, 'dist/server'), { recursive: true });
 const out = join(root, 'dist/server/wrangler.production.json');
