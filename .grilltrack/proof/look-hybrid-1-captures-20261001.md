@@ -43,3 +43,8 @@ of `saari-co/swarm-pr-assets`.
 
 Inspected directly: the rings read faintly on both band colours at both
 widths; no defects.
+
+## Outcome
+
+Confirmed and locked by the maintainer on 2026-10-01 ("Yes, lock it" at
+5%). Implemented in the real site: `site-look-005-verify-20261001.md`.

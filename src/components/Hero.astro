@@ -8,6 +8,7 @@ const text = (field: string) => stringField(value, field);
 const primaryHref = safeHref(value.primary_href);
 const secondaryHref = safeHref(value.secondary_href);
 ---
+<div class="band band-hero">
 <section class="hero" data-block="hero">
   <div>
     {text('eyebrow') && <p class="label">{text('eyebrow')}</p>}
@@ -24,3 +25,4 @@ const secondaryHref = safeHref(value.secondary_href);
   </div>
   <Screenshot slug={value.screenshot} priority />
 </section>
+</div>

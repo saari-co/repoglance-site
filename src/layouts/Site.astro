@@ -5,15 +5,16 @@ interface Props {
   title: string;
   description: string;
   contentSource?: 'cms' | 'seed' | 'none';
+  page?: string;
 }
-const { title, description, contentSource = 'none' } = Astro.props;
+const { title, description, contentSource = 'none', page } = Astro.props;
 const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const canonical = new URL(pathname, Astro.site ?? 'https://repoglance.com');
 const ogImage = new URL('/og-image.png', canonical);
 const isHome = pathname === '/';
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-page={page}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

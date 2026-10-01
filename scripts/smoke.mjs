@@ -108,6 +108,7 @@ try {
   record('GET / shows only sample-mode captures', /\/screenshots\/home-widgets-540\.webp/.test(homeBody) && !/live/i.test(homeBody.match(/alt="[^"]*"/g)?.join(' ') ?? ''), '');
   record('GET / has no scripts', !/<script/i.test(homeBody), 'script tag found');
   record('GET / inlines the brand mark', /<svg class="brand-mark"/.test(homeBody), 'inline mark missing');
+  record('GET / has the band hero, the feature row and the band call to action', /class="band band-hero"/.test(homeBody) && /class="showcase"/.test(homeBody) && /class="band band-cta"/.test(homeBody) && (homeBody.match(/class="feature"/g) ?? []).length === 4, 'structure');
   record('GET / canonical has no trailing slash', /<link rel="canonical" href="https:\/\/repoglance\.com\/"/.test(homeBody), '');
 
   const testers = await request(base, '/testers');
@@ -117,6 +118,7 @@ try {
   record('GET /testers carries the Google Group link', testersBody.includes('https://groups.google.com/g/repoglance-testers'), '');
   record('GET /testers states the missing opt-in link', /opt-in link is not published yet/.test(testersBody), '');
   record('GET /testers has no Play URL', !/play\.google\.com/.test(testersBody), '');
+  record('GET /testers has the band hero, the closing band and the page attribute', /class="band band-hero"/.test(testersBody) && /class="band band-tail"/.test(testersBody) && /<html lang="en" data-page="testers"/.test(testersBody), 'structure');
   record('GET /testers canonical is /testers', /<link rel="canonical" href="https:\/\/repoglance\.com\/testers"/.test(testersBody), '');
   const slashed = await request(base, '/testers/');
   record('GET /testers/ canonicalises to /testers', slashed.status === 200 && /<link rel="canonical" href="https:\/\/repoglance\.com\/testers"/.test(await slashed.text()), `status ${slashed.status}`);

@@ -2,7 +2,7 @@
 import { getEmDashEntry } from 'emdash';
 import { Blocks } from 'emdash/ui';
 import Site from '../layouts/Site.astro';
-import { seedPage, type PageData } from '../content/seed-fallback';
+import { seedPage, type PageData, type SeedBlock } from '../content/seed-fallback';
 import Cta from './Cta.astro';
 import FactList from './FactList.astro';
 import Feature from './Feature.astro';
@@ -34,10 +34,31 @@ if (!page) {
 if (!page) Astro.response.status = 404;
 
 const components = { hero: Hero, feature: Feature, fact_list: FactList, steps: Steps, cta: Cta, text_section: TextSection };
+
+// Consecutive feature blocks render inside the snap-scrolling row and
+// consecutive text sections inside the closing band (design.md v1). Every
+// block still renders through EmDash's native Blocks component.
+const wrappers: Record<string, string> = { feature: 'showcase', text_section: 'band band-tail' };
+type Group = { wrapper: string | null; blocks: SeedBlock[] };
+const groups: Group[] = [];
+for (const block of page?.layout ?? []) {
+  const wrapper = wrappers[block._type] ?? null;
+  const last = groups[groups.length - 1];
+  if (last && last.wrapper === wrapper && wrapper !== null) last.blocks.push(block);
+  else groups.push({ wrapper, blocks: [block] });
+}
 ---
-<Site title={page?.title ?? 'Page not found'} description={page?.description ?? 'There is no page at this address.'} contentSource={source}>
+<Site title={page?.title ?? 'Page not found'} description={page?.description ?? 'There is no page at this address.'} contentSource={source} page={slug}>
   {page ? (
-    <Blocks value={page.layout as never} components={components as never} />
+    groups.map((group) =>
+      group.wrapper ? (
+        <div class={group.wrapper}>
+          <Blocks value={group.blocks as never} components={components as never} />
+        </div>
+      ) : (
+        <Blocks value={group.blocks as never} components={components as never} />
+      ),
+    )
   ) : (
     <section class="hero">
       <div>

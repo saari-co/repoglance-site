@@ -3,11 +3,12 @@
   "created_at": "2026-10-01T10:23:01+00:00",
   "current_focus": {
     "cadence": "sequential",
-    "confirmed": false,
+    "confirmed": true,
+    "confirmed_at": "2026-10-01T11:55:05+00:00",
     "domain": "site-look-005: layout and visual language of repoglance.com (the first visual round), judged on the real / and /testers pages with the seed copy, sample-mode imagery, the commit-eye mark and system fonts locked",
     "started_at": "2026-10-01T10:54:17+00:00",
-    "status": "grilling",
-    "summary": "Maintainer 2026-10-01: start the look round on branch claude/site-foundation; native upstream EmDash blocks only, no dinkuskit/blocks. Five materially distinct candidates as deltas on the captured production pages in a dev-only picker (.grilltrack/work/look-round-1), shown on the live preview and captured at 375 and 1280 px in light and dark. The maintainer's pick becomes design.md v1 and the real src/styles/site.css; the picker never ships."
+    "status": "confirmed",
+    "summary": "Maintainer locked the hybrid on 2026-10-01 ('Yes, lock it' after rings at 5%). Implement it in the real site on claude/site-foundation: src/styles/site.css, band and slider wrappers in ContentPage/Hero/Cta, data-page on the layout, design.md v1, smoke assertions for the new structure; verify with npm run verify and full-page captures of the production build; exact-source review; update the PR. Delivery stays separate: no merge, no deploy."
   },
   "decisions": [
     {
@@ -367,7 +368,7 @@
         ".grilltrack/work/look-round-1/candidates/d.css",
         ".grilltrack/work/look-round-1/candidates/e.css"
       ],
-      "choice": "Unresolved: one of five candidates (A One column, B Tonal grid, C Phone showcase, D Dense glance, E Full-width bands) or a maintainer-described replacement; decided on the live picker.",
+      "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
       "context_ref": ".grilltrack/work/look-round-1/picker.json",
       "created_at": "2026-10-01T10:54:17+00:00",
       "deferred_reason": null,
@@ -376,21 +377,64 @@
         "site-foundation-004"
       ],
       "domain": "site-look-005: layout and visual language of repoglance.com (the first visual round), judged on the real / and /testers pages with the seed copy, sample-mode imagery, the commit-eye mark and system fonts locked",
-      "history": [],
+      "history": [
+        {
+          "at": "2026-10-01T11:55:05+00:00",
+          "choice": "Unresolved: one of five candidates (A One column, B Tonal grid, C Phone showcase, D Dense glance, E Full-width bands) or a maintainer-described replacement; decided on the live picker.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:00:06+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:00:06+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "implemented",
+          "implementation_ref": "file:src/styles/site.css; file:src/components/ContentPage.astro; file:src/components/Hero.astro; file:src/components/Cta.astro; file:src/layouts/Site.astro; file:design.md (v1)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        }
+      ],
       "id": "site-look-005",
-      "implementation_ref": null,
+      "implementation_ref": "file:src/styles/site.css; file:src/components/ContentPage.astro; file:src/components/Hero.astro; file:src/components/Cta.astro; file:src/layouts/Site.astro; file:design.md (v1)",
       "question": "Which layout and visual language should repoglance.com take?",
-      "rationale": "The foundation shipped with provisional styling (design.md v0). The round varies composition, hierarchy, density and surface treatment materially, not colour alone, while keeping copy, imagery, mark and fonts locked.",
+      "rationale": "Maintainer feedback across rounds 1 to 4 and the hybrid preview (proof: .grilltrack/proof/look-round-*-captures-20261001.md and look-hybrid-1-captures-20261001.md).",
       "repair_required": false,
       "review_classifications": [],
       "review_history": [],
       "review_ref": null,
       "review_result": null,
       "review_source_identity": null,
-      "status": "proposed",
+      "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T10:54:17+00:00",
-      "verification_ref": null
+      "updated_at": "2026-10-01T12:00:06+00:00",
+      "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0, 66 smoke checks; production-build captures in swarm-pr-assets repoglance-site-look-005-verify-20261001)"
     }
   ],
   "last_activation": {
@@ -412,5 +456,5 @@
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T10:54:17+00:00"
+  "updated_at": "2026-10-01T12:00:06+00:00"
 }

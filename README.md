@@ -14,8 +14,8 @@ hosted CMS is prepared but not enabled (see below).
 - **Not live:** nothing is deployed. No Worker, database, bucket, DNS record,
   custom domain or Access application exists for repoglance.com yet. Those
   are maintainer steps, listed in [docs/cms-access.md](docs/cms-access.md).
-- **Look:** provisional. The visual language is being decided in GrillTrack
-  rounds; see [design.md](design.md).
+- **Look:** decided on 2026-10-01 in four GrillTrack rounds and a confirmed
+  hybrid; [design.md](design.md) v1 is the contract.
 
 ## Run locally
 
