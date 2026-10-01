@@ -101,3 +101,9 @@ found in this round.
 As in the earlier rounds: a capture of the production HTML, Chromium only,
 no CMS runtime. The pick is implemented in `src/styles/site.css` and
 `design.md` v1 afterwards and verified on the real build.
+
+## Outcome
+
+Pick: A (ink, flat), with a precise hybrid request to add E's faint
+commit-eye rings to the bands in a shade that works on the near-white band.
+Previewed alone in `look-hybrid-1-captures-20261001.md`.
