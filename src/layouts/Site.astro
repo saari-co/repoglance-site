@@ -1,0 +1,57 @@
+---
+import '../styles/site.css';
+
+interface Props {
+  title: string;
+  description: string;
+  contentSource?: 'cms' | 'seed' | 'none';
+}
+const { title, description, contentSource = 'none' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://repoglance.com');
+const ogImage = new URL('/og-image.png', canonical);
+const isHome = Astro.url.pathname === '/';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="RepoGlance" />
+    <meta property="og:title" content={isHome ? 'RepoGlance' : `${title} · RepoGlance`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{isHome ? 'RepoGlance' : `${title} · RepoGlance`}</title>
+  </head>
+  <body data-content-source={contentSource}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="/mark.svg" alt="" width="28" height="28" />
+        <span>RepoGlance</span>
+      </a>
+      <nav aria-label="Main">
+        <a href="/testers">Join the test</a>
+        <a href="https://github.com/saari-co/RepoGlance">Source</a>
+      </nav>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <p>
+        RepoGlance is an independent app by Saari. It is not affiliated with or
+        endorsed by GitHub, Inc.
+      </p>
+      <p class="footer-links">
+        <a href="https://saari-co.github.io/RepoGlance/privacy/">Privacy policy</a>
+        <a href="https://github.com/saari-co/RepoGlance">App source</a>
+        <a href="https://github.com/saari-co/repoglance-site">Site source</a>
+      </p>
+    </footer>
+  </body>
+</html>

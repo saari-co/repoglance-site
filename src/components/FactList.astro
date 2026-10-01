@@ -1,0 +1,17 @@
+---
+import type { SeedBlock } from '../content/seed-fallback';
+
+interface Props { value: SeedBlock; index: number; blockKey: string }
+const { value } = Astro.props;
+const text = (field: string): string => (typeof value[field] === 'string' ? (value[field] as string) : '');
+const items = Array.isArray(value.items)
+  ? (value.items as Array<{ text?: unknown }>).map((item) => (typeof item?.text === 'string' ? item.text : '')).filter(Boolean)
+  : [];
+---
+<section class="facts" data-block="fact_list">
+  <h2>{text('heading')}</h2>
+  {text('intro') && <p class="intro">{text('intro')}</p>}
+  <ul>
+    {items.map((item) => <li>{item}</li>)}
+  </ul>
+</section>

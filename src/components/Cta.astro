@@ -1,0 +1,12 @@
+---
+import type { SeedBlock } from '../content/seed-fallback';
+
+interface Props { value: SeedBlock; index: number; blockKey: string }
+const { value } = Astro.props;
+const text = (field: string): string => (typeof value[field] === 'string' ? (value[field] as string) : '');
+---
+<section class="cta" data-block="cta">
+  <h2>{text('heading')}</h2>
+  {text('body') && <p>{text('body')}</p>}
+  <a class="button button-primary" href={text('link_href')}>{text('link_label')}</a>
+</section>

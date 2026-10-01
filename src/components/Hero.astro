@@ -1,0 +1,24 @@
+---
+import Screenshot from './Screenshot.astro';
+import type { SeedBlock } from '../content/seed-fallback';
+
+interface Props { value: SeedBlock; index: number; blockKey: string }
+const { value } = Astro.props;
+const text = (field: string): string => (typeof value[field] === 'string' ? (value[field] as string) : '');
+---
+<section class="hero" data-block="hero">
+  <div>
+    {text('eyebrow') && <p class="label">{text('eyebrow')}</p>}
+    <h1>{text('heading')}</h1>
+    <p class="lead">{text('lead')}</p>
+    <div class="hero-links">
+      {text('primary_href') && text('primary_label') && (
+        <a class="button button-primary" href={text('primary_href')}>{text('primary_label')}</a>
+      )}
+      {text('secondary_href') && text('secondary_label') && (
+        <a class="button button-secondary" href={text('secondary_href')}>{text('secondary_label')}</a>
+      )}
+    </div>
+  </div>
+  <Screenshot slug={value.screenshot} priority />
+</section>
