@@ -419,22 +419,76 @@
           "review_source_identity": null,
           "to": "verified",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:02:08+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "verified",
+          "implementation_ref": "file:src/styles/site.css; file:src/components/ContentPage.astro; file:src/components/Hero.astro; file:src/components/Cta.astro; file:src/layouts/Site.astro; file:design.md (v1)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0, 66 smoke checks; production-build captures in swarm-pr-assets repoglance-site-look-005-verify-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:02:08+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "needs_reverification",
+          "implementation_ref": "file:src/styles/site.css; file:src/components/ContentPage.astro; file:src/components/Hero.astro; file:src/components/Cta.astro; file:src/layouts/Site.astro; file:design.md (v1)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix"
+          ],
+          "review_ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:b7c2ffe1584638f8db594043361a15a3ec6032e3",
+          "to": "implemented",
+          "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0, 66 smoke checks; production-build captures in swarm-pr-assets repoglance-site-look-005-verify-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:02:08+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "implemented",
+          "implementation_ref": "file:src/styles/site.css (dark-scheme ring stroke corrected to the ink colour)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0, 66 smoke checks; production-build captures in swarm-pr-assets repoglance-site-look-005-verify-20261001)"
         }
       ],
       "id": "site-look-005",
-      "implementation_ref": "file:src/styles/site.css; file:src/components/ContentPage.astro; file:src/components/Hero.astro; file:src/components/Cta.astro; file:src/layouts/Site.astro; file:design.md (v1)",
+      "implementation_ref": "file:src/styles/site.css (dark-scheme ring stroke corrected to the ink colour)",
       "question": "Which layout and visual language should repoglance.com take?",
       "rationale": "Maintainer feedback across rounds 1 to 4 and the hybrid preview (proof: .grilltrack/proof/look-round-*-captures-20261001.md and look-hybrid-1-captures-20261001.md).",
       "repair_required": false,
       "review_classifications": [],
-      "review_history": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix"
+          ],
+          "ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T12:02:08+00:00",
+          "source_identity": "git:b7c2ffe1584638f8db594043361a15a3ec6032e3"
+        }
+      ],
       "review_ref": null,
       "review_result": null,
       "review_source_identity": null,
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T12:00:06+00:00",
-      "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0, 66 smoke checks; production-build captures in swarm-pr-assets repoglance-site-look-005-verify-20261001)"
+      "updated_at": "2026-10-01T12:02:08+00:00",
+      "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0 after the fix; captures re-taken)"
     }
   ],
   "last_activation": {
@@ -456,5 +510,5 @@
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T12:00:06+00:00"
+  "updated_at": "2026-10-01T12:02:08+00:00"
 }
