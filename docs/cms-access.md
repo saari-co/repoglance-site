@@ -9,15 +9,27 @@ action.
 - `src/emdash-namespace-guard.ts` runs before EmDash. In production builds it
   answers 404 for every path under `/_emdash`, including setup and login,
   unless **all** of these hold:
-  - the build set `EMDASH_ACCESS_TEAM_DOMAIN` (so `astro.config.mjs` wired
-    EmDash's official `access()` auth),
+  - the build set `EMDASH_ACCESS_TEAM_DOMAIN`, which wires EmDash's official
+    `access()` auth in `astro.config.mjs` and is compiled into the guard (the
+    one input configures both; it is not read at runtime),
   - the Worker has the `CF_ACCESS_AUDIENCE` secret,
   - the request carries a valid Cloudflare Access JWT for that audience, and
   - when `EMDASH_OPERATOR_ALLOWLIST` is set, the identity's email is on it.
-- The guard reads those values from the Worker's `cloudflare:workers` `env`
-  (bindings and secrets) and then from `process.env` (populated by the
-  `nodejs_compat_populate_process_env` flag). A failed read counts as not
-  configured. `Astro.locals.runtime.env` is gone in Astro 6+ and is not used.
+- The guard reads the audience and allowlist from the Worker's
+  `cloudflare:workers` `env` (bindings and secrets) and then from
+  `process.env` (populated by the `nodejs_compat_populate_process_env` flag,
+  which EmDash's own `authenticate` also relies on for the audience). A failed
+  read counts as not configured. `Astro.locals.runtime.env` is gone in Astro
+  6+ and is not used.
+- EmDash gives the **first** Access-provisioned login the Admin role (50)
+  regardless of `defaultRole`; later logins get `defaultRole` (40, the level
+  the official Cloudflare guide maps editors to). That is why the allowlist
+  stays owner-only until setup is closed.
+- `wrangler.jsonc` declares a `worker_loaders` binding (`LOADER`), which
+  EmDash's `sandbox()` needs for sandboxed plugins and which requires the
+  Workers Paid plan. On a free plan remove that binding and the `sandbox()`
+  runner (sandboxed plugins are then disabled at build time, which this site
+  does not need).
 - Public pages never depend on the CMS: `ContentPage.astro` reads the CMS
   entry and falls back to `seed/seed.json`. The response carries
   `data-content-source="cms"` or `"seed"`.
@@ -30,7 +42,7 @@ action.
 Set only as Wrangler secrets, in ignored `.dev.vars`, or in a local overlay.
 Do not add a `.env` to the repository.
 
-- `EMDASH_ACCESS_TEAM_DOMAIN`: build input (`<team>.cloudflareaccess.com`).
+- `EMDASH_ACCESS_TEAM_DOMAIN`: build input only (`<team>.cloudflareaccess.com`), set in the build environment, never as a Worker var.
 - `CF_ACCESS_AUDIENCE`: runtime Access audience tag.
 - `EMDASH_OPERATOR_ALLOWLIST`: runtime comma-separated operator emails.
 - `EMDASH_ENCRYPTION_KEY`: EmDash plugin-secret key

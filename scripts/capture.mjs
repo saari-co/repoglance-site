@@ -10,7 +10,7 @@
  * and dark. Output belongs under ignored runs/.
  */
 import { spawn } from 'node:child_process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 
@@ -95,4 +95,5 @@ try {
   cdp.close();
 } finally {
   child.kill('SIGKILL');
+  await rm(profile, { recursive: true, force: true });
 }

@@ -1,17 +1,17 @@
 ---
-import type { SeedBlock } from '../content/seed-fallback';
+import { safeHref, stringField, type SeedBlock } from '../content/blocks';
 
 interface Props { value: SeedBlock; index: number; blockKey: string }
 const { value } = Astro.props;
-const text = (field: string): string => (typeof value[field] === 'string' ? (value[field] as string) : '');
-interface Step { text: string; link_label?: string; link_href?: string }
+const text = (field: string) => stringField(value, field);
+interface Step { text: string; linkLabel: string; linkHref: string }
 const steps: Step[] = Array.isArray(value.steps)
   ? (value.steps as Array<Record<string, unknown>>)
       .filter((step) => typeof step?.text === 'string')
       .map((step) => ({
         text: step.text as string,
-        link_label: typeof step.link_label === 'string' ? step.link_label : undefined,
-        link_href: typeof step.link_href === 'string' ? step.link_href : undefined,
+        linkLabel: stringField(step, 'link_label'),
+        linkHref: safeHref(step.link_href),
       }))
   : [];
 ---
@@ -22,10 +22,10 @@ const steps: Step[] = Array.isArray(value.steps)
     {steps.map((step) => (
       <li>
         {step.text}
-        {step.link_href && step.link_label && (
+        {step.linkHref && step.linkLabel && (
           <>
             {' '}
-            <a href={step.link_href}>{step.link_label}</a>
+            <a href={step.linkHref}>{step.linkLabel}</a>
           </>
         )}
       </li>

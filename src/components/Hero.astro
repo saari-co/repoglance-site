@@ -1,10 +1,12 @@
 ---
 import Screenshot from './Screenshot.astro';
-import type { SeedBlock } from '../content/seed-fallback';
+import { safeHref, stringField, type SeedBlock } from '../content/blocks';
 
 interface Props { value: SeedBlock; index: number; blockKey: string }
 const { value } = Astro.props;
-const text = (field: string): string => (typeof value[field] === 'string' ? (value[field] as string) : '');
+const text = (field: string) => stringField(value, field);
+const primaryHref = safeHref(value.primary_href);
+const secondaryHref = safeHref(value.secondary_href);
 ---
 <section class="hero" data-block="hero">
   <div>
@@ -12,11 +14,11 @@ const text = (field: string): string => (typeof value[field] === 'string' ? (val
     <h1>{text('heading')}</h1>
     <p class="lead">{text('lead')}</p>
     <div class="hero-links">
-      {text('primary_href') && text('primary_label') && (
-        <a class="button button-primary" href={text('primary_href')}>{text('primary_label')}</a>
+      {primaryHref && text('primary_label') && (
+        <a class="button button-primary" href={primaryHref}>{text('primary_label')}</a>
       )}
-      {text('secondary_href') && text('secondary_label') && (
-        <a class="button button-secondary" href={text('secondary_href')}>{text('secondary_label')}</a>
+      {secondaryHref && text('secondary_label') && (
+        <a class="button button-secondary" href={secondaryHref}>{text('secondary_label')}</a>
       )}
     </div>
   </div>

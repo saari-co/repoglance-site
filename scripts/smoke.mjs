@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { existsSync } from 'node:fs';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -107,6 +107,8 @@ try {
   record('GET / links to the testers page and the privacy policy', homeBody.includes('href="/testers"') && homeBody.includes('https://saari-co.github.io/RepoGlance/privacy/'), '');
   record('GET / shows only sample-mode captures', /\/screenshots\/home-widgets-540\.webp/.test(homeBody) && !/live/i.test(homeBody.match(/alt="[^"]*"/g)?.join(' ') ?? ''), '');
   record('GET / has no scripts', !/<script/i.test(homeBody), 'script tag found');
+  record('GET / inlines the brand mark', /<svg class="brand-mark"/.test(homeBody), 'inline mark missing');
+  record('GET / canonical has no trailing slash', /<link rel="canonical" href="https:\/\/repoglance\.com\/"/.test(homeBody), '');
 
   const testers = await request(base, '/testers');
   const testersBody = await testers.text();
@@ -115,6 +117,9 @@ try {
   record('GET /testers carries the Google Group link', testersBody.includes('https://groups.google.com/g/repoglance-testers'), '');
   record('GET /testers states the missing opt-in link', /opt-in link is not published yet/.test(testersBody), '');
   record('GET /testers has no Play URL', !/play\.google\.com/.test(testersBody), '');
+  record('GET /testers canonical is /testers', /<link rel="canonical" href="https:\/\/repoglance\.com\/testers"/.test(testersBody), '');
+  const slashed = await request(base, '/testers/');
+  record('GET /testers/ canonicalises to /testers', slashed.status === 200 && /<link rel="canonical" href="https:\/\/repoglance\.com\/testers"/.test(await slashed.text()), `status ${slashed.status}`);
 
   for (const path of ['/_emdash', '/_emdash/', '/_emdash/admin', '/_emdash/admin/', '/_emdash/setup', '/_emdash/api/setup', '/_EMDASH/admin', '/_emdash//admin', '/%5Femdash/admin', '/_emdash/api/media/file/anything', '/_emdash/api/content']) {
     await expectDenied(base, path);
@@ -133,7 +138,7 @@ try {
 
   const summary = { at: new Date().toISOString(), checks };
   const outDir = join(root, 'runs/smoke-runs');
-  await import('node:fs/promises').then((fs) => fs.mkdir(outDir, { recursive: true }));
+  await mkdir(outDir, { recursive: true });
   await writeFile(join(outDir, 'last.json'), `${JSON.stringify(summary, null, 2)}\n`);
   console.log(`Smoke passed: ${checks.length} checks against local workerd on ${base}.`);
 } catch (error) {

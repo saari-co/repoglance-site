@@ -7,9 +7,10 @@ interface Props {
   contentSource?: 'cms' | 'seed' | 'none';
 }
 const { title, description, contentSource = 'none' } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://repoglance.com');
+const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const canonical = new URL(pathname, Astro.site ?? 'https://repoglance.com');
 const ogImage = new URL('/og-image.png', canonical);
-const isHome = Astro.url.pathname === '/';
+const isHome = pathname === '/';
 ---
 <!doctype html>
 <html lang="en">
@@ -33,7 +34,17 @@ const isHome = Astro.url.pathname === '/';
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <a class="brand" href="/">
-        <img class="brand-mark" src="/mark.svg" alt="" width="28" height="28" />
+        <svg class="brand-mark" viewBox="0 0 108 108" width="28" height="28" aria-hidden="true" focusable="false">
+          <g transform="translate(25.212 25.212) scale(2.35)" fill="none" stroke="currentColor">
+            <circle cx="10.1" cy="10.1" r="9" stroke-width="1" opacity=".55"/>
+            <circle cx="10.1" cy="10.1" r="11" stroke-width=".8" opacity=".33"/>
+            <circle cx="10.1" cy="10.1" r="6.7" stroke-width="2.5"/>
+            <path d="M15.6 15.6L21.1 21.1" stroke-width="3" stroke-linecap="round"/>
+            <path d="M10.1 4.3v1.4M10.1 14.5v1.4" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M5.7 10.1Q10.1 4.9 14.5 10.1Q10.1 15.3 5.7 10.1Z" stroke-width="1.6" stroke-linejoin="round"/>
+            <circle cx="10.1" cy="10.1" r="1.6" stroke-width="1.6"/>
+          </g>
+        </svg>
         <span>RepoGlance</span>
       </a>
       <nav aria-label="Main">

@@ -13,10 +13,13 @@ import {
 } from './namespace-gate.ts';
 
 /**
- * Worker bindings first (`cloudflare:workers` env, which also carries
- * Wrangler secrets), then `process.env` (populated by the
- * `nodejs_compat_populate_process_env` flag). Every read is guarded: a
- * failure reads as "not configured", never as "allowed".
+ * The team domain is the build input that also wires EmDash's `access()` in
+ * astro.config.mjs, so the guard and the CMS auth are always configured
+ * together. The audience and allowlist are runtime values: Worker bindings
+ * first (`cloudflare:workers` env, which also carries Wrangler secrets), then
+ * `process.env` (populated by the `nodejs_compat_populate_process_env` flag).
+ * Every read is guarded: a failure reads as "not configured", never as
+ * "allowed".
  */
 function readEnv(): GateEnv {
   const read = (name: string): string | undefined => {
@@ -34,8 +37,9 @@ function readEnv(): GateEnv {
     }
     return undefined;
   };
+  const buildTeamDomain = import.meta.env.EMDASH_ACCESS_TEAM_DOMAIN;
   return {
-    [TEAM_DOMAIN_ENV]: read(TEAM_DOMAIN_ENV),
+    [TEAM_DOMAIN_ENV]: typeof buildTeamDomain === 'string' && buildTeamDomain.trim() ? buildTeamDomain : undefined,
     [AUDIENCE_ENV]: read(AUDIENCE_ENV),
     [ALLOWLIST_ENV]: read(ALLOWLIST_ENV),
   };

@@ -1,11 +1,7 @@
 import seed from '../../seed/seed.json';
+import type { SeedBlock } from './blocks';
 
-export interface SeedBlock {
-  _type: string;
-  _version: number;
-  _key: string;
-  [field: string]: unknown;
-}
+export type { SeedBlock } from './blocks';
 
 export interface PageData {
   title: string;
@@ -26,5 +22,3 @@ export function seedPage(slug: string): PageData | null {
   const page = pages.find((entry) => entry.slug === slug && (entry.status ?? 'published') === 'published');
   return page ? page.data : null;
 }
-
-export const seedSlugs = pages.map((page) => page.slug);

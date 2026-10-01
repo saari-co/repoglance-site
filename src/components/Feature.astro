@@ -1,10 +1,10 @@
 ---
 import Screenshot from './Screenshot.astro';
-import type { SeedBlock } from '../content/seed-fallback';
+import { stringField, type SeedBlock } from '../content/blocks';
 
 interface Props { value: SeedBlock; index: number; blockKey: string }
 const { value } = Astro.props;
-const text = (field: string): string => (typeof value[field] === 'string' ? (value[field] as string) : '');
+const text = (field: string) => stringField(value, field);
 ---
 <section class="feature" data-block="feature">
   <div>

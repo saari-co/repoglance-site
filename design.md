@@ -32,7 +32,8 @@
 
 ## Verified foundations
 
-- **Mark:** `public/mark.svg` (currentColor) and `public/favicon.svg` are the
+- **Mark:** the header inlines the mark so `currentColor` follows the scheme;
+  `public/mark.svg` (currentColor) and `public/favicon.svg` are the
   app's commit-eye magnifier, converted from the launcher vectors in
   `saari-co/RepoGlance` (`ic_launcher_foreground.xml`,
   `ic_launcher_background.xml`).

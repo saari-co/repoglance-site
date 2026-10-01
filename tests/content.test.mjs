@@ -20,16 +20,17 @@ function strings(value, out = []) {
 }
 const allText = strings(seed.content);
 
-test('the seed validates with EmDash when its validator is importable', async () => {
+test('the seed validates with EmDash when its validator is importable', async (t) => {
   let validateSeed;
   try {
     ({ validateSeed } = await import('emdash/seed'));
   } catch (error) {
-    test.skip(`emdash/seed not importable under plain Node: ${error.message}`);
+    t.skip(`emdash/seed not importable under plain Node: ${error.message}`);
     return;
   }
   const result = validateSeed(seed);
-  assert.deepEqual(result.errors ?? [], [], JSON.stringify(result, null, 2));
+  assert.equal(result.valid, true, JSON.stringify(result, null, 2));
+  assert.deepEqual(result.errors, []);
 });
 
 test('exactly the two decided pages exist and are published', () => {
@@ -72,6 +73,17 @@ test('testers page carries the Google Group link and three steps', () => {
   assert.equal(hero.primary_href, GROUP_URL);
 });
 
+test('every link in the seed is site-relative or https', () => {
+  for (const page of pages) {
+    for (const block of page.data.layout) {
+      const links = [block.primary_href, block.secondary_href, block.link_href, ...(Array.isArray(block.steps) ? block.steps.map((step) => step.link_href) : [])].filter(Boolean);
+      for (const href of links) {
+        assert.ok(/^(\/(?!\/)|https:\/\/)/.test(href), `${block._key}: ${href}`);
+      }
+    }
+  }
+});
+
 test('required links are present and no Play opt-in URL is guessed', () => {
   const joined = allText.join('\n');
   for (const url of [PRIVACY_URL, GROUP_URL, REPO_URL, ISSUES_URL]) {
@@ -97,8 +109,13 @@ test('copy follows the honest-main rules', () => {
   assert.ok(/not affiliated/i.test(readFileSync(new URL('../src/layouts/Site.astro', import.meta.url), 'utf8')));
 });
 
+function screenshotOptions(typeSlug) {
+  return seed.blockTypes.find((type) => type.slug === typeSlug).versions[0].fields.find((field) => field.slug === 'screenshot').validation.options;
+}
+
 test('every screenshot reference is a shipped sample-mode capture', () => {
-  const options = seed.blockTypes.find((type) => type.slug === 'hero').versions[0].fields.find((field) => field.slug === 'screenshot').validation.options;
+  const options = screenshotOptions('hero');
+  assert.deepEqual(screenshotOptions('feature'), options, 'hero and feature offer the same screenshots');
   for (const page of pages) {
     for (const block of page.data.layout) {
       if (!('screenshot' in block)) continue;
