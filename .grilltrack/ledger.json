@@ -3,12 +3,11 @@
   "created_at": "2026-10-01T10:23:01+00:00",
   "current_focus": {
     "cadence": "sequential",
-    "confirmed": true,
-    "confirmed_at": "2026-10-01T12:58:49+00:00",
-    "domain": "site-copy-006: the copy of repoglance.com in the locked layout (design.md v1): voice, structure, specificity and information order of every seed block on / and /testers, judged on the real pages at 375 and 1280 px in both schemes with the layout, imagery, mark and fonts locked; every candidate keeps the honest-copy rules of tests/content.test.mjs",
-    "started_at": "2026-10-01T12:31:04+00:00",
-    "status": "inspected",
-    "summary": "Maintainer locked the copy hybrid on 2026-10-01 ('lock it'). Implement it in the real site on claude/site-copy: seed/seed.json from .grilltrack/work/copy-hybrid-1/candidates/h.json, the hero heading in scripts/smoke.mjs, design.md v2 (copy resolved), docs/content.md, README status; verify with npm run verify and full-page captures of the production build; exact-source review of the implementation commit; then push and open a pull request against claude/site-foundation. Delivery stays separate: no merge, no deploy, no Cloudflare or DNS change."
+    "confirmed": false,
+    "domain": "site-imagery-007: the imagery of repoglance.com, reopened by the maintainer on 2026-10-01 ('the only thing I don't like is the imagery: all sample-data stuff; the slider images are cut off and don't correlate'), with the Open Graph image (og-image) to follow on the same imagery system; truth rule unchanged: only proven behaviour, never a live account's data",
+    "started_at": "2026-10-01T13:20:51+00:00",
+    "status": "grilling",
+    "summary": "Grilling: what honest imagery without the SAMPLE banner can be (recaptured sample mode with the chip-row marker, designed renders of the widgets with mock values, or an app-side showcase mode), which captures the slider cards need to correlate with their copy, and how the OG image follows. Nothing implemented until the maintainer confirms."
   },
   "decisions": [
     {
@@ -637,6 +636,41 @@
       "superseded_by": null,
       "updated_at": "2026-10-01T13:08:19+00:00",
       "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
+    },
+    {
+      "baseline_ref": "git:c0df035 (claude/site-copy; public/screenshots as shipped: sample-mode Play listing captures)",
+      "candidate_refs": [
+        ".grilltrack/work/imagery-round-1/candidates/a.json",
+        ".grilltrack/work/imagery-round-1/candidates/b.json",
+        ".grilltrack/work/imagery-round-1/candidates/c.json",
+        ".grilltrack/work/imagery-round-1/candidates/d.json",
+        ".grilltrack/work/imagery-round-1/candidates/e.json"
+      ],
+      "choice": "Open: imagery round 1 presents five candidates built from the RepoGlance showcase-048 emulator captures (A Phones top crop, B Phones aimed crops, C Cut-outs, D Scheme-matched, E Widgets first); the maintainer picks per candidate or per block; the pick is written into seed/seed.json, public/screenshots/ and src/content/screenshots.ts only after an explicit lock.",
+      "context_ref": ".grilltrack/proof/imagery-round-1-captures-20261001.md",
+      "created_at": "2026-10-01T15:33:39+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-look-005",
+        "site-copy-006"
+      ],
+      "domain": "site-imagery-007: the imagery of repoglance.com, reopened by the maintainer on 2026-10-01 ('the only thing I don't like is the imagery: all sample-data stuff; the slider images are cut off and don't correlate'), with the Open Graph image (og-image) to follow on the same imagery system; truth rule unchanged: only proven behaviour, never a live account's data",
+      "history": [],
+      "id": "site-imagery-007",
+      "implementation_ref": null,
+      "question": "Which imagery carries the locked layout and copy on / and /testers: which capture each slot shows, how it is framed and cropped, and whether it follows the colour scheme?",
+      "rationale": "Maintainer, 2026-10-01: the sample-marked imagery was the one thing left disliked, and the slider crops did not correlate with their cards; an app-side showcase mode on the emulator was chosen over renders or recaptures. Source: saari-co/RepoGlance showcase-048.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [],
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
+      "status": "proposed",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T15:33:39+00:00",
+      "verification_ref": null
     }
   ],
   "last_activation": {
@@ -654,7 +688,17 @@
     "reason": "Hybrid preview presented (home = D with A's call to action; join = D with C's steps and build list) as the replacement for round 1's five; waiting for the maintainer's explicit confirmation before locking.",
     "resumed_at": "2026-10-01T12:58:49+00:00"
   },
-  "pause": null,
+  "pause": {
+    "artifact_refs": [
+      ".grilltrack/proof/imagery-round-1-captures-20261001.md",
+      ".grilltrack/work/imagery-round-1/picker.json",
+      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-imagery-round-1-20261001",
+      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-showcase-048-20261001"
+    ],
+    "next_safe_action": "Read the maintainer's answer. One letter: lock site-imagery-007, copy the candidate's assets into public/screenshots/ with the slugs in seed/seed.json and alt text in src/content/screenshots.ts, amend the imagery rule in AGENTS.md, docs/CHARTER.md and design.md (showcase captures, never a live account), update tests/content.test.mjs's screenshot test and docs/content.md (source release and hashes), npm run verify, capture the production build, record implement/verify/review, commit, push, PR. Mixed answer: bake the picks into a shared base and run round 2 or preview a precise hybrid. Note: npm run build currently fails in this worktree with 'Tsconfig not found astro/tsconfigs/strict' (Vite 8 / oxc resolver) although node_modules/astro/tsconfigs/strict.json exists; diagnose before the verify (the dist from 8b2381e still serves).",
+    "paused_at": "2026-10-01T15:33:39+00:00",
+    "reason": "Imagery round 1 is presented; waiting for the maintainer's pick (per candidate or per block) in the live picker. Nothing locked."
+  },
   "recommendation": {
     "alternatives": [
       "typography-007: a font-role round (display, reading, labels) now that layout and copy are locked; system faces are the current lock.",
@@ -665,8 +709,8 @@
     "recorded_at": "2026-10-01T13:08:19+00:00"
   },
   "schema_version": "grilltrack/v0.1",
-  "status": "active",
+  "status": "paused",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T13:08:19+00:00"
+  "updated_at": "2026-10-01T15:33:39+00:00"
 }
