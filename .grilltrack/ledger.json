@@ -3,12 +3,11 @@
   "created_at": "2026-10-01T10:23:01+00:00",
   "current_focus": {
     "cadence": "sequential",
-    "confirmed": true,
-    "confirmed_at": "2026-10-01T11:55:05+00:00",
-    "domain": "site-look-005: layout and visual language of repoglance.com (the first visual round), judged on the real / and /testers pages with the seed copy, sample-mode imagery, the commit-eye mark and system fonts locked",
-    "started_at": "2026-10-01T10:54:17+00:00",
-    "status": "inspected",
-    "summary": "Maintainer locked the hybrid on 2026-10-01 ('Yes, lock it' after rings at 5%). Implement it in the real site on claude/site-foundation: src/styles/site.css, band and slider wrappers in ContentPage/Hero/Cta, data-page on the layout, design.md v1, smoke assertions for the new structure; verify with npm run verify and full-page captures of the production build; exact-source review; update the PR. Delivery stays separate: no merge, no deploy."
+    "confirmed": false,
+    "domain": "site-copy-006: the copy of repoglance.com in the locked layout (design.md v1): voice, structure, specificity and information order of every seed block on / and /testers, judged on the real pages at 375 and 1280 px in both schemes with the layout, imagery, mark and fonts locked; every candidate keeps the honest-copy rules of tests/content.test.mjs",
+    "started_at": "2026-10-01T12:31:04+00:00",
+    "status": "grilling",
+    "summary": "Copy round 1: five seed variants (a to e) rendered through the real pages in a development-only picker under .grilltrack/work/copy-round-1/; the maintainer picks per block or per candidate; lock only on explicit confirmation, then write the pick into seed/seed.json."
   },
   "decisions": [
     {
@@ -496,6 +495,41 @@
       "superseded_by": null,
       "updated_at": "2026-10-01T12:02:45+00:00",
       "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0 after the fix; captures re-taken)"
+    },
+    {
+      "baseline_ref": "git:174064e (claude/site-foundation; seed/seed.json as shipped)",
+      "candidate_refs": [
+        ".grilltrack/work/copy-round-1/candidates/a.json",
+        ".grilltrack/work/copy-round-1/candidates/b.json",
+        ".grilltrack/work/copy-round-1/candidates/c.json",
+        ".grilltrack/work/copy-round-1/candidates/d.json",
+        ".grilltrack/work/copy-round-1/candidates/e.json"
+      ],
+      "choice": "Open: copy round 1 presents five seed variants on the real pages (A Plain, B Promise first, C Facts first, D Moments, E Trust first), all passing tests/content.test.mjs; the maintainer picks per candidate or per block, and the pick is written into seed/seed.json only after an explicit lock.",
+      "context_ref": ".grilltrack/proof/copy-round-1-captures-20261001.md",
+      "created_at": "2026-10-01T12:37:59+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-look-005",
+        "site-signup-link-003"
+      ],
+      "domain": "site-copy-006: the copy of repoglance.com in the locked layout (design.md v1): voice, structure, specificity and information order of every seed block on / and /testers, judged on the real pages at 375 and 1280 px in both schemes with the layout, imagery, mark and fonts locked; every candidate keeps the honest-copy rules of tests/content.test.mjs",
+      "history": [],
+      "id": "site-copy-006",
+      "implementation_ref": null,
+      "question": "Which copy carries the locked layout on / and /testers: voice, structure, specificity and information order of the seed blocks?",
+      "rationale": "The foundation copy was written before the look existed; the hero lead and the 300 px feature cards now set the lengths, and the honest-copy rules (read-only, no CI claims, no Play URL, the Google Group link) bound every candidate. Facts come from saari-co/RepoGlance main README, docs/store-listing.md and proof/play-console-20260930/PROOF.md.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [],
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
+      "status": "proposed",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T12:37:59+00:00",
+      "verification_ref": null
     }
   ],
   "last_activation": {
@@ -503,7 +537,21 @@
     "mechanism": "implicit"
   },
   "last_pause": null,
-  "pause": null,
+  "pause": {
+    "artifact_refs": [
+      ".grilltrack/proof/copy-round-1-captures-20261001.md",
+      ".grilltrack/work/copy-round-1/picker.json",
+      ".grilltrack/work/copy-round-1/candidates/a.json",
+      ".grilltrack/work/copy-round-1/candidates/b.json",
+      ".grilltrack/work/copy-round-1/candidates/c.json",
+      ".grilltrack/work/copy-round-1/candidates/d.json",
+      ".grilltrack/work/copy-round-1/candidates/e.json",
+      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-copy-round-1-20261001"
+    ],
+    "next_safe_action": "Read the maintainer's answer. One letter: lock site-copy-006 with that candidate, copy its JSON into seed/seed.json, update tests/content.test.mjs and scripts/smoke.mjs for the new hero heading, npm run verify, capture the production build, record implement/verify/review, update design.md and docs/content.md, commit, push claude/site-copy, open a PR against claude/site-foundation. Mixed answer: bake the picks into a shared base and run round 2 on what is still open.",
+    "paused_at": "2026-10-01T12:47:01+00:00",
+    "reason": "Copy round 1 is presented; waiting for the maintainer's pick (per candidate or per block) in the live picker. Nothing locked."
+  },
   "recommendation": {
     "alternatives": [
       "cms-access: the maintainer's hosted bootstrap (Worker, D1, R2, Access application, secrets, staging host) from docs/cms-access.md, then an Access allow-path proof and the CMS-backed render path.",
@@ -514,8 +562,8 @@
     "recorded_at": "2026-10-01T12:02:45+00:00"
   },
   "schema_version": "grilltrack/v0.1",
-  "status": "active",
+  "status": "paused",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T12:02:45+00:00"
+  "updated_at": "2026-10-01T12:47:01+00:00"
 }
