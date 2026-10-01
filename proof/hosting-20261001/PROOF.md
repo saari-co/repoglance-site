@@ -23,7 +23,7 @@ custom domain. Bindings on the deployed Worker: `SESSION` (KV), `DB` (D1),
 `MEDIA` (R2), `IMAGES`, `ASSETS`, `EMDASH_SITE_URL`, `LOADER`.
 
 Preview: `https://repoglance-site.growfunkybeans.workers.dev` (temporary;
-gate 2 attaches `repoglance.com`).
+turned off again at gate 2 below).
 
 ## Smoke of the live preview
 
@@ -61,12 +61,62 @@ of `saari-co/swarm-pr-assets`.
 | `testers-light-1280.png` | `e5264ea63d1bb801d0d0b55ee4172f27d56446cdcf558133a362cb183d72aa4f` |
 | `testers-light-375.png` | `748b1c725c50b5e5cbf18d5f1dee9906280b06e43e58fa64614cee9235de876d` |
 
-## Not done (later gates)
-
-- Custom domain `repoglance.com` and its DNS record (gate 2).
 - Cloudflare Access application, `CF_ACCESS_AUDIENCE`,
   `EMDASH_OPERATOR_ALLOWLIST`, `EMDASH_ENCRYPTION_KEY`, a build with
   `EMDASH_ACCESS_TEAM_DOMAIN`, and EmDash setup (later gates; the CMS stays
   denied until then).
 - Rollback, if ever wanted, is `wrangler delete repoglance-site` plus the
   D1, R2 and KV deletions, each a maintainer action.
+
+## Gate 2: custom domains (2026-10-01)
+
+The maintainer answered gate 2 with "Attach repoglance.com and www".
+`scripts/prepare-deploy.mjs` was extended to take a comma-separated
+`REPOGLANCE_CUSTOM_DOMAIN`; the Worker was redeployed as version
+`c92e410b-a11a-4ef6-91f0-04f55b267ade` with the custom domains
+`repoglance.com` and `www.repoglance.com` and workers.dev off. Wrangler
+created the DNS records in the zone (nameservers
+`joselyn.ns.cloudflare.com`, `quinton.ns.cloudflare.com`).
+
+| Check | Result |
+| --- | --- |
+| `dig @1.1.1.1` and `dig @8.8.8.8`, apex and www, A and AAAA | the Cloudflare anycast records, `NOERROR` |
+| `curl --resolve repoglance.com:443:<record>` `/`, `/testers` | 200 `text/html`, `data-content-source="seed"`, band hero, canonical `https://repoglance.com/`; TLS verified, HTTP/2 |
+| same, `/_emdash/admin` | 404 `text/plain`, no redirect |
+| same, `/nothing-here`, `/robots.txt` | 404 site page; 200 |
+| `https://www.repoglance.com/`, `/testers`, `/_emdash/admin` (local resolver) | 200, 200 with canonical `https://repoglance.com/testers`, 404 |
+| `https://repoglance-site.growfunkybeans.workers.dev/` | 404 (workers.dev off) |
+
+Limit: this Mac's resolver (Tailscale MagicDNS) kept the apex's earlier
+negative answer cached for the whole session, so the apex was proven
+through the public resolvers and `--resolve`, and the captures below were
+taken through `www.repoglance.com`, which serves the same Worker. Both
+hosts answer; `www` carries the apex canonical rather than redirecting
+(a follow-up, not a blocker).
+
+Full-page captures of the live site (`scripts/capture.mjs`, `FULL_PAGE=1`,
+375x812 and 1280x900, `prefers-color-scheme` emulation), in the private
+release
+[`repoglance-site-live-20261001`](https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-live-20261001)
+of `saari-co/swarm-pr-assets`; five of the eight are byte-identical to the
+workers.dev preview captures and three to the local production build.
+
+| File | SHA-256 |
+| --- | --- |
+| `index-dark-1280.png` | `3e1603daeef56eee40610acf3aa464fe2fa29b7ee1e644cbcd4c0f6f705e33c8` |
+| `index-dark-375.png` | `87b72e52f267aee4fbb5fc6ed1a65f81a7ca8a887b785dc8de9c493913e36b4d` |
+| `index-light-1280.png` | `5e0c184fbb520258bb1dec75a5748aaf483b8c8e3fcaf50d8eeec6121699706e` |
+| `index-light-375.png` | `495263455bf613f2d7e716f58bc0d1996b8e888664f614b7f822578dc5be27d7` |
+| `testers-dark-1280.png` | `58a975886f061c784922fe4478f99e4442da4c67e6d0fdb8cf72c027fbb3ba61` |
+| `testers-dark-375.png` | `9e7feef07e98581ddb8e497501ecd38ca048e3f8f370b96aaf8fc38c5b7a87f8` |
+| `testers-light-1280.png` | `e5264ea63d1bb801d0d0b55ee4172f27d56446cdcf558133a362cb183d72aa4f` |
+| `testers-light-375.png` | `748b1c725c50b5e5cbf18d5f1dee9906280b06e43e58fa64614cee9235de876d` |
+
+## Still not done (later gates)
+
+- Cloudflare Access application, `CF_ACCESS_AUDIENCE`,
+  `EMDASH_OPERATOR_ALLOWLIST`, `EMDASH_ENCRYPTION_KEY`, a build with
+  `EMDASH_ACCESS_TEAM_DOMAIN`, and EmDash setup; the CMS stays denied
+  until then.
+- A `www` to apex redirect, edge caching for the public pages, and the Play
+  listing's website field (a Play Console change).
