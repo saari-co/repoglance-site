@@ -1,0 +1,35 @@
+---
+import { safeHref, stringField, type SeedBlock } from '../content/blocks';
+
+interface Props { value: SeedBlock; index: number; blockKey: string }
+const { value } = Astro.props;
+const text = (field: string) => stringField(value, field);
+interface Step { text: string; linkLabel: string; linkHref: string }
+const steps: Step[] = Array.isArray(value.steps)
+  ? (value.steps as Array<Record<string, unknown>>)
+      .filter((step) => typeof step?.text === 'string')
+      .map((step) => ({
+        text: step.text as string,
+        linkLabel: stringField(step, 'link_label'),
+        linkHref: safeHref(step.link_href),
+      }))
+  : [];
+---
+<section class="steps" data-block="steps">
+  <h2>{text('heading')}</h2>
+  {text('intro') && <p class="intro">{text('intro')}</p>}
+  <ol>
+    {steps.map((step) => (
+      <li>
+        {step.text}
+        {step.linkHref && step.linkLabel && (
+          <>
+            {' '}
+            <a href={step.linkHref}>{step.linkLabel}</a>
+          </>
+        )}
+      </li>
+    ))}
+  </ol>
+  {text('note') && <p class="note">{text('note')}</p>}
+</section>

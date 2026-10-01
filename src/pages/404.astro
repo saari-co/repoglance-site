@@ -1,0 +1,17 @@
+---
+import Site from '../layouts/Site.astro';
+Astro.response.status = 404;
+---
+<Site title="Page not found" description="There is no page at this address.">
+  <section class="hero">
+    <div>
+      <p class="label">404</p>
+      <h1>There is no page at this address.</h1>
+      <p class="lead">RepoGlance's site has two pages: the overview and the closed-test signup.</p>
+      <div class="hero-links">
+        <a class="button button-primary" href="/">Overview</a>
+        <a class="button button-secondary" href="/testers">Join the test</a>
+      </div>
+    </div>
+  </section>
+</Site>

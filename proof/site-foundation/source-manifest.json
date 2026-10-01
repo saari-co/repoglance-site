@@ -1,0 +1,290 @@
+{
+  "slice": "site-foundation",
+  "captured_at": "2026-10-01",
+  "branch": "claude/site-foundation",
+  "source_commit": "6e1dda367020821ced3879619c6e6fd19c691508",
+  "excludes": [
+    "proof/",
+    ".grilltrack/"
+  ],
+  "file_count": 69,
+  "manifest_sha256": "b0b8af176069518296a629e2c0e0e106cbe7bdd617e5899f64788b90d8b74022",
+  "files": [
+    {
+      "path": ".claude/launch.json",
+      "sha256": "c7dd786a5b1171abc117e9bb9c222634003abee836b4ed08b10f2894a6000658"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "9bf23b3c36e8d4a5b8e552bb8a07ab403cd4444002b53d1b7797a7dc5827ea02"
+    },
+    {
+      "path": ".github/workflows/clawsweeper-command.yml",
+      "sha256": "22bc50e956eb2202c356dc873c3f2c94b5b283329aa72b996f5fa5165c442745"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "8d578645b338bc54a9848079ceadfd41284208cdd733e84260c1e590dc2f7a2f"
+    },
+    {
+      "path": ".nvmrc",
+      "sha256": "08062faf0d7a2d22f5d7933c50e975dd1527034275597be7c1b3b9fd2b9d079a"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "663ac6ee1fb0af24be51b8dbef20149e5e3300a628646bd0a876b88764313abc"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "75fd66c87c62e85791914bfdcc15185629aaeb65a69d903a6f2f208f704bfd9b"
+    },
+    {
+      "path": "README.md",
+      "sha256": "096655af6ccd56a190124de8432d75a7d6f25f0d0fe4025b68a909be9d9486af"
+    },
+    {
+      "path": "REPO_HYGIENE.md",
+      "sha256": "9454556f8975b25f7e66fe81526564e18cf4680371bd89a2bfff089176f1620e"
+    },
+    {
+      "path": "astro.config.mjs",
+      "sha256": "2ad98bd140ed7da1310e9c48e033455193d49426da1868d9f39e323460a750a0"
+    },
+    {
+      "path": "design.md",
+      "sha256": "e0174c43903b1d24fc23b62cf0620ffbf41a4dcd871e44e2ba675d46dc07f424"
+    },
+    {
+      "path": "docs/CHARTER.md",
+      "sha256": "c75aa64e94a01cde84a9c42c1fd553c5eda398ab1824dbe6277ebd1d692bd0a6"
+    },
+    {
+      "path": "docs/cms-access.md",
+      "sha256": "6751753989608fed28f89fb28e33b2f2b45c5821e0691efaa1e978dfb9d67206"
+    },
+    {
+      "path": "docs/content.md",
+      "sha256": "159104ceca5b4514c0c6e9ccf4a13f8635b179e962f1bd793624d7d26fd828f2"
+    },
+    {
+      "path": "docs/getting-started.md",
+      "sha256": "acff6e9440ef02788f9cbf44506c7bd391d58f5f8dc1d5942d1a0b8572f455d6"
+    },
+    {
+      "path": "docs/review-policy.md",
+      "sha256": "ecc33c57f042d6dd03b4398e0a3f3abffdd8bfae2d06c7292ac26da743f0d048"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "f136a4dc0cc13b06b23e6f90055292450f35a977aa025ea1c8303df8094bf200"
+    },
+    {
+      "path": "package.json",
+      "sha256": "95f6e627b736c5d001d4095eef7e5e74669d70a050dc507470aedc8c705c26ae"
+    },
+    {
+      "path": "public/favicon.svg",
+      "sha256": "621f565e5cf91924abbc4fcace15fed788af2c1a404e4a1aba88b0d7391d054c"
+    },
+    {
+      "path": "public/icon-512.png",
+      "sha256": "ca169a39b067de4abea1c8a13a41e7b63f7cf280761dd333ae1c80def8710f59"
+    },
+    {
+      "path": "public/mark.svg",
+      "sha256": "82bbd3094657b7158d628258349949b513906be775beb21bdb8a37d43300b0a4"
+    },
+    {
+      "path": "public/og-image.png",
+      "sha256": "68a0ffa50e5d48fb3bf792664746d1594e4063b477bcc98b962ee5314258b1b8"
+    },
+    {
+      "path": "public/robots.txt",
+      "sha256": "91193aa4dcc9d737cd274c205e31dd57c8265a538c7a249991cc3aba25e79550"
+    },
+    {
+      "path": "public/screenshots/catalog-pinned-1080.webp",
+      "sha256": "677aa3255222eab785f7d78f67beb22a5a9da667a737c95c53dfaa70099d16f7"
+    },
+    {
+      "path": "public/screenshots/catalog-pinned-540.webp",
+      "sha256": "3df2fd8d4e780e1dea21b8da9871cb365b31e209dd9b4502aac40407b0822da1"
+    },
+    {
+      "path": "public/screenshots/connect-or-explore-sample-1080.webp",
+      "sha256": "df6b584c35f3e25a03b68fb7dd96a9e96ec47c62e0aace02ab30b26011aabd03"
+    },
+    {
+      "path": "public/screenshots/connect-or-explore-sample-540.webp",
+      "sha256": "1f305fba8bdd6961c34775071798e0609ed733264cdd0b4ca7cf9d34c2424965"
+    },
+    {
+      "path": "public/screenshots/home-widgets-1080.webp",
+      "sha256": "ce4d99bb5a6827019c27c0333ec8e0c41b746b188ed731e110b306ad42842bed"
+    },
+    {
+      "path": "public/screenshots/home-widgets-540.webp",
+      "sha256": "922934a954b56c434f484f07e7df44730d7afcc24a85e87c670d5492b2d82874"
+    },
+    {
+      "path": "public/screenshots/owner-filter-1080.webp",
+      "sha256": "25ea3d665fe412fefd33d1e8646f2f11a17d725d9a6fce5407a490568fd2fe77"
+    },
+    {
+      "path": "public/screenshots/owner-filter-540.webp",
+      "sha256": "884b36db71e84e5a424efbb12c563895aa7c1bf582c13c45dc961326ad617861"
+    },
+    {
+      "path": "public/screenshots/quick-settings-tile-1080.webp",
+      "sha256": "747e2ca8fb2048ca25581893c620e71fab4e4e3ecacc6aea49bba469d2e1e019"
+    },
+    {
+      "path": "public/screenshots/quick-settings-tile-540.webp",
+      "sha256": "216fd8cae0688178b4299e81f327526e5573866663532d295610f719c4efc4a4"
+    },
+    {
+      "path": "public/screenshots/repository-issues-and-prs-1080.webp",
+      "sha256": "7620f259d649f04dc3e00c14f239acface4e6a53e84deece92dc3bab490fea20"
+    },
+    {
+      "path": "public/screenshots/repository-issues-and-prs-540.webp",
+      "sha256": "bb05206067ac25a9b4d9210bfc440b56556a57f59a1dd202b857c93f3eea1cf4"
+    },
+    {
+      "path": "public/screenshots/repository-prs-1080.webp",
+      "sha256": "b04bd189ee890cbc8c36ab8ffef7fb44ad4a0e2e1cc848104557128f92e86cb9"
+    },
+    {
+      "path": "public/screenshots/repository-prs-540.webp",
+      "sha256": "5b469f725f6c6b0876a737bd69d2d8175f4c6ecd45212df375abd636b203f0a0"
+    },
+    {
+      "path": "public/sitemap.txt",
+      "sha256": "36b7c3a522e1dd7b583d36e7c3da70696828433340d7cdc369493361832ac6bb"
+    },
+    {
+      "path": "scripts/audit-repo.mjs",
+      "sha256": "3d66c567ab20ed3e8ca3b09a684e0373f9ab9df39b777d68a9537459b6d4a3c6"
+    },
+    {
+      "path": "scripts/capture.mjs",
+      "sha256": "2314f76e7fa060251895897cace4e2edcf0b0ed0c3fda440f2d500b7814f5c5b"
+    },
+    {
+      "path": "scripts/smoke.mjs",
+      "sha256": "cb2df0dc9e7fdbe0a42adbf063cb283626e62e7617a52cac7c60c5a0a08ff175"
+    },
+    {
+      "path": "seed/seed.json",
+      "sha256": "0d3452718958842c4d42858e568ead1a0dd08df9bbff5b1dda3a6d1b67b35dcc"
+    },
+    {
+      "path": "src/cloudflare-workers.d.ts",
+      "sha256": "be9821c6d0b84b9960a9cf11e7f834eadbd2e3f762ba84a193e83daaccd34629"
+    },
+    {
+      "path": "src/components/ContentPage.astro",
+      "sha256": "c646a14b68c8aa5ce1342780305a5892f3d667e008d5694155fbf8d627d18c78"
+    },
+    {
+      "path": "src/components/Cta.astro",
+      "sha256": "61ca857df8bacf02716f0ef2c3938b211fa475b8b63e7590453ec83f258583e2"
+    },
+    {
+      "path": "src/components/FactList.astro",
+      "sha256": "5130597489af940626fb0dffd780a8c4b0e7f1e5927e52127a8ffa35a2aa405b"
+    },
+    {
+      "path": "src/components/Feature.astro",
+      "sha256": "5665761732d31e01edbf88bed07f6f5cf8253e6e9c6d2c79f13d2ba809446a19"
+    },
+    {
+      "path": "src/components/Hero.astro",
+      "sha256": "a201dca05b9c9f06ef5bfec25ec9a747a0067e11b593ad79dbdbd9fa4d909a79"
+    },
+    {
+      "path": "src/components/Screenshot.astro",
+      "sha256": "f159a36b4e16d8930def418888f4a82c1047724ab351b3d4dc8320b93728280b"
+    },
+    {
+      "path": "src/components/Steps.astro",
+      "sha256": "4752aef97b95ed6c938b1951af28625967c8cd2e014da10d76b05f6a589046fa"
+    },
+    {
+      "path": "src/components/TextSection.astro",
+      "sha256": "0e3c58684779316c9572b22e0a629cfbbcf1f23352a8d2b4b953b9559110a321"
+    },
+    {
+      "path": "src/content/blocks.ts",
+      "sha256": "53df5c53f10a3ab02b8e38ea89fd0c380933f6f9377f1d50bb56112b780be810"
+    },
+    {
+      "path": "src/content/screenshots.ts",
+      "sha256": "2ad74ad188b320d7bc7f4644618058ec1dea654632c740c6f1f5f21f006c060a"
+    },
+    {
+      "path": "src/content/seed-fallback.ts",
+      "sha256": "b0c985b9665ceb090cb4afee3dfa980b7e5de24c1891a697cbfa3a43365b1034"
+    },
+    {
+      "path": "src/emdash-namespace-guard.ts",
+      "sha256": "15438b97ceba21cefbf9ebee0d8db84ac8a81e68a60bf4de135176968a1e4e1c"
+    },
+    {
+      "path": "src/env.d.ts",
+      "sha256": "9c9283a414423d9223e5ea86941b142443b8af7a007f77612dc2c098de2d2500"
+    },
+    {
+      "path": "src/layouts/Site.astro",
+      "sha256": "5d2050fb5de7ea55167df756b7db22da1fa7a576d598974cbf3ecc68d55cb383"
+    },
+    {
+      "path": "src/live.config.ts",
+      "sha256": "3dc6081bf76307af1f5ad1915c00752aec36dd51c5ad696359a45a7a3e8f04c3"
+    },
+    {
+      "path": "src/namespace-gate.ts",
+      "sha256": "2f79028f6732c41d952761d08a61de9c4b5dd83ff61acee9dcafed3a33b10eba"
+    },
+    {
+      "path": "src/pages/404.astro",
+      "sha256": "5cdf6768dbdab98d687b39b48e8f311a05f304c264b11940f72ee181f8ce51a3"
+    },
+    {
+      "path": "src/pages/index.astro",
+      "sha256": "ed247b7735f20d47c563b50287399bd228df9bb244d12565dcae035b26a5b5a0"
+    },
+    {
+      "path": "src/pages/testers.astro",
+      "sha256": "e2345a6a28098e9e90418c8ed6fa5c9c2a9b80940714184be61d1deb28564477"
+    },
+    {
+      "path": "src/styles/site.css",
+      "sha256": "e1fa6ef0c381557d476aade6af19c43577648dca00423a3c7c06797c28eba129"
+    },
+    {
+      "path": "src/worker.ts",
+      "sha256": "0a37e67b9a1dc9a8f9018dfb0698c673e8491d62291eee2a101753190435f4e4"
+    },
+    {
+      "path": "tests/content.test.mjs",
+      "sha256": "913d0e6ee9fbe5c6d473c50476698f2f02ac431125f13902fc027df899bc90a3"
+    },
+    {
+      "path": "tests/namespace-guard.test.mjs",
+      "sha256": "af432d37474aa87c1e9a172d4e518704ca88af4204bb12780c3d4db55dda720c"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "eee6090526d3bceee793a0861d7b217f325b4ab1290e1805b7db2d5dc4498811"
+    },
+    {
+      "path": "worker-configuration.d.ts",
+      "sha256": "425e6f5c3338f2e030a89d7ab6dc37a3c63f59eb3b245c0fddf7752614db5c38"
+    },
+    {
+      "path": "wrangler.jsonc",
+      "sha256": "e872f47e2427156a923f026a725420d7986bdfb2b669a71bd44e96932917d3c9"
+    }
+  ]
+}

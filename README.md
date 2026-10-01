@@ -1,0 +1,64 @@
+# repoglance.com
+
+The website for [RepoGlance](https://github.com/saari-co/RepoGlance), the
+read-only, widget-first GitHub glance for Google Pixels. Two pages: the
+overview at `/` and the closed-test signup at `/testers`.
+
+Built with [Astro](https://astro.build) and [EmDash](https://emdashcms.com)
+for Cloudflare Workers. Content is seeded from `seed/seed.json`; editing in a
+hosted CMS is prepared but not enabled (see below).
+
+## Status
+
+- **Source:** this repository, on `main`.
+- **Not live:** nothing is deployed. No Worker, database, bucket, DNS record,
+  custom domain or Access application exists for repoglance.com yet. Those
+  are maintainer steps, listed in [docs/cms-access.md](docs/cms-access.md).
+- **Look:** decided on 2026-10-01 in four GrillTrack rounds and a confirmed
+  hybrid; [design.md](design.md) v1 is the contract.
+
+## Run locally
+
+Use Node from `.nvmrc` (22.23.2), then:
+
+```sh
+npm ci
+npm run dev
+```
+
+Open the printed `127.0.0.1` URL. Both pages render from `seed/seed.json`.
+The EmDash editor at `/_emdash/admin` is available in development only;
+production builds deny that namespace unless Cloudflare Access is configured.
+
+`npm run start` serves the production build on local workerd (`wrangler dev
+--local`). It does not deploy.
+
+## Verify
+
+```sh
+npm run verify
+```
+
+This runs the repository path audit, Wrangler type generation, Astro type
+checking, the seed content checks, the namespace-guard unit tests, a
+Cloudflare build, and an HTTP smoke test against local workerd: both pages
+answer 200 with their seeded content, the `/_emdash` namespace answers 404
+with no redirect, and a missing route answers 404.
+
+## Scope and decisions
+
+- [Charter](docs/CHARTER.md)
+- [Content sources](docs/content.md)
+- [Getting started](docs/getting-started.md)
+- [CMS access runbook](docs/cms-access.md)
+- [Review policy](docs/review-policy.md)
+- [Proof](proof/)
+- Product decisions: `.grilltrack/ledger.json` (GrillTrack)
+
+RepoGlance is an independent app by Saari. It is not affiliated with or
+endorsed by GitHub, Inc. Google Play and Pixel are named only to say where the
+app runs.
+
+## License
+
+[MIT](LICENSE)

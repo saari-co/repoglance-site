@@ -1,0 +1,70 @@
+---
+import { getEmDashEntry } from 'emdash';
+import { Blocks } from 'emdash/ui';
+import Site from '../layouts/Site.astro';
+import { seedPage, type PageData, type SeedBlock } from '../content/seed-fallback';
+import Cta from './Cta.astro';
+import FactList from './FactList.astro';
+import Feature from './Feature.astro';
+import Hero from './Hero.astro';
+import Steps from './Steps.astro';
+import TextSection from './TextSection.astro';
+
+interface Props { slug: string }
+const { slug } = Astro.props;
+
+// The CMS entry wins when it exists; the seed is the shipped fallback so the
+// public pages never depend on CMS setup (docs/cms-access.md).
+let page: PageData | null = null;
+let source: 'cms' | 'seed' | 'none' = 'none';
+try {
+  const { entry, error } = await getEmDashEntry('pages', slug);
+  const data = entry?.data as Partial<PageData> | undefined;
+  if (!error && data && typeof data.title === 'string' && Array.isArray(data.layout)) {
+    page = { title: data.title, description: typeof data.description === 'string' ? data.description : '', layout: data.layout };
+    source = 'cms';
+  }
+} catch {
+  page = null;
+}
+if (!page) {
+  page = seedPage(slug);
+  if (page) source = 'seed';
+}
+if (!page) Astro.response.status = 404;
+
+const components = { hero: Hero, feature: Feature, fact_list: FactList, steps: Steps, cta: Cta, text_section: TextSection };
+
+// Consecutive feature blocks render inside the snap-scrolling row and
+// consecutive text sections inside the closing band (design.md v1). Every
+// block still renders through EmDash's native Blocks component.
+const wrappers: Record<string, string> = { feature: 'showcase', text_section: 'band band-tail' };
+type Group = { wrapper: string | null; blocks: SeedBlock[] };
+const groups: Group[] = [];
+for (const block of page?.layout ?? []) {
+  const wrapper = wrappers[block._type] ?? null;
+  const last = groups[groups.length - 1];
+  if (last && last.wrapper === wrapper && wrapper !== null) last.blocks.push(block);
+  else groups.push({ wrapper, blocks: [block] });
+}
+---
+<Site title={page?.title ?? 'Page not found'} description={page?.description ?? 'There is no page at this address.'} contentSource={source} page={slug}>
+  {page ? (
+    groups.map((group) =>
+      group.wrapper ? (
+        <div class={group.wrapper}>
+          <Blocks value={group.blocks as never} components={components as never} />
+        </div>
+      ) : (
+        <Blocks value={group.blocks as never} components={components as never} />
+      ),
+    )
+  ) : (
+    <section class="hero">
+      <div>
+        <h1>There is no page at this address.</h1>
+        <p class="lead"><a href="/">Back to the overview</a></p>
+      </div>
+    </section>
+  )}
+</Site>

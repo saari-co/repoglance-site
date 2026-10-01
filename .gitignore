@@ -141,3 +141,20 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# EmDash, Wrangler and local runtime state
+.local/
+.astro/
+.emdash/
+.wrangler/
+.dev.vars
+.dev.vars.*
+emdash-env.d.ts
+*.db
+*.db-*
+
+# GrillTrack working candidates, local worktrees, run output
+.grilltrack/work/
+worktrees/
+runs/
+.DS_Store
