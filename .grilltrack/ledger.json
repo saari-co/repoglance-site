@@ -615,13 +615,21 @@
       "rationale": "The public pages need no CMS, Access or secret to serve (smoke on a fresh D1); exposing them on workers.dev first lets the maintainer see the real thing before DNS changes.",
       "repair_required": false,
       "review_classifications": [],
-      "review_history": [],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
+      "review_history": [
+        {
+          "classifications": [],
+          "ref": "proof/hosting-20261001/PROOF.md",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T13:36:59+00:00",
+          "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+        }
+      ],
+      "review_ref": "proof/hosting-20261001/PROOF.md",
+      "review_result": "clean",
+      "review_source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73",
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T12:35:14+00:00",
+      "updated_at": "2026-10-01T13:36:59+00:00",
       "verification_ref": "file:proof/hosting-20261001/PROOF.md#gate-2-custom-domains-2026-10-01 (public resolvers and --resolve: apex 200 from the seed, /_emdash 404; www 200; captures in swarm-pr-assets repoglance-site-live-20261001)"
     },
     {
@@ -686,13 +694,21 @@
       "rationale": "AGENTS.md hard gates: Access configuration, secrets and setup are maintainer actions; the guard and access() are wired from one build input so they cannot diverge (review round 1 of the foundation).",
       "repair_required": false,
       "review_classifications": [],
-      "review_history": [],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
+      "review_history": [
+        {
+          "classifications": [],
+          "ref": "proof/cms-access-20261001/PROOF.md",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T13:36:59+00:00",
+          "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+        }
+      ],
+      "review_ref": "proof/cms-access-20261001/PROOF.md",
+      "review_result": "clean",
+      "review_source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73",
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T13:30:07+00:00",
+      "updated_at": "2026-10-01T13:36:59+00:00",
       "verification_ref": "file:proof/cms-access-20261001/PROOF.md (anonymous and forged requests 302 to Access; maintainer completed setup; both pages data-content-source=cms; captures in swarm-pr-assets repoglance-site-live-cms-20261001)"
     }
   ],
@@ -724,5 +740,5 @@
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T13:30:07+00:00"
+  "updated_at": "2026-10-01T13:36:59+00:00"
 }
