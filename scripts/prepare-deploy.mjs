@@ -51,5 +51,7 @@ const summary = {
   d1: config.d1_databases.map((db) => `${db.binding}=${db.database_name}`),
   r2: config.r2_buckets.map((b) => `${b.binding}=${b.bucket_name}`),
   worker_loaders: Boolean(config.worker_loaders),
+  cache: config.cache ?? null,
+  version_metadata: config.version_metadata?.binding ?? null,
 };
 console.log(`Wrote ${out}\n${JSON.stringify(summary, null, 2)}`);

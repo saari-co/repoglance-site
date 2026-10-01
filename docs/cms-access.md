@@ -6,6 +6,11 @@ action.
 
 ## How production behaves
 
+- `src/outer-middleware.ts` is EmDash's outer middleware: first the www
+  redirect (`src/www-redirect.ts`: every `www.repoglance.com` request answers
+  a bodiless 301 to the same path and query on the apex, `/_emdash` included,
+  since Access covers both hosts and the editor continues on the apex), then
+  the namespace guard below. Nothing is ever served from the www host.
 - `src/emdash-namespace-guard.ts` runs before EmDash. In production builds it
   answers 404 for every path under `/_emdash`, including setup and login,
   unless **all** of these hold:
@@ -30,9 +35,32 @@ action.
   Workers Paid plan. On a free plan remove that binding and the `sandbox()`
   runner (sandboxed plugins are then disabled at build time, which this site
   does not need).
-- Public pages never depend on the CMS: `ContentPage.astro` reads the CMS
-  entry and falls back to `seed/seed.json`. The response carries
-  `data-content-source="cms"` or `"seed"`.
+- Public pages never depend on the CMS: the page frontmatter calls
+  `preparePage` in `src/content/load-page.ts`, which reads the CMS entry and
+  falls back to `seed/seed.json`; `ContentPage.astro` only renders. The
+  response carries `data-content-source="cms"` or `"seed"`.
+- Edge cache: Astro's route cache with the Cloudflare provider
+  (`astro.config.mjs`). A rendered public page opts in from
+  `src/page-cache.ts` (five minutes fresh, one minute stale-while-revalidate,
+  tagged with the `pages` collection and EmDash's entry tags, varied by
+  `Host` and `Cookie`); every other response, including the whole `/_emdash`
+  namespace (EmDash opts out), the 404 page and the redirect, carries
+  `Cloudflare-CDN-Cache-Control: no-store`, so the guard runs for every
+  namespace request. The adapter writes `cache.enabled` into the generated
+  deploy config (`wrangler.jsonc` declares it too), which turns on Cloudflare's
+  Workers Cache: no KV namespace, API token or dashboard rule is involved.
+  EmDash's admin routes call Astro's `cache.invalidate` with the entry and
+  collection tags on every content write (create, update, publish, unpublish,
+  schedule, restore, discard draft, duplicate, permanent delete), and the
+  provider purges them through the Workers cache purge binding. Cloudflare
+  keys the cache by Worker version as well, so a deploy starts cold, and the
+  `version_metadata` binding (`CF_VERSION_METADATA`, the Worker's own version
+  id, not a resource) lets the provider add an `astro-version:` tag and a
+  version-scoped weak `ETag`, so a browser's conditional request never
+  revalidates a body from another deploy or a retired entry. The TTL is the
+  backstop if a purge fails. The Workers Cache keys by path and query, not by
+  host; the `Host` variant is what keeps a cached apex page from answering
+  www requests ahead of the redirect.
 - The Astro Cloudflare adapter adds a `SESSION` KV binding to the built
   config for Astro sessions, and `wrangler deploy` auto-provisions a KV
   namespace named `repoglance-site-session` for it on first deploy (it did
