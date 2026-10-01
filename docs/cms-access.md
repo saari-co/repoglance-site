@@ -66,3 +66,38 @@ ids in `wrangler.jsonc` are local placeholders.
    verified.
 
 Each step is a hard gate in `AGENTS.md`.
+
+## Deploying the public pages (maintainer, gated)
+
+The public pages need no CMS, no Access and no secret to serve: they render
+from the seed on a fresh D1 (the smoke proves it). Each step below is a
+hard gate from `AGENTS.md`.
+
+1. `npx wrangler login` in a terminal (the OAuth token stays in Wrangler's
+   own store; never paste it anywhere).
+2. Create the resources once:
+
+   ```sh
+   npx wrangler d1 create repoglance-site-cms
+   npx wrangler r2 bucket create repoglance-site-media
+   ```
+
+   Keep the printed database id out of source; export it as
+   `REPOGLANCE_D1_ID` in the deploying shell (or an ignored `.local/`
+   file you source).
+3. Build and write the ignored production config, then deploy:
+
+   ```sh
+   npm run build
+   REPOGLANCE_D1_ID=... REPOGLANCE_WORKERS_DEV=true npm run prepare:deploy
+   npx wrangler deploy --config .local/wrangler.production.json
+   ```
+
+   `REPOGLANCE_WORKERS_DEV=true` serves the Worker on its workers.dev
+   hostname for a first look; `/_emdash` answers 404 there because Access
+   is not configured. On a free Workers plan add
+   `REPOGLANCE_SANDBOX=false` to drop the `worker_loaders` binding.
+4. Go live: re-run `prepare:deploy` with `REPOGLANCE_CUSTOM_DOMAIN=repoglance.com`
+   (and `REPOGLANCE_WORKERS_DEV` unset) and deploy again. Wrangler creates
+   the DNS record for the custom domain in the zone.
+5. The CMS stays denied until the Access steps above are done.
