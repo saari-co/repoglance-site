@@ -14,7 +14,8 @@ import { fileURLToPath } from 'node:url';
  *   REPOGLANCE_WORKERS_DEV  "true" to serve on the workers.dev preview hostname
  *   REPOGLANCE_SANDBOX      "false" to drop the Workers Paid worker_loaders binding
  *
- * Output: .local/wrangler.production.json (ignored). Nothing here deploys.
+ * Output: dist/server/wrangler.production.json (ignored, beside the built
+ * config so Wrangler resolves the entry and asset paths). Nothing here deploys.
  */
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const built = JSON.parse(readFileSync(join(root, 'dist/server/wrangler.json'), 'utf8'));
@@ -39,8 +40,8 @@ if (env.REPOGLANCE_SANDBOX === 'false') delete config.worker_loaders;
 const domain = env.REPOGLANCE_CUSTOM_DOMAIN?.trim();
 if (domain) config.routes = [{ pattern: domain, custom_domain: true }];
 else delete config.routes;
-mkdirSync(join(root, '.local'), { recursive: true });
-const out = join(root, '.local/wrangler.production.json');
+mkdirSync(join(root, 'dist/server'), { recursive: true });
+const out = join(root, 'dist/server/wrangler.production.json');
 writeFileSync(out, `${JSON.stringify(config, null, 2)}\n`);
 const summary = {
   name: config.name,

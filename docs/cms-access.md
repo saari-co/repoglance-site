@@ -33,9 +33,10 @@ action.
 - Public pages never depend on the CMS: `ContentPage.astro` reads the CMS
   entry and falls back to `seed/seed.json`. The response carries
   `data-content-source="cms"` or `"seed"`.
-- The Astro Cloudflare adapter logs that it would use a `SESSION` KV binding
-  for Astro sessions. The site uses no sessions, so no KV namespace is
-  declared or needed.
+- The Astro Cloudflare adapter adds a `SESSION` KV binding to the built
+  config for Astro sessions, and `wrangler deploy` auto-provisions a KV
+  namespace named `repoglance-site-session` for it on first deploy (it did
+  so on 2026-10-01). The site uses no sessions; the namespace stays empty.
 
 ## Values that stay out of source
 
@@ -90,7 +91,7 @@ hard gate from `AGENTS.md`.
    ```sh
    npm run build
    REPOGLANCE_D1_ID=... REPOGLANCE_WORKERS_DEV=true npm run prepare:deploy
-   npx wrangler deploy --config .local/wrangler.production.json
+   npx wrangler deploy --config dist/server/wrangler.production.json
    ```
 
    `REPOGLANCE_WORKERS_DEV=true` serves the Worker on its workers.dev

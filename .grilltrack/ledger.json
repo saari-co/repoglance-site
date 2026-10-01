@@ -4,11 +4,11 @@
   "current_focus": {
     "cadence": "sequential",
     "confirmed": true,
-    "confirmed_at": "2026-10-01T11:55:05+00:00",
-    "domain": "site-look-005: layout and visual language of repoglance.com (the first visual round), judged on the real / and /testers pages with the seed copy, sample-mode imagery, the commit-eye mark and system fonts locked",
-    "started_at": "2026-10-01T10:54:17+00:00",
-    "status": "inspected",
-    "summary": "Maintainer locked the hybrid on 2026-10-01 ('Yes, lock it' after rings at 5%). Implement it in the real site on claude/site-foundation: src/styles/site.css, band and slider wrappers in ContentPage/Hero/Cta, data-page on the layout, design.md v1, smoke assertions for the new structure; verify with npm run verify and full-page captures of the production build; exact-source review; update the PR. Delivery stays separate: no merge, no deploy."
+    "confirmed_at": "2026-10-01T12:20:30+00:00",
+    "domain": "site-hosting-007: standing repoglance.com up on Cloudflare in gated steps (resources and a workers.dev preview first, the custom domain second, Access and the CMS later)",
+    "started_at": "2026-10-01T12:20:30+00:00",
+    "status": "confirmed",
+    "summary": "Gate 1 approved by the maintainer on 2026-10-01 (create D1 and R2, deploy the workers.dev preview, Workers Paid). Implement: scripts/prepare-deploy.mjs, the deploy, a smoke of the live preview, proof under proof/hosting-20261001/. The custom domain is gate 2 and is not touched without a separate OK."
   },
   "decisions": [
     {
@@ -496,6 +496,77 @@
       "superseded_by": null,
       "updated_at": "2026-10-01T12:02:45+00:00",
       "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0 after the fix; captures re-taken)"
+    },
+    {
+      "baseline_ref": null,
+      "candidate_refs": [],
+      "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+      "context_ref": "file:docs/cms-access.md",
+      "created_at": "2026-10-01T12:20:30+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-look-005"
+      ],
+      "domain": "site-hosting-007: standing repoglance.com up on Cloudflare in gated steps (resources and a workers.dev preview first, the custom domain second, Access and the CMS later)",
+      "history": [
+        {
+          "at": "2026-10-01T12:20:30+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:23:43+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:23:43+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "implemented",
+          "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        }
+      ],
+      "id": "site-hosting-007",
+      "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+      "question": "How does repoglance.com go live?",
+      "rationale": "The public pages need no CMS, Access or secret to serve (smoke on a fresh D1); exposing them on workers.dev first lets the maintainer see the real thing before DNS changes.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [],
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T12:23:43+00:00",
+      "verification_ref": "file:proof/hosting-20261001/PROOF.md (live smoke: public pages 200 from the seed, /_emdash 404, captures in swarm-pr-assets repoglance-site-live-preview-20261001)"
     }
   ],
   "last_activation": {
@@ -517,5 +588,5 @@
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T12:02:45+00:00"
+  "updated_at": "2026-10-01T12:23:43+00:00"
 }
