@@ -113,9 +113,11 @@
   turns terse for the two working blocks: "Three steps, in order" with the
   intro "Group first, Play second, install third." and a mono "In this
   build" list with the not-yet line. Rules every edit keeps: read-only
-  stated on both pages, the Google Group link in the hero and step 1, the
-  missing opt-in link stated, the version named, no Play URL, no CI claim
-  beyond "not yet", no "stack"; `tests/content.test.mjs` enforces them.
+  stated on the home page (the eyebrow, the hero lead's "never changes
+  anything on GitHub", the first fact) while the join page keeps to the
+  test itself, the Google Group link in the hero and step 1, the missing
+  opt-in link stated, the version named, no Play URL, no CI claim beyond
+  "not yet", no "stack"; `tests/content.test.mjs` enforces them.
   - **Rejected (round 1, do not reintroduce without a new grill):** the
     foundation's voice at full length (A, except its call to action),
     the benefit-first second person (B), the facts-first register on the

@@ -1,6 +1,7 @@
 # Content sources
 
-Every sentence in `seed/seed.json` traces to one of:
+Every claim about the app and the test in `seed/seed.json` traces to one
+of:
 
 - `saari-co/RepoGlance` `README.md` on `main` (the "Available on main" list
   and the "Not available yet" list),
@@ -11,9 +12,16 @@ Every sentence in `seed/seed.json` traces to one of:
   opt-in link yet, the bundle's API levels 31+, which is "Android 12 or
   newer").
 
+Two housekeeping sentences on the join page describe the signup itself
+rather than the app ("the rest takes a few minutes", "Leaving the group
+leaves the test") and have no upstream source.
+
 `tests/content.test.mjs` enforces the rules that follow from those sources:
-no "stack" as a widget name, no CI claims beyond "not yet", no write verbs,
-the privacy link and the Google Group link present, no Play opt-in URL.
+no "stack" as a widget name, CI mentioned only as "not yet" or "does not
+fetch", no watched-run notification or production-release claim,
+"read-only" and "never changes anything on GitHub" present, the build
+version named, the privacy, Google Group, repository and issues links
+present, no Play opt-in URL.
 
 The wording was decided in GrillTrack `site-copy-006` (2026-10-01): one
 five-candidate round on the real pages and a confirmed hybrid
