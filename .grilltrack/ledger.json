@@ -674,21 +674,10 @@
     }
   ],
   "last_activation": {
-    "at": "2026-10-01T12:58:49+00:00",
+    "at": "2026-10-01T15:54:07+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
-    "artifact_refs": [
-      ".grilltrack/proof/copy-hybrid-1-captures-20261001.md",
-      ".grilltrack/work/copy-hybrid-1/candidates/h.json",
-      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-copy-hybrid-1-20261001"
-    ],
-    "next_safe_action": "On 'lock it': lock site-copy-006 with candidates/h.json, copy it into seed/seed.json, update tests/content.test.mjs and scripts/smoke.mjs for the new hero heading, npm run verify, capture the production build, record implement/verify/review, update design.md and docs/content.md, commit, push claude/site-copy, open a PR against claude/site-foundation. On further changes: adjust the hybrid and preview again.",
-    "paused_at": "2026-10-01T12:54:28+00:00",
-    "reason": "Hybrid preview presented (home = D with A's call to action; join = D with C's steps and build list) as the replacement for round 1's five; waiting for the maintainer's explicit confirmation before locking.",
-    "resumed_at": "2026-10-01T12:58:49+00:00"
-  },
-  "pause": {
     "artifact_refs": [
       ".grilltrack/proof/imagery-round-1-captures-20261001.md",
       ".grilltrack/work/imagery-round-1/picker.json",
@@ -697,7 +686,18 @@
     ],
     "next_safe_action": "Read the maintainer's answer. One letter: lock site-imagery-007, copy the candidate's assets into public/screenshots/ with the slugs in seed/seed.json and alt text in src/content/screenshots.ts, amend the imagery rule in AGENTS.md, docs/CHARTER.md and design.md (showcase captures, never a live account), update tests/content.test.mjs's screenshot test and docs/content.md (source release and hashes), npm run verify, capture the production build, record implement/verify/review, commit, push, PR. Mixed answer: bake the picks into a shared base and run round 2 or preview a precise hybrid. Note: npm run build currently fails in this worktree with 'Tsconfig not found astro/tsconfigs/strict' (Vite 8 / oxc resolver) although node_modules/astro/tsconfigs/strict.json exists; diagnose before the verify (the dist from 8b2381e still serves).",
     "paused_at": "2026-10-01T15:33:39+00:00",
-    "reason": "Imagery round 1 is presented; waiting for the maintainer's pick (per candidate or per block) in the live picker. Nothing locked."
+    "reason": "Imagery round 1 is presented; waiting for the maintainer's pick (per candidate or per block) in the live picker. Nothing locked.",
+    "resumed_at": "2026-10-01T15:54:07+00:00"
+  },
+  "pause": {
+    "artifact_refs": [
+      ".grilltrack/proof/imagery-hybrid-1-captures-20261001.md",
+      ".grilltrack/work/imagery-hybrid-1/candidates/h.json",
+      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-imagery-hybrid-1-20261001"
+    ],
+    "next_safe_action": "On 'lock it': lock site-imagery-007 with candidates/h.json; copy its assets into public/screenshots/ (dark set), add the slugs to seed/seed.json and src/content/screenshots.ts with dimensions and alt, add data-shot to Screenshot.astro and the cut-out CSS to site.css, amend the imagery rule in AGENTS.md, docs/CHARTER.md, design.md and docs/content.md (showcase captures with made-up data, never a live account, the sign-in code is a fixture), update tests/content.test.mjs and scripts/smoke.mjs, verify in a fresh clone of the commit (the nested worktree's parent checkout now carries a tsconfig that Vite 8 picks up), capture the production build, record implement/verify/review, merge origin/main with the ledger replayed, push, update PR #3.",
+    "paused_at": "2026-10-01T15:54:07+00:00",
+    "reason": "Imagery hybrid preview presented (C with the sign-in code screen on 'Before you sign in' and the join hero) as the replacement for round 1's five; waiting for the maintainer's explicit confirmation before locking."
   },
   "recommendation": {
     "alternatives": [
@@ -712,5 +712,5 @@
   "status": "paused",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T15:33:39+00:00"
+  "updated_at": "2026-10-01T15:54:07+00:00"
 }

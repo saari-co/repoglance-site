@@ -187,7 +187,15 @@ next safe action about the Astro build).
 
 ## Outcome
 
-Open. The maintainer judges the five in the live picker and answers per
-candidate or per block; a mixed answer becomes a shared base for a second
-round or a precise hybrid preview. Nothing is locked, written into
+Pick with a precise hybrid request (maintainer, 2026-10-01): "I prefer C
+but the 'Before you sign in' image sucks; I like the second screen where
+it shows the click to copy code and open GitHub page, it would look
+better and depict the sign-in flow better; that same image should also be
+updated on the Join page in the hero." The sign-in code screen cannot be
+captured from a live sign-in (the verification lane refuses to retain a
+GitHub-issued code), so RepoGlance gained a debug-only preview of that
+real screen with a made-up code, captured on the emulator, and the hybrid
+(C with `signin-code` on `home-sample` and `testers-hero`) is previewed
+alone as the replacement for the five in
+`imagery-hybrid-1-captures-20261001.md`. Nothing is locked or written into
 `seed/seed.json` or `public/screenshots/` by this round.
