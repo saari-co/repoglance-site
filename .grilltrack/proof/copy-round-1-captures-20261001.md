@@ -178,7 +178,12 @@ decision is locked in the ledger.
 
 ## Outcome
 
-Open. The maintainer judges the five in the live picker and answers per
-candidate or per block; a mixed answer becomes a shared base for a second
-round on what is still open. Nothing is locked, written into
-`seed/seed.json`, pushed or opened as a pull request by this round.
+Mixed pick with a precise hybrid request (maintainer, 2026-10-01): "For
+home: I like D but I like the footer from A (Help test RepoGlance); for
+join: also prefer D, except I prefer the middle content section from C",
+quoting C's "Three steps, in order" block and its "In this build" list.
+Every block is covered, so there is nothing left open for a second round
+of five: the hybrid (home = D with A's call to action; join page = D with
+C's steps and build list) is previewed alone as the replacement for the
+five, for confirmation, in `copy-hybrid-1-captures-20261001.md`. Nothing is
+locked or written into `seed/seed.json` by this round.

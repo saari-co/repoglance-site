@@ -533,11 +533,10 @@
     }
   ],
   "last_activation": {
-    "at": "2026-10-01T10:23:01+00:00",
+    "at": "2026-10-01T12:54:28+00:00",
     "mechanism": "implicit"
   },
-  "last_pause": null,
-  "pause": {
+  "last_pause": {
     "artifact_refs": [
       ".grilltrack/proof/copy-round-1-captures-20261001.md",
       ".grilltrack/work/copy-round-1/picker.json",
@@ -550,7 +549,18 @@
     ],
     "next_safe_action": "Read the maintainer's answer. One letter: lock site-copy-006 with that candidate, copy its JSON into seed/seed.json, update tests/content.test.mjs and scripts/smoke.mjs for the new hero heading, npm run verify, capture the production build, record implement/verify/review, update design.md and docs/content.md, commit, push claude/site-copy, open a PR against claude/site-foundation. Mixed answer: bake the picks into a shared base and run round 2 on what is still open.",
     "paused_at": "2026-10-01T12:47:01+00:00",
-    "reason": "Copy round 1 is presented; waiting for the maintainer's pick (per candidate or per block) in the live picker. Nothing locked."
+    "reason": "Copy round 1 is presented; waiting for the maintainer's pick (per candidate or per block) in the live picker. Nothing locked.",
+    "resumed_at": "2026-10-01T12:54:28+00:00"
+  },
+  "pause": {
+    "artifact_refs": [
+      ".grilltrack/proof/copy-hybrid-1-captures-20261001.md",
+      ".grilltrack/work/copy-hybrid-1/candidates/h.json",
+      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-copy-hybrid-1-20261001"
+    ],
+    "next_safe_action": "On 'lock it': lock site-copy-006 with candidates/h.json, copy it into seed/seed.json, update tests/content.test.mjs and scripts/smoke.mjs for the new hero heading, npm run verify, capture the production build, record implement/verify/review, update design.md and docs/content.md, commit, push claude/site-copy, open a PR against claude/site-foundation. On further changes: adjust the hybrid and preview again.",
+    "paused_at": "2026-10-01T12:54:28+00:00",
+    "reason": "Hybrid preview presented (home = D with A's call to action; join = D with C's steps and build list) as the replacement for round 1's five; waiting for the maintainer's explicit confirmation before locking."
   },
   "recommendation": {
     "alternatives": [
@@ -565,5 +575,5 @@
   "status": "paused",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T12:47:01+00:00"
+  "updated_at": "2026-10-01T12:54:28+00:00"
 }
