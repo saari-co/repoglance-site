@@ -74,3 +74,7 @@ captures re-taken and replaced in the asset release (hashes above). No
 other findings: the grouping keeps every block inside EmDash's `Blocks`,
 the page attribute is omitted on the 404 page, the band tokens meet
 contrast on both schemes, and the smoke structure checks hold.
+
+Re-review of `2e8621d18ffcc577dc313ec172cab6c949542c8a` (the one-line
+stroke fix) found no further defects; recorded clean in the ledger. The
+dark-scheme captures now show the rings on the near-white band.

@@ -7,7 +7,7 @@
     "confirmed_at": "2026-10-01T11:55:05+00:00",
     "domain": "site-look-005: layout and visual language of repoglance.com (the first visual round), judged on the real / and /testers pages with the seed copy, sample-mode imagery, the commit-eye mark and system fonts locked",
     "started_at": "2026-10-01T10:54:17+00:00",
-    "status": "confirmed",
+    "status": "inspected",
     "summary": "Maintainer locked the hybrid on 2026-10-01 ('Yes, lock it' after rings at 5%). Implement it in the real site on claude/site-foundation: src/styles/site.css, band and slider wrappers in ContentPage/Hero/Cta, data-page on the layout, design.md v1, smoke assertions for the new structure; verify with npm run verify and full-page captures of the production build; exact-source review; update the PR. Delivery stays separate: no merge, no deploy."
   },
   "decisions": [
@@ -480,14 +480,21 @@
           "result": "findings",
           "reviewed_at": "2026-10-01T12:02:08+00:00",
           "source_identity": "git:b7c2ffe1584638f8db594043361a15a3ec6032e3"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T12:02:45+00:00",
+          "source_identity": "git:2e8621d18ffcc577dc313ec172cab6c949542c8a"
         }
       ],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
+      "review_ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:2e8621d18ffcc577dc313ec172cab6c949542c8a",
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-01T12:02:08+00:00",
+      "updated_at": "2026-10-01T12:02:45+00:00",
       "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0 after the fix; captures re-taken)"
     }
   ],
@@ -499,16 +506,16 @@
   "pause": null,
   "recommendation": {
     "alternatives": [
-      "site-copy: a copy round on the accepted layout once the look is locked (voice, order, specificity), seeded through seed.json.",
-      "cms-access: the maintainer's hosted bootstrap (Worker, D1, R2, Access application, secrets, staging host) from docs/cms-access.md, then an Access allow-path proof."
+      "cms-access: the maintainer's hosted bootstrap (Worker, D1, R2, Access application, secrets, staging host) from docs/cms-access.md, then an Access allow-path proof and the CMS-backed render path.",
+      "typography-007: a font-role round (display, reading, labels) now that the layout is locked; system faces are the current lock."
     ],
-    "reason": "The foundation ships with provisional styling and the maintainer asked for a five-candidate look round on a live preview; the look is the highest-leverage unresolved decision and everything else (copy, hosting) can follow it without rework.",
-    "recommended": "site-look-005: the first visual round. Five materially distinct layout and visual-language candidates rendered as deltas on the real / and /testers pages in a dev-only picker under .grilltrack/work/, shown on the live preview, judged at 375 and 1280 px in light and dark; the pick becomes design.md version 1.",
-    "recorded_at": "2026-10-01T10:35:17+00:00"
+    "reason": "The look is locked and verified; the copy was written for the foundation and has not been judged in the final layout, and the site cannot go live without the maintainer's Cloudflare bootstrap.",
+    "recommended": "site-copy-006: a copy round on the locked layout (voice, order and specificity of the seed copy on both pages, judged in the real layout), seeded through seed.json.",
+    "recorded_at": "2026-10-01T12:02:45+00:00"
   },
   "schema_version": "grilltrack/v0.1",
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T12:02:08+00:00"
+  "updated_at": "2026-10-01T12:02:45+00:00"
 }
