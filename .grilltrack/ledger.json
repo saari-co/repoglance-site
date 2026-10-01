@@ -498,6 +498,220 @@
       "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0 after the fix; captures re-taken)"
     },
     {
+      "baseline_ref": null,
+      "candidate_refs": [],
+      "choice": "In gated steps on the maintainer's signed-in Cloudflare account (Workers Paid): (1) D1 repoglance-site-cms, R2 repoglance-site-media (plus the adapter's auto-provisioned KV repoglance-site-session) and the Worker repoglance-site on workers.dev, /_emdash denied; (2) the custom domains repoglance.com and www.repoglance.com attached by Wrangler, workers.dev off; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers stay in ignored .local/deploy.env and dist/server/wrangler.production.json.",
+      "context_ref": "file:docs/cms-access.md",
+      "created_at": "2026-10-01T12:20:30+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-look-005"
+      ],
+      "domain": "site-hosting-007: standing repoglance.com up on Cloudflare in gated steps (resources and a workers.dev preview first, the custom domain second, Access and the CMS later)",
+      "history": [
+        {
+          "at": "2026-10-01T12:20:30+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:23:43+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:23:43+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "implemented",
+          "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:34:11+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "verified",
+          "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+          "note": "Gate 2 approved by the maintainer on 2026-10-01: attach repoglance.com and www.repoglance.com (the decision's step 2)",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "reopened",
+          "verification_ref": "file:proof/hosting-20261001/PROOF.md (live smoke: public pages 200 from the seed, /_emdash 404, captures in swarm-pr-assets repoglance-site-live-preview-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:34:35+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "reopened",
+          "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": "file:proof/hosting-20261001/PROOF.md (live smoke: public pages 200 from the seed, /_emdash 404, captures in swarm-pr-assets repoglance-site-live-preview-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:35:14+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account (Workers Paid): (1) D1 repoglance-site-cms, R2 repoglance-site-media (plus the adapter's auto-provisioned KV repoglance-site-session) and the Worker repoglance-site on workers.dev, /_emdash denied; (2) the custom domains repoglance.com and www.repoglance.com attached by Wrangler, workers.dev off; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers stay in ignored .local/deploy.env and dist/server/wrangler.production.json.",
+          "from": "locked",
+          "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": "file:proof/hosting-20261001/PROOF.md (live smoke: public pages 200 from the seed, /_emdash 404, captures in swarm-pr-assets repoglance-site-live-preview-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:35:14+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account (Workers Paid): (1) D1 repoglance-site-cms, R2 repoglance-site-media (plus the adapter's auto-provisioned KV repoglance-site-session) and the Worker repoglance-site on workers.dev, /_emdash denied; (2) the custom domains repoglance.com and www.repoglance.com attached by Wrangler, workers.dev off; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers stay in ignored .local/deploy.env and dist/server/wrangler.production.json.",
+          "from": "implemented",
+          "implementation_ref": "cloudflare:worker repoglance-site version c92e410b-a11a-4ef6-91f0-04f55b267ade with custom domains repoglance.com and www.repoglance.com (gate 2); file:scripts/prepare-deploy.mjs",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:proof/hosting-20261001/PROOF.md (live smoke: public pages 200 from the seed, /_emdash 404, captures in swarm-pr-assets repoglance-site-live-preview-20261001)"
+        }
+      ],
+      "id": "site-hosting-007",
+      "implementation_ref": "cloudflare:worker repoglance-site version c92e410b-a11a-4ef6-91f0-04f55b267ade with custom domains repoglance.com and www.repoglance.com (gate 2); file:scripts/prepare-deploy.mjs",
+      "question": "How does repoglance.com go live?",
+      "rationale": "The public pages need no CMS, Access or secret to serve (smoke on a fresh D1); exposing them on workers.dev first lets the maintainer see the real thing before DNS changes.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [],
+          "ref": "proof/hosting-20261001/PROOF.md",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T13:36:59+00:00",
+          "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+        }
+      ],
+      "review_ref": "proof/hosting-20261001/PROOF.md",
+      "review_result": "clean",
+      "review_source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T13:36:59+00:00",
+      "verification_ref": "file:proof/hosting-20261001/PROOF.md#gate-2-custom-domains-2026-10-01 (public resolvers and --resolve: apex 200 from the seed, /_emdash 404; www 200; captures in swarm-pr-assets repoglance-site-live-20261001)"
+    },
+    {
+      "baseline_ref": null,
+      "candidate_refs": [],
+      "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+      "context_ref": "file:docs/cms-access.md",
+      "created_at": "2026-10-01T12:58:56+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-hosting-007"
+      ],
+      "domain": "cms-access-008: the Access-gated EmDash CMS on repoglance.com (Access application, secrets, a build with the team domain, EmDash setup through Access)",
+      "history": [
+        {
+          "at": "2026-10-01T12:58:56+00:00",
+          "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:30:07+00:00",
+          "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:30:07+00:00",
+          "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+          "from": "implemented",
+          "implementation_ref": "cloudflare:access application RepoGlance CMS (two destinations, the maintainer's reusable owner policy, Google); cloudflare:worker repoglance-site version d074759e-0e92-4db6-864f-d609af44a470 with secrets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST, EMDASH_ENCRYPTION_KEY; file:docs/cms-access.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        }
+      ],
+      "id": "cms-access-008",
+      "implementation_ref": "cloudflare:access application RepoGlance CMS (two destinations, the maintainer's reusable owner policy, Google); cloudflare:worker repoglance-site version d074759e-0e92-4db6-864f-d609af44a470 with secrets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST, EMDASH_ENCRYPTION_KEY; file:docs/cms-access.md",
+      "question": "How is the EmDash editor enabled on repoglance.com?",
+      "rationale": "AGENTS.md hard gates: Access configuration, secrets and setup are maintainer actions; the guard and access() are wired from one build input so they cannot diverge (review round 1 of the foundation).",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [],
+          "ref": "proof/cms-access-20261001/PROOF.md",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T13:36:59+00:00",
+          "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+        }
+      ],
+      "review_ref": "proof/cms-access-20261001/PROOF.md",
+      "review_result": "clean",
+      "review_source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T13:36:59+00:00",
+      "verification_ref": "file:proof/cms-access-20261001/PROOF.md (anonymous and forged requests 302 to Access; maintainer completed setup; both pages data-content-source=cms; captures in swarm-pr-assets repoglance-site-live-cms-20261001)"
+    },
+    {
       "baseline_ref": "git:174064e (claude/site-foundation; seed/seed.json as shipped)",
       "candidate_refs": [
         ".grilltrack/work/copy-round-1/candidates/a.json",

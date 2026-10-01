@@ -5,15 +5,18 @@ read-only, widget-first GitHub glance for Google Pixels. Two pages: the
 overview at `/` and the closed-test signup at `/testers`.
 
 Built with [Astro](https://astro.build) and [EmDash](https://emdashcms.com)
-for Cloudflare Workers. Content is seeded from `seed/seed.json`; editing in a
-hosted CMS is prepared but not enabled (see below).
+for Cloudflare Workers. Content starts from `seed/seed.json` and is edited
+in EmDash behind Cloudflare Access (see below).
 
 ## Status
 
 - **Source:** this repository, on `main`.
-- **Not live:** nothing is deployed. No Worker, database, bucket, DNS record,
-  custom domain or Access application exists for repoglance.com yet. Those
-  are maintainer steps, listed in [docs/cms-access.md](docs/cms-access.md).
+- **Live** at <https://repoglance.com> (and `www`) since 2026-10-01 on
+  Cloudflare Workers with D1 and R2; the EmDash editor is behind Cloudflare
+  Access, and the pages render from the CMS. The gated steps and their proof
+  are in [docs/cms-access.md](docs/cms-access.md),
+  [proof/hosting-20261001/](proof/hosting-20261001/PROOF.md) and
+  [proof/cms-access-20261001/](proof/cms-access-20261001/PROOF.md).
 - **Look:** decided on 2026-10-01 in four GrillTrack rounds and a confirmed
   hybrid; [design.md](design.md) is the contract (v2 adds the copy).
 - **Copy:** decided on 2026-10-01 in one GrillTrack round and a confirmed

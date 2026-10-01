@@ -33,9 +33,10 @@ action.
 - Public pages never depend on the CMS: `ContentPage.astro` reads the CMS
   entry and falls back to `seed/seed.json`. The response carries
   `data-content-source="cms"` or `"seed"`.
-- The Astro Cloudflare adapter logs that it would use a `SESSION` KV binding
-  for Astro sessions. The site uses no sessions, so no KV namespace is
-  declared or needed.
+- The Astro Cloudflare adapter adds a `SESSION` KV binding to the built
+  config for Astro sessions, and `wrangler deploy` auto-provisions a KV
+  namespace named `repoglance-site-session` for it on first deploy (it did
+  so on 2026-10-01). The site uses no sessions; the namespace stays empty.
 
 ## Values that stay out of source
 
@@ -53,16 +54,105 @@ ids in `wrangler.jsonc` are local placeholders.
 
 ## Human bootstrap order
 
-1. Create the Worker, D1 and R2 for repoglance.com with `workers.dev` and
-   preview URLs off. Do not attach the custom domain yet.
-2. Create the Cloudflare Access application for `repoglance.com/_emdash/*`
-   with a policy naming only the maintainer.
-3. Set the secrets above; keep `EMDASH_OPERATOR_ALLOWLIST` owner-only.
-4. Build with `EMDASH_ACCESS_TEAM_DOMAIN` set and deploy to the staging
-   hostname. Confirm anonymous `/_emdash` still answers 404.
-5. Complete EmDash setup through Access (site title, seed). Confirm setup is
-   closed.
-6. Attach the custom domain and DNS last, after public pages and setup are
-   verified.
+The public site is live from the seed first (see the deploy section below).
+The editor is enabled afterwards, in this order. Wrangler's login on the
+build machine has no Zero Trust scope, so the Access application is created
+in the maintainer's own dashboard session (an agent may drive the
+maintainer's browser for it, mirroring the existing DinkusKit CMS
+application); secret values are piped into `wrangler secret put` and never
+printed. This was done for repoglance.com on 2026-10-01
+(`proof/cms-access-20261001/PROOF.md`).
 
-Each step is a hard gate in `AGENTS.md`.
+1. **Zero Trust team.** Cloudflare dashboard, Zero Trust. If the account has
+   no team yet, onboarding asks for a team name; the team domain is
+   `<team>.cloudflareaccess.com` and is shown under Settings, Custom Pages
+   (or in the URL of the Zero Trust dashboard). The free plan covers this.
+2. **Access application.** Zero Trust, Access, Applications, Add an
+   application, Self-hosted:
+   - Application name: `RepoGlance CMS`.
+   - Session duration: 24 hours.
+   - Public hostnames: `repoglance.com` with path `_emdash`, and a second
+     entry `www.repoglance.com` with path `_emdash`.
+   - Identity providers: the maintainer's existing Google provider only, with
+     instant authentication (the DinkusKit CMS pattern).
+   - Policy: add the maintainer's existing reusable owner policy (the one
+     the DinkusKit CMS application uses). No other rules.
+   - Save. The application's audience (AUD) tag is on its settings tab; it is
+     also the `kid` parameter of the login redirect that an anonymous request
+     to the gated path now receives.
+3. **Secrets**, from the maintainer's own terminal in a checkout where
+   `npx wrangler whoami` shows the right account. Each command reads the
+   value from the terminal or a pipe; nothing is pasted into chat:
+
+   ```sh
+   npx wrangler secret put CF_ACCESS_AUDIENCE --name repoglance-site
+   npx wrangler secret put EMDASH_OPERATOR_ALLOWLIST --name repoglance-site
+   npx emdash secrets generate --write .local/secrets.env
+   grep '^EMDASH_ENCRYPTION_KEY=' .local/secrets.env | cut -d= -f2- | npx wrangler secret put EMDASH_ENCRYPTION_KEY --name repoglance-site
+   ```
+
+   `CF_ACCESS_AUDIENCE` is the AUD tag; `EMDASH_OPERATOR_ALLOWLIST` is the
+   owner's email (the identity that completes setup), owner-only until setup
+   is closed; the encryption key stays in the ignored `.local/secrets.env`
+   and in Cloudflare. Values may be piped (`printf '%s' "$VALUE" | npx wrangler
+   secret put NAME --name repoglance-site`) as long as nothing prints them.
+4. **Team domain for the build.** Add
+   `EMDASH_ACCESS_TEAM_DOMAIN=<team>.cloudflareaccess.com` to the ignored
+   `.local/deploy.env`. It is a build input: it wires EmDash's `access()`
+   and the guard from one value.
+5. **Build and deploy** (agent or maintainer):
+
+   ```sh
+   set -a; . ./.local/deploy.env; set +a
+   npm run build
+   REPOGLANCE_CUSTOM_DOMAIN=repoglance.com,www.repoglance.com npm run prepare:deploy
+   npx wrangler deploy --config dist/server/wrangler.production.json
+   ```
+
+   Then confirm anonymous `https://repoglance.com/_emdash/admin` still
+   answers 404 (no Access JWT, so the guard denies before EmDash).
+6. **First login and setup.** The maintainer opens
+   `https://repoglance.com/_emdash/admin`, passes the one-time PIN, and
+   completes EmDash setup (site title, and include the seed content so the
+   pages switch to the CMS). The first Access login becomes Admin. Confirm
+   setup is closed: a second anonymous request to the setup routes still
+   answers 404, and the pages report `data-content-source="cms"`.
+7. **Second editor**, only after setup is closed: add the email to the
+   Access policy and to `EMDASH_OPERATOR_ALLOWLIST` (a new `secret put`).
+   Their installed EmDash role is `defaultRole` 40.
+
+## Deploying the public pages (maintainer, gated)
+
+The public pages need no CMS, no Access and no secret to serve: they render
+from the seed on a fresh D1 (the smoke proves it). Each step below is a
+hard gate from `AGENTS.md`.
+
+1. `npx wrangler login` in a terminal (the OAuth token stays in Wrangler's
+   own store; never paste it anywhere).
+2. Create the resources once:
+
+   ```sh
+   npx wrangler d1 create repoglance-site-cms
+   npx wrangler r2 bucket create repoglance-site-media
+   ```
+
+   Keep the printed database id out of source; export it as
+   `REPOGLANCE_D1_ID` in the deploying shell (or an ignored `.local/`
+   file you source).
+3. Build and write the ignored production config, then deploy:
+
+   ```sh
+   npm run build
+   REPOGLANCE_D1_ID=... REPOGLANCE_WORKERS_DEV=true npm run prepare:deploy
+   npx wrangler deploy --config dist/server/wrangler.production.json
+   ```
+
+   `REPOGLANCE_WORKERS_DEV=true` serves the Worker on its workers.dev
+   hostname for a first look; `/_emdash` answers 404 there because Access
+   is not configured. On a free Workers plan add
+   `REPOGLANCE_SANDBOX=false` to drop the `worker_loaders` binding.
+4. Go live: re-run `prepare:deploy` with
+   `REPOGLANCE_CUSTOM_DOMAIN=repoglance.com,www.repoglance.com` (and
+   `REPOGLANCE_WORKERS_DEV` unset) and deploy again. Wrangler creates the
+   DNS records for the custom domains in the zone and turns workers.dev off.
+5. The CMS stays denied until the Access steps above are done.
