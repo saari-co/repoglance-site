@@ -24,7 +24,9 @@ Decided on 2026-10-01 in the `saari-co/RepoGlance` GrillTrack ledger
 ## What the site must not do
 
 - Claim behaviour the app has not shipped and proven on `main`.
-- Show a real account's data; every screenshot is sample mode.
+- Show a real account's data; every screenshot is a showcase capture of
+  made-up repositories under fictional owners (sample mode without its
+  marker), and the sign-in code shown is a fixture.
 - Collect anything: no forms, accounts, analytics or trackers.
 - Act as a GitHub client, a dashboard or a chat surface.
 
