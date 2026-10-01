@@ -113,7 +113,7 @@ function screenshotOptions(typeSlug) {
   return seed.blockTypes.find((type) => type.slug === typeSlug).versions[0].fields.find((field) => field.slug === 'screenshot').validation.options;
 }
 
-test('every screenshot reference is a shipped sample-mode capture', () => {
+test('every screenshot reference is a shipped showcase capture with alt text and dimensions', () => {
   const options = screenshotOptions('hero');
   assert.deepEqual(screenshotOptions('feature'), options, 'hero and feature offer the same screenshots');
   for (const page of pages) {
@@ -130,5 +130,11 @@ test('every screenshot reference is a shipped sample-mode capture', () => {
   const source = readFileSync(new URL('../src/content/screenshots.ts', import.meta.url), 'utf8');
   for (const option of options.filter((option) => option !== 'none')) {
     assert.ok(source.includes(`'${option}'`), `${option} has alt text`);
+    const start = source.indexOf(`'${option}': {`);
+    const entry = source.slice(start, source.indexOf('},', start));
+    assert.match(entry, /width: \d+,\s*height: \d+,\s*alt: '[^']*(made.up|fixture|Sign in with GitHub)[^']*'/i, `${option} has dimensions and an alt text that says the data is made up (or shows the sign-in screen)`);
+  }
+  for (const text of allText) {
+    assert.ok(!/HK7N/.test(text), 'the fixture code stays out of the copy');
   }
 });

@@ -18,8 +18,11 @@ closed test. Assume every committed byte is public.
   Play opt-in link until Play Console shows one.
 - Product copy lives in `seed/seed.json`; `tests/content.test.mjs` checks it
   for banned claims and required links. Change the copy and the test together.
-- Imagery is sample mode only (the Play listing screenshots). Never a live
-  account's data.
+- Imagery is RepoGlance's showcase captures: sample mode rendered without
+  its marker under fictional owners on the approved emulator (the app's
+  debug-only `showcase-048`), with a made-up sign-in code. Never a live
+  account's data, never a screen that says sample, never a GitHub-issued
+  code; `docs/content.md` names the source release and hashes.
 - The privacy policy stays at `https://saari-co.github.io/RepoGlance/privacy/`,
   where the Play listing points. This site links to it and serves no copy.
 - The tester signup link is the maintainer's. Never guess a URL.

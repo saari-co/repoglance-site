@@ -1,10 +1,11 @@
 # Design contract: repoglance.com
 
-- **Version:** 2 (2026-10-01): the copy in the locked layout
-  [site-copy-006], decided in one five-candidate round and a confirmed
-  hybrid. Version 1 (2026-10-01) locked the layout and visual language
-  [site-look-005] after four rounds and a confirmed hybrid; version 0
-  (2026-10-01) started the file with constraints only.
+- **Version:** 3 (2026-10-01): the imagery [site-imagery-007], decided in
+  one five-candidate round and a confirmed hybrid, with one card's copy
+  amended to match [site-copy-006]. Version 2 (2026-10-01) locked the copy
+  [site-copy-006]; version 1 (2026-10-01) locked the layout and visual
+  language [site-look-005]; version 0 (2026-10-01) started the file with
+  constraints only.
 - **Canonical path:** `design.md` at the repository root.
 - **Decision history:** `.grilltrack/ledger.json`. Where they disagree, the
   ledger owns history and this file owns the current, implementable design.
@@ -21,7 +22,10 @@
   Material 3 colour roles with light and dark themes. The site reads as the
   same crew without pretending to be an Android screen.
 - **Hard constraints:**
-  - Truth first: only proven behaviour, every screenshot from sample mode.
+  - Truth first: only proven behaviour; every screenshot is a showcase
+    capture of made-up repositories under fictional owners, never a live
+    account, never a screen that says sample, and the sign-in code shown
+    is a fixture.
   - No Google or GitHub brand assets; no Gemini sparkle, no four-colour sweep.
   - Both colour schemes, phone width first, no horizontal scroll, keyboard
     reachable, visible focus.
@@ -34,9 +38,31 @@
 - **Mark:** the header inlines the commit-eye magnifier so `currentColor`
   follows the scheme; `public/mark.svg` and `public/favicon.svg` carry the
   same geometry, converted from the app's launcher vectors.
-- **Imagery:** seven sample-mode captures from the Play listing release
-  `repoglance-play-listing-20260930-040`, 540 and 1080 px WebP under
-  `public/screenshots/` (`docs/content.md`).
+- **Imagery [site-imagery-007, "C with the sign-in code screen"]:** the
+  app's showcase captures (RepoGlance `showcase-048`: sample mode rendered
+  without its marker under the fictional owners `saltmarsh-io`,
+  `ferrywood` and `elin-tidewater` on the approved emulator's cover
+  display, dark theme, SystemUI demo clock at 9:30), cut into 540 and 1080
+  px WebP under `public/screenshots/` (`docs/content.md` has the source
+  release, hashes and crops). Thirteen slugs ship so the CMS can pick any:
+  six phone frames (9:16 crops) and seven cut-outs. The pages use: the
+  home hero shows the home screen phone with both widgets; the four cards
+  show the element each card is about, cut from the capture and set on
+  the card with its own corners (the Pinned repos widget, the catalog
+  rows, the Quick Settings row with the tile, the sign-in code screen as
+  a centred phone crop); the join hero shows the sign-in code screen phone
+  at 220 px. `Screenshot.astro` carries `data-shot` and each slug's own
+  dimensions; `site.css` sets the card image to 280 px, `object-fit:
+  cover` from the top with 12 px corners (16 px for widgets, left-aligned
+  for the tile row, centred for phones).
+  - **Rejected (round 1, do not reintroduce without a new grill):** the
+    shipped framing of top-cropped phones (A), aimed phone crops (B),
+    scheme-matched images via `<picture>` (D), the widgets cut-out as the
+    hero with no phone (E), and the Connect screen for the sign-in slots
+    (the hybrid replaced it with the device-code screen).
+  - **Rejected earlier:** the Play listing's sample-mode captures (the
+    foundation's imagery, reopened by the maintainer on 2026-10-01: marked
+    SAMPLE throughout and cropped without regard to the cards).
 - **Content structure:** `seed/seed.json` blocks `hero`, `feature`,
   `fact_list`, `steps`, `cta`, `text_section`, rendered through EmDash's
   native `Blocks`. `ContentPage.astro` groups consecutive `feature` blocks
@@ -123,20 +149,28 @@
     the benefit-first second person (B), the facts-first register on the
     home page (C, kept only for the join page's steps and build list),
     the formal privacy-led register (E).
+  - **Amended with the imagery lock:** the fourth home card reads "When
+    you sign in" and describes GitHub's device flow, matching its sign-in
+    code image; the sample-mode entry stays as its last sentence.
 - **Proof:** `.grilltrack/proof/look-round-1-captures-20261001.md` to
   `look-round-4-captures-20261001.md`,
   `look-hybrid-1-captures-20261001.md`, the production verification in
   `.grilltrack/proof/site-look-005-verify-20261001.md`; for the copy,
   `copy-round-1-captures-20261001.md`,
   `copy-hybrid-1-captures-20261001.md` and
-  `site-copy-006-verify-20261001.md`.
+  `site-copy-006-verify-20261001.md`; for the imagery,
+  `imagery-round-1-captures-20261001.md`,
+  `imagery-hybrid-1-captures-20261001.md` and
+  `site-imagery-007-verify-20261001.md`.
 
 ## Unresolved (decided by GrillTrack, one slot per round)
 
 - **Typography roles beyond system faces:** not grilled; system faces are
   the lock until a font round says otherwise.
 - **Motion:** none today; the slider scrolls natively. Not grilled.
-- **Open Graph image:** still the Play feature graphic. Not grilled.
+- **Open Graph image:** still the Play feature graphic (sample-mode art
+  from the listing). Not grilled; next in line now that the page imagery
+  is showcase captures.
 
 ## Verification expectations
 

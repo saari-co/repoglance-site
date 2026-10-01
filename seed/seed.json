@@ -63,9 +63,15 @@
                   "catalog-pinned",
                   "repository-issues-and-prs",
                   "repository-prs",
-                  "owner-filter",
+                  "quick-settings-tile",
                   "connect-or-explore-sample",
-                  "quick-settings-tile"
+                  "widgets-cutout",
+                  "pinned-widget",
+                  "repository-widget",
+                  "catalog-rows",
+                  "repository-rows",
+                  "tile-row",
+                  "signin-code"
                 ]
               }
             }
@@ -105,9 +111,15 @@
                   "catalog-pinned",
                   "repository-issues-and-prs",
                   "repository-prs",
-                  "owner-filter",
+                  "quick-settings-tile",
                   "connect-or-explore-sample",
-                  "quick-settings-tile"
+                  "widgets-cutout",
+                  "pinned-widget",
+                  "repository-widget",
+                  "catalog-rows",
+                  "repository-rows",
+                  "tile-row",
+                  "signin-code"
                 ]
               }
             }
@@ -356,7 +368,7 @@
               "_key": "home-pin",
               "heading": "On the home screen",
               "body": "The Pinned repos widget lists what you pinned, most recent push first. The Repository widget shows a repository's open issue and pull request counts, with the latest items at the taller size. Both say how old their numbers are.",
-              "screenshot": "catalog-pinned"
+              "screenshot": "pinned-widget"
             },
             {
               "_type": "feature",
@@ -364,7 +376,7 @@
               "_key": "home-navigator",
               "heading": "In the app",
               "body": "Browse every repository you share with RepoGlance, filter by account or organization, search, sort by latest push, and pin from the row. Open one to read its open issues and pull requests; tap to continue in the GitHub app.",
-              "screenshot": "repository-issues-and-prs"
+              "screenshot": "catalog-rows"
             },
             {
               "_type": "feature",
@@ -372,15 +384,15 @@
               "_key": "home-widgets",
               "heading": "In Quick Settings",
               "body": "The RepoGlance tile shows your latest push with its age. Pinned repositories refresh about every 30 minutes on a network connection; when GitHub can't be reached, you see the last good value or no data, never a made-up zero.",
-              "screenshot": "quick-settings-tile"
+              "screenshot": "tile-row"
             },
             {
               "_type": "feature",
               "_version": 1,
               "_key": "home-sample",
-              "heading": "Before you sign in",
-              "body": "Tap Explore with sample data on the first screen. The catalog, the repository views, the widgets and the tile run on made-up repositories marked SAMPLE, with no network requests.",
-              "screenshot": "connect-or-explore-sample"
+              "heading": "When you sign in",
+              "body": "Sign in on GitHub's own page. RepoGlance shows a short code; Copy code & open GitHub takes you to GitHub to enter it and authorize. RepoGlance never sees your password. No account yet? Tap Explore with sample data instead.",
+              "screenshot": "signin-code"
             },
             {
               "_type": "fact_list",
@@ -440,7 +452,7 @@
               "primary_href": "https://groups.google.com/g/repoglance-testers",
               "secondary_label": "Back to the overview",
               "secondary_href": "/",
-              "screenshot": "connect-or-explore-sample"
+              "screenshot": "signin-code"
             },
             {
               "_type": "steps",
