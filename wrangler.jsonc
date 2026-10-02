@@ -9,6 +9,16 @@
   "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
   "workers_dev": false,
   "preview_urls": false,
+  // Cloudflare caches the Worker's own responses when they ask for it; the
+  // public pages opt in (src/page-cache.ts), everything else is no-store.
+  "cache": {
+    "enabled": true
+  },
+  // The Worker's own version id, read by the Astro cache provider: a
+  // version-scoped ETag and an astro-version cache tag. Not a resource.
+  "version_metadata": {
+    "binding": "CF_VERSION_METADATA"
+  },
   "vars": {
     "EMDASH_SITE_URL": "https://repoglance.com"
   },
