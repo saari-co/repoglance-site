@@ -1345,16 +1345,16 @@
   "pause": null,
   "recommendation": {
     "alternatives": [
-      "typography-010: a font-role round within system faces (the no-bundled-fonts constraint stands), judged on the real pages.",
-      "closeout: the charter's two pages, look, copy, imagery and link-preview image are locked, verified and reviewed; what remains (the Play opt-in link when Play Console shows it, the CMS entry's pre-copy-lock description) is maintainer content, not a grill."
+      "site-links-010 (carried from the www cycle): point the Play listing's website field and the RepoGlance README at https://repoglance.com; a maintainer Play Console change plus a small PR in saari-co/RepoGlance, now that the apex is the single canonical host.",
+      "typography-010: a font-role round within system faces (the no-bundled-fonts constraint stands), judged on the real pages; or closeout, since the charter's pages, look, copy, imagery and link preview are locked, verified and reviewed, and what remains (the Play opt-in link, the CMS entry's pre-copy-lock description) is maintainer content."
     ],
-    "reason": "Every visible asset is now inside the design contract; the only visible mismatch left is dark captures on the light page, which most visitors see, and the material to fix it already exists.",
+    "reason": "Every visible asset is now inside the design contract; the only visible mismatch left is dark captures on the light page, which most visitors see, and the material to fix it already exists. The outside links are the remaining maintainer action.",
     "recommended": "site-scheme-imagery-010: scheme-matched page imagery; show the light showcase captures on the light scheme and the dark ones on the dark scheme (imagery round 1's rejected D revisited on its own, now that the slots and crops are locked); the light captures already sit in the showcase-048 release with recorded hashes, so the round is five framings of the same switch on the real pages.",
-    "recorded_at": "2026-10-02T02:52:56+00:00"
+    "recorded_at": "2026-10-02T03:01:49+00:00"
   },
   "schema_version": "grilltrack/v0.1",
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-02T02:52:56+00:00"
+  "updated_at": "2026-10-02T03:01:49+00:00"
 }
