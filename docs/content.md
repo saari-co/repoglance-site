@@ -24,7 +24,9 @@ version named, the privacy, Google Group, repository and issues links
 present, no Play opt-in URL; and for the images, every screenshot option
 shipped at both widths with dimensions and an alt text that says the data
 is made up (or shows the sign-in screen), never "live", and the fixture
-code kept out of the copy and the alt text.
+code kept out of the copy and the alt text; and for the Open Graph image,
+a 1200x630 PNG whose hash this file records, declared with its size and a
+made-up-data alt in `src/layouts/Site.astro`.
 
 The wording was decided in GrillTrack `site-copy-006` (2026-10-01): one
 five-candidate round on the real pages and a confirmed hybrid
@@ -80,6 +82,45 @@ app dumps: `widgets-cutout` (30,436)-(796,1828), `pinned-widget`
 `tile-row` (0,560)-(1080,1400). `src/content/screenshots.ts` carries each
 slug's alt text and the 540 px file's dimensions.
 
-`public/og-image.png` is the Play feature graphic and `public/icon-512.png`
-the Play icon from the same release. The marks in `public/mark.svg` and
-`public/favicon.svg` are hand conversions of the app's launcher vectors.
+`public/icon-512.png` is the Play icon from the same release. The marks in
+`public/mark.svg` and `public/favicon.svg` are hand conversions of the
+app's launcher vectors.
+
+## Open Graph image
+
+`public/og-image.png`, the image every shared link shows, was decided in
+GrillTrack `og-image-009` (2026-10-01): one five-candidate round judged in
+link-preview card mimics fed by the real meta tags
+(`.grilltrack/proof/og-round-1-captures-20261001.md`); `design.md` v4
+records the composition. It is generated, not drawn:
+
+- `scripts/og-image/og-image.html` is the 1200x630 card in the decided
+  look: the ink band, the commit-eye rings at 5%, the mark inline, the
+  eyebrow and the hero line of the home hero injected from
+  `seed/seed.json` by the script (the copy lock stays the single source),
+  the Pinned repos widget cut-out from the shipped
+  `public/screenshots/pinned-widget-1080.webp` (header and three rows of
+  made-up repositories), and `repoglance.com` in mono.
+- `node scripts/og-image.mjs` renders it through Google Chrome's DevTools
+  protocol (headless, 1200x630, device scale factor 1, after fonts and the
+  image have loaded) and writes `public/og-image.png`;
+  `node scripts/og-image.mjs --check` renders again and compares with the
+  committed file. Not part of `npm run verify`; needs a local Chrome.
+- The committed file was rendered on macOS with Google Chrome
+  154.0.8037.59 and the system faces `.SF NS` (`.SFNS-Bold`, the heading
+  and the wordmark) and `Menlo` (`Menlo-Regular`, the eyebrow and the
+  domain). The committed `public/og-image.png` is 1200x630 and 118269
+  bytes; its SHA-256 is
+  `b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1`.
+  Two renders on that machine were byte-identical; another machine's
+  faces or Chrome build give a different file, so regenerate and update
+  this hash together (`tests/content.test.mjs` compares them).
+- `src/layouts/Site.astro` serves it on both pages as `og:image` with
+  `og:image:type`, `og:image:width` 1200, `og:image:height` 630 and an
+  `og:image:alt` that says the repositories are made up;
+  `twitter:card` stays `summary_large_image`. `scripts/smoke.mjs` checks
+  that the served file equals the committed one.
+
+Before this decision the file was the Play feature graphic (sample-mode
+art, 1024x500, SHA-256
+`68a0ffa50e5d48fb3bf792664746d1594e4063b477bcc98b962ee5314258b1b8`).

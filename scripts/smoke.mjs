@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { existsSync } from 'node:fs';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -111,6 +111,7 @@ try {
   record('GET / has the band hero, the feature row and the band call to action', /class="band band-hero"/.test(homeBody) && /class="showcase"/.test(homeBody) && /class="band band-cta"/.test(homeBody) && (homeBody.match(/class="feature"/g) ?? []).length === 4, 'structure');
   record('GET / card images are the cut-outs the cards are about', /data-shot="pinned-widget"/.test(homeBody) && /data-shot="catalog-rows"/.test(homeBody) && /data-shot="tile-row"/.test(homeBody), 'card images');
   record('GET / canonical has no trailing slash', /<link rel="canonical" href="https:\/\/repoglance\.com\/"/.test(homeBody), '');
+  record('GET / declares the Open Graph image, its size and a made-up-data alt', /property="og:image" content="https:\/\/repoglance\.com\/og-image\.png"/.test(homeBody) && /og:image:width" content="1200"/.test(homeBody) && /og:image:height" content="630"/.test(homeBody) && /og:image:alt" content="[^"]*made-up[^"]*"/.test(homeBody), '');
 
   const testers = await request(base, '/testers');
   const testersBody = await testers.text();
@@ -138,6 +139,10 @@ try {
     const asset = await request(base, path);
     record(`GET ${path} is 200 ${type}`, asset.status === 200 && (asset.headers.get('content-type') ?? '').includes(type), `${asset.status} ${asset.headers.get('content-type')}`);
   }
+
+  const ogImage = Buffer.from(await (await request(base, '/og-image.png')).arrayBuffer());
+  const committed = await readFile(join(root, 'public/og-image.png'));
+  record('GET /og-image.png is the committed 1200x630 PNG', ogImage.equals(committed) && ogImage.readUInt32BE(16) === 1200 && ogImage.readUInt32BE(20) === 630, `${ogImage.length} bytes served, ${committed.length} committed`);
 
   const summary = { at: new Date().toISOString(), checks };
   const outDir = join(root, 'runs/smoke-runs');

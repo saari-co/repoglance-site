@@ -12,7 +12,7 @@
     "seed": "seed/seed.json"
   },
   "scripts": {
-    "dev": "astro dev --host 127.0.0.1",
+    "dev": "astro dev --host 127.0.0.1 --port ${PORT:-4321}",
     "build": "astro build",
     "start": "wrangler dev --local --persist-to .local/wrangler --port 8787 --ip 127.0.0.1 --config dist/server/wrangler.json",
     "types:wrangler": "wrangler types --config wrangler.jsonc --include-runtime false",

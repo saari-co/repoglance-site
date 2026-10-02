@@ -11,6 +11,8 @@ const { title, description, contentSource = 'none', page } = Astro.props;
 const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const canonical = new URL(pathname, Astro.site ?? 'https://repoglance.com');
 const ogImage = new URL('/og-image.png', canonical);
+// The 1200x630 image scripts/og-image.mjs renders (og-image-009); the alt says the data is made up.
+const ogImageAlt = 'RepoGlance: Glance at the home screen. Know where your repos stand. The Pinned repos widget listing three made-up repositories with their open issue and pull request counts.';
 const isHome = pathname === '/';
 ---
 <!doctype html>
@@ -28,6 +30,10 @@ const isHome = pathname === '/';
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <title>{isHome ? 'RepoGlance' : `${title} · RepoGlance`}</title>
   </head>
