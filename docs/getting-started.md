@@ -28,6 +28,9 @@ npm run start
 
 `start` runs `wrangler dev --local` on `127.0.0.1:8787` with the production
 worker entry. `/_emdash` answers 404 there, as in production without Access.
+The public pages carry the edge-cache headers (local workerd does not emulate
+the edge cache itself), and a request with `Host: www.repoglance.com` answers
+the 301 to the apex.
 
 ## Verify
 

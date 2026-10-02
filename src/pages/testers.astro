@@ -1,4 +1,6 @@
 ---
 import ContentPage from '../components/ContentPage.astro';
+import { preparePage } from '../content/load-page';
+const { page, source } = await preparePage(Astro, 'testers');
 ---
-<ContentPage slug="testers" />
+<ContentPage slug="testers" page={page} source={source} />

@@ -1,8 +1,8 @@
 ---
-import { getEmDashEntry } from 'emdash';
 import { Blocks } from 'emdash/ui';
 import Site from '../layouts/Site.astro';
-import { seedPage, type PageData, type SeedBlock } from '../content/seed-fallback';
+import type { ContentSource } from '../content/load-page';
+import type { PageData, SeedBlock } from '../content/seed-fallback';
 import Cta from './Cta.astro';
 import FactList from './FactList.astro';
 import Feature from './Feature.astro';
@@ -10,28 +10,15 @@ import Hero from './Hero.astro';
 import Steps from './Steps.astro';
 import TextSection from './TextSection.astro';
 
-interface Props { slug: string }
-const { slug } = Astro.props;
-
-// The CMS entry wins when it exists; the seed is the shipped fallback so the
-// public pages never depend on CMS setup (docs/cms-access.md).
-let page: PageData | null = null;
-let source: 'cms' | 'seed' | 'none' = 'none';
-try {
-  const { entry, error } = await getEmDashEntry('pages', slug);
-  const data = entry?.data as Partial<PageData> | undefined;
-  if (!error && data && typeof data.title === 'string' && Array.isArray(data.layout)) {
-    page = { title: data.title, description: typeof data.description === 'string' ? data.description : '', layout: data.layout };
-    source = 'cms';
-  }
-} catch {
-  page = null;
+// Rendering only. The page frontmatter loads the content and settles the
+// status and cache headers (src/content/load-page.ts) before the streamed
+// Response exists.
+interface Props {
+  slug: string;
+  page: PageData | null;
+  source: ContentSource;
 }
-if (!page) {
-  page = seedPage(slug);
-  if (page) source = 'seed';
-}
-if (!page) Astro.response.status = 404;
+const { slug, page, source } = Astro.props;
 
 const components = { hero: Hero, feature: Feature, fact_list: FactList, steps: Steps, cta: Cta, text_section: TextSection };
 

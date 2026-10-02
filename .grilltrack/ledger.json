@@ -4,11 +4,11 @@
   "current_focus": {
     "cadence": "sequential",
     "confirmed": true,
-    "confirmed_at": "2026-10-01T16:43:45+00:00",
-    "domain": "site-imagery-007 with the one-card amendment of site-copy-006: the imagery of repoglance.com in the locked layout and copy (RepoGlance showcase captures; cut-out cards; the sign-in code screen on the fourth home card and the join hero), implemented, verified in a fresh clone and reviewed on the exact head",
-    "started_at": "2026-10-01T16:43:45+00:00",
+    "confirmed_at": "2026-10-01T23:20:11+00:00",
+    "domain": "www-redirect-and-cache-009: a permanent redirect from www.repoglance.com to the apex and edge caching for the anonymous public pages, both in the Worker, with the fail-closed /_emdash guard kept ahead of the cache",
+    "started_at": "2026-10-01T23:20:11+00:00",
     "status": "inspected",
-    "summary": "Maintainer locked the imagery hybrid and the one-card copy amendment on 2026-10-01 ('2'). Implemented in 53a2ede on claude/site-copy, merged with origin/main (ledger replayed) in 0b48c9d, verified in a fresh clone; review round 1 findings fixed in the follow-up commit; then push and refresh PR #3. No merge, no deploy."
+    "summary": "Confirmed by the maintainer on 2026-10-01. Bounded implementation: src/host-canonical.ts, src/www-redirect.ts and src/outer-middleware.ts (sequence of the www redirect then the namespace guard, wired as EmDash's middleware.outer), astro.config.mjs cache provider cacheCloudflare(), src/page-cache.ts (pure cache policy and response decision) applied from the page frontmatter for rendered pages only, unit tests, smoke checks, docs and proof/www-redirect-cache-20261001. Verification: unit tests, build and workerd smoke, the full npm run verify at the same commit in a sibling path (the app worktree's dot-directory path breaks rolldown's tsconfig resolution), CI on the PR; live proof after the separately gated deploy, and a purge check if a publish happens. Deploy and merge stay separate gates."
   },
   "decisions": [
     {
@@ -1055,36 +1055,169 @@
       "superseded_by": null,
       "updated_at": "2026-10-01T16:47:13+00:00",
       "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of add4e6992eb859e22350069ecbadf145bb3a4645; captures byte-identical to the merged head's)"
+    },
+    {
+      "baseline_ref": "git:257b4a108c5c040da956387ce012e71e56d792c5",
+      "candidate_refs": [],
+      "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+      "context_ref": "file:proof/hosting-20261001/PROOF.md#gate-2-custom-domains-2026-10-01; file:proof/cms-access-20261001/PROOF.md",
+      "created_at": "2026-10-01T23:20:11+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "cms-access-008"
+      ],
+      "domain": "www-redirect-and-cache-009: a permanent redirect from www.repoglance.com to the apex and edge caching for the anonymous public pages, both in the Worker, with the fail-closed /_emdash guard kept ahead of the cache",
+      "history": [
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "implemented",
+          "implementation_ref": "git:584726527a9c22d55fb7f1060f15106c8d8f2583 (first squashed slice; superseded by 885bc13 after review round 1)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "verified",
+          "implementation_ref": "git:584726527a9c22d55fb7f1060f15106c8d8f2583 (first squashed slice; superseded by 885bc13 after review round 1)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:proof/www-redirect-cache-20261001/PROOF.md (npm run verify exit 0 at 5847265 in a sibling worktree: 113 smoke checks)"
+        },
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:584726527a9c22d55fb7f1060f15106c8d8f2583 (first squashed slice; superseded by 885bc13 after review round 1)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "human_gate"
+          ],
+          "review_ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 1: five findings, no blockers)",
+          "review_result": "findings",
+          "review_source_identity": "git:584726527a9c22d55fb7f1060f15106c8d8f2583",
+          "to": "implemented",
+          "verification_ref": "file:proof/www-redirect-cache-20261001/PROOF.md (npm run verify exit 0 at 5847265 in a sibling worktree: 113 smoke checks)"
+        },
+        {
+          "at": "2026-10-01T23:20:12+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "implemented",
+          "implementation_ref": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0 (round-1 fixes squashed with the slice: applyPageResponse with the seed-render validator rule, version_metadata binding CF_VERSION_METADATA for the version-scoped ETag and tag, three more unit tests, evidenced proof and docs; PR saari-co/repoglance-site#4)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:proof/www-redirect-cache-20261001/PROOF.md (npm run verify exit 0 at 5847265 in a sibling worktree: 113 smoke checks)"
+        }
+      ],
+      "id": "www-redirect-and-cache-009",
+      "implementation_ref": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0 (round-1 fixes squashed with the slice: applyPageResponse with the seed-render validator rule, version_metadata binding CF_VERSION_METADATA for the version-scoped ETag and tag, three more unit tests, evidenced proof and docs; PR saari-co/repoglance-site#4)",
+      "question": "How do www.repoglance.com requests reach the apex, and how are the public pages cached at the edge without caching the CMS namespace or serving stale content after a publish?",
+      "rationale": "Maintainer confirmed on 2026-10-01: lock it and go ahead.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "human_gate"
+          ],
+          "ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 1: five findings, no blockers)",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T23:20:11+00:00",
+          "source_identity": "git:584726527a9c22d55fb7f1060f15106c8d8f2583"
+        },
+        {
+          "classifications": [],
+          "ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 2: clean, three wording nits applied in 5943b0e)",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T23:20:12+00:00",
+          "source_identity": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0"
+        }
+      ],
+      "review_ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 2: clean, three wording nits applied in 5943b0e)",
+      "review_result": "clean",
+      "review_source_identity": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T23:20:12+00:00",
+      "verification_ref": "file:proof/www-redirect-cache-20261001/PROOF.md (npm run verify exit 0 at 885bc13 in a sibling worktree: audit 91 files, astro check 0 errors, 9 content + 9 guard + 12 edge tests, build, 115 smoke checks; live HIT, Host and Cookie variants and purge pending the gated deploy)"
     }
   ],
   "last_activation": {
-    "at": "2026-10-01T16:28:51+00:00",
+    "at": "2026-10-01T23:26:11+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
     "artifact_refs": [
-      ".grilltrack/proof/imagery-hybrid-1-captures-20261001.md",
-      ".grilltrack/work/imagery-hybrid-1/candidates/h.json",
-      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-imagery-hybrid-1-20261001"
+      "proof/www-redirect-cache-20261001/PROOF.md",
+      "github:saari-co/repoglance-site#4"
     ],
-    "next_safe_action": "On 'lock it': lock site-imagery-007 with candidates/h.json; copy its assets into public/screenshots/ (dark set), add the slugs to seed/seed.json and src/content/screenshots.ts with dimensions and alt, add data-shot to Screenshot.astro and the cut-out CSS to site.css, amend the imagery rule in AGENTS.md, docs/CHARTER.md, design.md and docs/content.md (showcase captures with made-up data, never a live account, the sign-in code is a fixture), update tests/content.test.mjs and scripts/smoke.mjs, verify in a fresh clone of the commit (the nested worktree's parent checkout now carries a tsconfig that Vite 8 picks up), capture the production build, record implement/verify/review, merge origin/main with the ledger replayed, push, update PR #3.",
-    "paused_at": "2026-10-01T15:54:07+00:00",
-    "reason": "Imagery hybrid preview presented (C with the sign-in code screen on 'Before you sign in' and the join hero) as the replacement for round 1's five; waiting for the maintainer's explicit confirmation before locking.",
-    "resumed_at": "2026-10-01T16:28:15+00:00"
+    "next_safe_action": "On the maintainer's deploy OK: in the sibling worktree at the PR head run npx wrangler deploy --config dist/server/wrangler.production.json (build and prepare:deploy staged with .local/deploy.env), then the live checks in the proof's Live section, append them to proof/www-redirect-cache-20261001/PROOF.md, push, and ask separately for the merge.",
+    "paused_at": "2026-10-01T23:20:12+00:00",
+    "reason": "waiting_for_human: wrangler deploy is a maintainer gate (AGENTS.md); PR saari-co/repoglance-site#4 carries the slice with the review recorded",
+    "resumed_at": "2026-10-01T23:26:11+00:00"
   },
   "pause": null,
   "recommendation": {
     "alternatives": [
-      "scheme-matched imagery: the light showcase captures already exist; a round on showing light images on the light scheme (the rejected D of imagery round 1) if the dark images on the light page start to grate.",
+      "site-links-010: point the Play listing's website field and the RepoGlance README at https://repoglance.com (a maintainer Play Console change plus a small PR in saari-co/RepoGlance), now that the apex is the single canonical host.",
       "typography-010: a font-role round now that layout, copy and imagery are locked; system faces are the current lock."
     ],
-    "reason": "Layout, copy and imagery are locked and verified; the Open Graph image is the last visible asset still outside the design contract, and every shared link shows it.",
-    "recommended": "og-image-009: an Open Graph and link-preview image in the decided look and imagery (the ink band, the commit-eye rings, the hero line, a showcase cut-out), replacing the Play feature graphic; five candidates on the real meta tags, judged in link-preview renderers.",
-    "recorded_at": "2026-10-01T16:47:13+00:00"
+    "reason": "Layout, copy, imagery, hosting, the CMS, the www redirect and the edge cache are decided; the link-preview image is the last visible asset outside the design contract, and the outside links to the site are the remaining maintainer actions.",
+    "recommended": "og-image-009: an Open Graph and link-preview image in the decided look and imagery (the ink band, the commit-eye rings, the hero line, a showcase cut-out), replacing the Play feature graphic; five candidates on the real meta tags, judged in link-preview renderers (the imagery lane's recommendation, kept at the merge).",
+    "recorded_at": "2026-10-01T23:20:12+00:00"
   },
   "schema_version": "grilltrack/v0.1",
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T16:47:13+00:00"
+  "updated_at": "2026-10-01T23:26:11+00:00"
 }
