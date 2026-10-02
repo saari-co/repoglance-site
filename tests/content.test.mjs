@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
@@ -138,4 +139,21 @@ test('every screenshot reference is a shipped showcase capture with alt text and
   for (const text of allText) {
     assert.ok(!/HK7N/.test(text), 'the fixture code stays out of the copy');
   }
+});
+
+test('the Open Graph image is the generated 1200x630 PNG whose hash docs/content.md records', () => {
+  const png = readFileSync(new URL('../public/og-image.png', import.meta.url));
+  assert.equal(png.toString('latin1', 1, 4), 'PNG');
+  assert.equal(png.readUInt32BE(16), 1200, 'width');
+  assert.equal(png.readUInt32BE(20), 630, 'height');
+  const doc = readFileSync(new URL('../docs/content.md', import.meta.url), 'utf8');
+  const recorded = doc.match(/committed `public\/og-image\.png`[\s\S]*?SHA-256 is\s*`([0-9a-f]{64})`/)?.[1];
+  assert.ok(recorded, 'docs/content.md records the hash of public/og-image.png');
+  assert.equal(createHash('sha256').update(png).digest('hex'), recorded, 'public/og-image.png matches the hash in docs/content.md: regenerate with node scripts/og-image.mjs and update the doc together');
+  const layout = readFileSync(new URL('../src/layouts/Site.astro', import.meta.url), 'utf8');
+  assert.match(layout, /og:image:width" content="1200"/);
+  assert.match(layout, /og:image:height" content="630"/);
+  const alt = layout.match(/ogImageAlt = '([^']*)'/)?.[1] ?? '';
+  assert.ok(alt.includes(home.data.layout[0].heading), 'the image alt carries the hero line from the seed');
+  assert.ok(/made-up/.test(alt) && !/HK7N/.test(layout), 'the image alt says the data is made up and carries no fixture code');
 });

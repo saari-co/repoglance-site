@@ -4,11 +4,11 @@
   "current_focus": {
     "cadence": "sequential",
     "confirmed": true,
-    "confirmed_at": "2026-10-01T23:20:11+00:00",
-    "domain": "www-redirect-and-cache-009: a permanent redirect from www.repoglance.com to the apex and edge caching for the anonymous public pages, both in the Worker, with the fail-closed /_emdash guard kept ahead of the cache",
-    "started_at": "2026-10-01T23:20:11+00:00",
+    "confirmed_at": "2026-10-02T02:16:21+00:00",
+    "domain": "og-image-009: the Open Graph and link-preview image of repoglance.com in the decided look (design.md v3): one 1200x630 image served as og:image for both pages, built from the ink band, the faint commit-eye rings, the hero line, the commit-eye mark, system faces and optionally a showcase cut-out, judged in link-preview card mimics fed by the real meta tags; replaces the Play feature graphic (1024x500)",
+    "started_at": "2026-10-01T23:31:01+00:00",
     "status": "inspected",
-    "summary": "Confirmed by the maintainer on 2026-10-01. Bounded implementation: src/host-canonical.ts, src/www-redirect.ts and src/outer-middleware.ts (sequence of the www redirect then the namespace guard, wired as EmDash's middleware.outer), astro.config.mjs cache provider cacheCloudflare(), src/page-cache.ts (pure cache policy and response decision) applied from the page frontmatter for rendered pages only, unit tests, smoke checks, docs and proof/www-redirect-cache-20261001. Verification: unit tests, build and workerd smoke, the full npm run verify at the same commit in a sibling path (the app worktree's dot-directory path breaks rolldown's tsconfig resolution), CI on the PR; live proof after the separately gated deploy, and a purge check if a publish happens. Deploy and merge stay separate gates."
+    "summary": "og-image-009 locked as candidate C. Bounded implementation per the maintainer's brief: a reproducible generator under scripts/ (the C page as a template fed the eyebrow and hero line from seed/seed.json, the shipped pinned-widget-1080.webp as the cut-out, rendered through headless Chrome at 1200x630) replaces public/og-image.png; Site.astro adds og:image:width, og:image:height, og:image:type and og:image:alt; scripts/smoke.mjs and tests/content.test.mjs check the file, its shape and the hash recorded in docs/content.md; design.md v4 and docs/content.md record the lock and the pipeline; npm run verify; captures of the real build's tags with the final image through the card mimics; implement/verify/review in the ledger; commit with the trailer, push, PR against main. No merge, no deploy, no Cloudflare or DNS change, no secrets."
   },
   "decisions": [
     {
@@ -1189,35 +1189,172 @@
       "superseded_by": null,
       "updated_at": "2026-10-01T23:20:12+00:00",
       "verification_ref": "file:proof/www-redirect-cache-20261001/PROOF.md (npm run verify exit 0 at 885bc13 in a sibling worktree: audit 91 files, astro check 0 errors, 9 content + 9 guard + 12 edge tests, build, 115 smoke checks; live HIT, Host and Cookie variants and purge pending the gated deploy)"
+    },
+    {
+      "baseline_ref": "git:b32f2ea341db0335bfe76ef95f77990823075671 (main; public/og-image.png sha256 68a0ffa50e5d48fb3bf792664746d1594e4063b477bcc98b962ee5314258b1b8, 1024x500)",
+      "candidate_refs": [],
+      "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+      "context_ref": ".grilltrack/work/og-round-1/picker.json",
+      "created_at": "2026-10-01T23:31:01+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-look-005",
+        "site-copy-006",
+        "site-imagery-007"
+      ],
+      "domain": "og-image-009: the Open Graph and link-preview image of repoglance.com in the decided look (design.md v3): one 1200x630 image served as og:image for both pages, built from the ink band, the faint commit-eye rings, the hero line, the commit-eye mark, system faces and optionally a showcase cut-out, judged in link-preview card mimics fed by the real meta tags; replaces the Play feature graphic (1024x500)",
+      "history": [
+        {
+          "at": "2026-10-02T02:16:21+00:00",
+          "choice": "Open: OG round 1 presents five 1200x630 candidates in the decided look (A text only, B site hero with the phone, C floating widget cut-out, D mark-led, E split panel), each rendered through the real og:title, og:description and og:site_name of the production build in Slack/Discord-, X- and messaging-style card mimics plus a square centre crop; the pick becomes public/og-image.png only after an explicit lock.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-02T02:29:22+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-02T02:31:56+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "implemented",
+          "implementation_ref": "file:scripts/og-image.mjs; file:scripts/og-image/og-image.html; file:public/og-image.png (1200x630, sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1); file:src/layouts/Site.astro (og:image:type/width/height/alt); file:scripts/smoke.mjs; file:tests/content.test.mjs; file:docs/content.md; file:design.md (v4); branch claude/site-og-image",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-02T02:46:07+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "verified",
+          "implementation_ref": "file:scripts/og-image.mjs; file:scripts/og-image/og-image.html; file:public/og-image.png (1200x630, sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1); file:src/layouts/Site.astro (og:image:type/width/height/alt); file:scripts/smoke.mjs; file:tests/content.test.mjs; file:docs/content.md; file:design.md (v4); branch claude/site-og-image",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md"
+        },
+        {
+          "at": "2026-10-02T02:50:44+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "needs_reverification",
+          "implementation_ref": "file:scripts/og-image.mjs; file:scripts/og-image/og-image.html; file:public/og-image.png (1200x630, sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1); file:src/layouts/Site.astro (og:image:type/width/height/alt); file:scripts/smoke.mjs; file:tests/content.test.mjs; file:docs/content.md; file:design.md (v4); branch claude/site-og-image",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "review_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:adac3fb2f8e157ff8b20b813be7905da67fb9a30",
+          "to": "implemented",
+          "verification_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md"
+        },
+        {
+          "at": "2026-10-02T02:50:44+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "implemented",
+          "implementation_ref": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391 (review round 1 fixes: scripts/og-image.mjs injection guard and Chrome spawn handling, tests/content.test.mjs alt tied to the seed heading, README.md v4 line, proof wording) on top of git:adac3fb2f8e157ff8b20b813be7905da67fb9a30 (the implementation: scripts/og-image.mjs, scripts/og-image/og-image.html, public/og-image.png sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1, src/layouts/Site.astro og:image:type/width/height/alt, scripts/smoke.mjs, tests/content.test.mjs, docs/content.md, design.md v4)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md"
+        }
+      ],
+      "id": "og-image-009",
+      "implementation_ref": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391 (review round 1 fixes: scripts/og-image.mjs injection guard and Chrome spawn handling, tests/content.test.mjs alt tied to the seed heading, README.md v4 line, proof wording) on top of git:adac3fb2f8e157ff8b20b813be7905da67fb9a30 (the implementation: scripts/og-image.mjs, scripts/og-image/og-image.html, public/og-image.png sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1, src/layouts/Site.astro og:image:type/width/height/alt, scripts/smoke.mjs, tests/content.test.mjs, docs/content.md, design.md v4)",
+      "question": "What does a shared link to repoglance.com show as its preview image?",
+      "rationale": "Maintainer's pick on the live picker; the widget shows what the app is in one glance and its rows stay readable in the Slack, Discord and X card sizes.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-02T02:46:07+00:00",
+          "source_identity": "git:adac3fb2f8e157ff8b20b813be7905da67fb9a30"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-02T02:52:56+00:00",
+          "source_identity": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-02T02:52:56+00:00",
+      "verification_ref": "npm run verify exit 0 on git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391 (Node 22.23.2; audit 105 files, 71 scanned; 0 type errors; 10 content and 9 guard tests; Cloudflare build; 69 smoke checks incl. the served og-image.png byte-equal to the committed 1200x630 file); scripts/og-image.mjs --check identical; .grilltrack/proof/site-og-image-009-verify-20261001.md"
     }
   ],
   "last_activation": {
-    "at": "2026-10-01T23:26:11+00:00",
+    "at": "2026-10-02T02:16:21+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
     "artifact_refs": [
-      "proof/www-redirect-cache-20261001/PROOF.md",
-      "github:saari-co/repoglance-site#4"
+      ".grilltrack/proof/og-round-1-captures-20261001.md",
+      ".grilltrack/work/og-round-1/picker.json",
+      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-og-round-1-20261001"
     ],
-    "next_safe_action": "On the maintainer's deploy OK: in the sibling worktree at the PR head run npx wrangler deploy --config dist/server/wrangler.production.json (build and prepare:deploy staged with .local/deploy.env), then the live checks in the proof's Live section, append them to proof/www-redirect-cache-20261001/PROOF.md, push, and ask separately for the merge.",
-    "paused_at": "2026-10-01T23:20:12+00:00",
-    "reason": "waiting_for_human: wrangler deploy is a maintainer gate (AGENTS.md); PR saari-co/repoglance-site#4 carries the slice with the review recorded",
-    "resumed_at": "2026-10-01T23:26:11+00:00"
+    "next_safe_action": "On an explicit lock of C (or a confirmed precise hybrid previewed alone): lock og-image-009 with the choice, confirm the summary, re-create the generator under scripts/ (the candidate page, its assets and the Chrome render, deterministic on this machine), replace public/og-image.png, add og:image:width/height/alt to Site.astro, extend scripts/smoke.mjs and tests/content.test.mjs, update design.md v4 and docs/content.md, npm run verify, capture, record implement/verify/review, commit, push, open a PR against main. No merge, no deploy.",
+    "paused_at": "2026-10-02T00:20:50+00:00",
+    "reason": "OG round 1 presented on the live picker (http://127.0.0.1:4360/?c=a&p=home): five 1200x630 candidates in the decided look inside link-preview card mimics fed by the real meta tags. Maintainer's first answer: 'C looks to be my favorite so far', not an explicit lock; waiting for the confirmation or a precise hybrid request.",
+    "resumed_at": "2026-10-02T02:16:21+00:00"
   },
   "pause": null,
   "recommendation": {
     "alternatives": [
-      "site-links-010: point the Play listing's website field and the RepoGlance README at https://repoglance.com (a maintainer Play Console change plus a small PR in saari-co/RepoGlance), now that the apex is the single canonical host.",
-      "typography-010: a font-role round now that layout, copy and imagery are locked; system faces are the current lock."
+      "site-links-010 (carried from the www cycle): point the Play listing's website field and the RepoGlance README at https://repoglance.com; a maintainer Play Console change plus a small PR in saari-co/RepoGlance, now that the apex is the single canonical host.",
+      "typography-010: a font-role round within system faces (the no-bundled-fonts constraint stands), judged on the real pages; or closeout, since the charter's pages, look, copy, imagery and link preview are locked, verified and reviewed, and what remains (the Play opt-in link, the CMS entry's pre-copy-lock description) is maintainer content."
     ],
-    "reason": "Layout, copy, imagery, hosting, the CMS, the www redirect and the edge cache are decided; the link-preview image is the last visible asset outside the design contract, and the outside links to the site are the remaining maintainer actions.",
-    "recommended": "og-image-009: an Open Graph and link-preview image in the decided look and imagery (the ink band, the commit-eye rings, the hero line, a showcase cut-out), replacing the Play feature graphic; five candidates on the real meta tags, judged in link-preview renderers (the imagery lane's recommendation, kept at the merge).",
-    "recorded_at": "2026-10-01T23:20:12+00:00"
+    "reason": "Every visible asset is now inside the design contract; the only visible mismatch left is dark captures on the light page, which most visitors see, and the material to fix it already exists. The outside links are the remaining maintainer action.",
+    "recommended": "site-scheme-imagery-010: scheme-matched page imagery; show the light showcase captures on the light scheme and the dark ones on the dark scheme (imagery round 1's rejected D revisited on its own, now that the slots and crops are locked); the light captures already sit in the showcase-048 release with recorded hashes, so the round is five framings of the same switch on the real pages.",
+    "recorded_at": "2026-10-02T03:01:49+00:00"
   },
   "schema_version": "grilltrack/v0.1",
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-01T23:26:11+00:00"
+  "updated_at": "2026-10-02T03:01:49+00:00"
 }
