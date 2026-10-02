@@ -168,3 +168,20 @@ Findings and adjudication:
    out of this decision's scope).
 8. The two dev fixes (`autoPort`, the dev script's `PORT`) are outside
    the lock but disclosed. **defer**: kept, named in the commit and here.
+
+Re-verification on `852e8e9302e7a8a5cf3cd332d9fbad9b58229391` (the fix
+commit; the tree clean): `npm run verify` exit 0 on Node 22.23.2 (audit
+105 files, 71 scanned; 0 type errors; 10 content and 9 guard tests; the
+Cloudflare build; 69 smoke checks); `scripts/og-image.mjs --check`
+identical; the image, the template and the tags did not change.
+Re-review of `852e8e9` by the same reviewer: the five corrections match
+the findings (the injection exercised with `$'`, `&` and `<` in the
+copy, a doubled and a missing element; the bogus `CHROME_BIN` path
+exits 1 with the named message and leaves no profile), nothing else
+changed in the diff beyond the proof section and the ledger record, no
+defect introduced by the fixes. Two notes, both **defer**: the ledger
+state at that commit still read `needs_reverification` (closed by the
+implement and verify entries bound to `852e8e9` in the ledger commit
+that follows), and the alt-capture regex in the content test would fail
+loudly, not silently, if a future hero heading carried an apostrophe.
+Recorded clean.
