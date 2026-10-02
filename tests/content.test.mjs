@@ -153,5 +153,7 @@ test('the Open Graph image is the generated 1200x630 PNG whose hash docs/content
   const layout = readFileSync(new URL('../src/layouts/Site.astro', import.meta.url), 'utf8');
   assert.match(layout, /og:image:width" content="1200"/);
   assert.match(layout, /og:image:height" content="630"/);
-  assert.ok(/ogImageAlt = '[^']*made-up[^']*'/.test(layout) && !/HK7N/.test(layout), 'the image alt says the data is made up and carries no fixture code');
+  const alt = layout.match(/ogImageAlt = '([^']*)'/)?.[1] ?? '';
+  assert.ok(alt.includes(home.data.layout[0].heading), 'the image alt carries the hero line from the seed');
+  assert.ok(/made-up/.test(alt) && !/HK7N/.test(layout), 'the image alt says the data is made up and carries no fixture code');
 });

@@ -1112,21 +1112,49 @@
           "review_source_identity": null,
           "to": "verified",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-02T02:46:07+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "verified",
+          "implementation_ref": "file:scripts/og-image.mjs; file:scripts/og-image/og-image.html; file:public/og-image.png (1200x630, sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1); file:src/layouts/Site.astro (og:image:type/width/height/alt); file:scripts/smoke.mjs; file:tests/content.test.mjs; file:docs/content.md; file:design.md (v4); branch claude/site-og-image",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md"
         }
       ],
       "id": "og-image-009",
       "implementation_ref": "file:scripts/og-image.mjs; file:scripts/og-image/og-image.html; file:public/og-image.png (1200x630, sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1); file:src/layouts/Site.astro (og:image:type/width/height/alt); file:scripts/smoke.mjs; file:tests/content.test.mjs; file:docs/content.md; file:design.md (v4); branch claude/site-og-image",
       "question": "What does a shared link to repoglance.com show as its preview image?",
       "rationale": "Maintainer's pick on the live picker; the widget shows what the app is in one glance and its rows stay readable in the Slack, Discord and X card sizes.",
-      "repair_required": false,
-      "review_classifications": [],
-      "review_history": [],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
-      "status": "verified",
+      "repair_required": true,
+      "review_classifications": [
+        "required_fix",
+        "defer"
+      ],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-02T02:46:07+00:00",
+          "source_identity": "git:adac3fb2f8e157ff8b20b813be7905da67fb9a30"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+      "review_result": "findings",
+      "review_source_identity": "git:adac3fb2f8e157ff8b20b813be7905da67fb9a30",
+      "status": "needs_reverification",
       "superseded_by": null,
-      "updated_at": "2026-10-02T02:31:56+00:00",
+      "updated_at": "2026-10-02T02:46:07+00:00",
       "verification_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md"
     }
   ],
@@ -1159,5 +1187,5 @@
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-02T02:31:56+00:00"
+  "updated_at": "2026-10-02T02:46:07+00:00"
 }

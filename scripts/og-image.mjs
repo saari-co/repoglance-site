@@ -26,19 +26,28 @@ const target = join(root, 'public/og-image.png');
 const check = process.argv.includes('--check');
 const chrome = process.env.CHROME_BIN ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const port = 9633 + Math.floor(Math.random() * 500);
-const profile = await mkdtemp(join(tmpdir(), 'repoglance-og-'));
 
 const seed = JSON.parse(await readFile(join(root, 'seed/seed.json'), 'utf8'));
 const hero = seed.content.pages.find((page) => page.slug === 'home').data.layout.find((block) => block._type === 'hero');
 const escape = (text) => String(text).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const html = (await readFile(template, 'utf8'))
-  .replace(/(<p class="eyebrow" data-seed="eyebrow">)[^<]*(<\/p>)/, `$1${escape(hero.eyebrow)}$2`)
-  .replace(/(<h1 data-seed="heading">)[^<]*(<\/h1>)/, `$1${escape(hero.heading)}$2`);
+// Fills exactly one data-seed element; a function replacer so the seed text
+// is never read as a replacement pattern, and a count so template drift fails
+// instead of rendering the template's fallback words.
+function inject(source, pattern, text, label) {
+  let matches = 0;
+  const out = source.replace(pattern, (_, open, close) => {
+    matches += 1;
+    return `${open}${escape(text)}${close}`;
+  });
+  if (matches !== 1) throw new Error(`template: expected one ${label} element, found ${matches}`);
+  return out;
+}
+let html = await readFile(template, 'utf8');
+html = inject(html, /(<p class="eyebrow" data-seed="eyebrow">)[^<]*(<\/p>)/g, hero.eyebrow, 'eyebrow');
+html = inject(html, /(<h1 data-seed="heading">)[^<]*(<\/h1>)/g, hero.heading, 'heading');
 
-const child = spawn(chrome, [
-  '--headless=new', '--disable-gpu', '--hide-scrollbars', '--no-first-run', '--no-default-browser-check',
-  `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, '--force-color-profile=srgb', '--window-size=1200,630', 'about:blank',
-], { stdio: 'ignore' });
+let child;
+let profile;
 
 async function endpoint() {
   for (let attempt = 0; attempt < 60; attempt += 1) {
@@ -81,7 +90,16 @@ function connect(url) {
 const ready = `(async () => { await document.fonts.ready; await Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.onload = r; i.onerror = r; })))); return [...document.images].every((i) => i.naturalWidth > 0); })()`;
 
 try {
-  const cdp = await connect(await endpoint());
+  profile = await mkdtemp(join(tmpdir(), 'repoglance-og-'));
+  child = spawn(chrome, [
+    '--headless=new', '--disable-gpu', '--hide-scrollbars', '--no-first-run', '--no-default-browser-check',
+    `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, '--force-color-profile=srgb', '--window-size=1200,630', 'about:blank',
+  ], { stdio: 'ignore' });
+  const failedToStart = new Promise((_, reject) => {
+    child.once('error', (error) => reject(new Error(`could not start Chrome at ${chrome} (set CHROME_BIN): ${error.message}`)));
+  });
+  failedToStart.catch(() => {});
+  const cdp = await connect(await Promise.race([endpoint(), failedToStart]));
   await cdp.send('Page.enable');
   await cdp.send('DOM.enable');
   await cdp.send('CSS.enable');
@@ -118,6 +136,6 @@ try {
     console.log(`faces: heading ${sans}; mono ${mono}`);
   }
 } finally {
-  child.kill('SIGKILL');
-  await rm(profile, { recursive: true, force: true });
+  child?.kill('SIGKILL');
+  if (profile) await rm(profile, { recursive: true, force: true });
 }

@@ -59,9 +59,11 @@ built only from their tokens, their words and their asset.
 (`runs/verify-og-image-009.log`, ignored): audit 104 files (70 scanned),
 `astro check` 0 errors, 10 content tests (EmDash `validateSeed`
 included), 9 guard tests, the Cloudflare build, 69 smoke checks on local
-workerd with a fresh D1 (three of them new: the declared image tags,
-`/og-image.png` 200 `image/png`, the served bytes equal to the committed
-1200x630 file). The nested worktree builds now that the main checkout
+workerd with a fresh D1 (two of them new, 67 before: the declared image
+tags, and the served bytes equal to the committed 1200x630 file; the
+`/og-image.png` 200 `image/png` check already existed). The counts are
+the run before the proof files were added to the tree (a run with them
+reports 105 files, 71 scanned). The nested worktree builds now that the main checkout
 keeps its `node_modules`; no fresh clone was needed.
 
 **Through the real meta tags with the real image.** The verified build
@@ -114,3 +116,55 @@ they change on deploy regardless. The generator is deterministic on this
 machine (two renders identical) and will differ on a machine with other
 faces or another Chrome build; the test pins the committed hash so such
 a regeneration is a visible change.
+
+## Review round 1
+
+Exact-source review of the implementation commit
+`adac3fb2f8e157ff8b20b813be7905da67fb9a30` by a separate reviewer agent
+(read-only, this worktree only) against AGENTS.md, REPO_HYGIENE.md, the
+charter, the review policy, design.md v4 and the lock. Verified: the
+committed image is a 1200x630 PNG whose hash equals docs/content.md, the
+ledger and the proof tables; `--check` identical on this machine with
+the stated faces and Chrome build; the template's tokens and geometry
+equal the locked choice, design.md v4 and candidate C (only the inline
+assets and the shipped WebP differ, as stated); the rendered image shows
+no sample marker, no sign-in code and no brand asset; Site.astro changed
+only by the comment, the alt and the four tags; the smoke and content
+checks enforce what the docs claim; the generator is outside the verify
+chain so CI needs no Chrome; no seed change, no forbidden path, no
+secret; design.md, docs/content.md and the ledger agree; every hash in
+both proof tables matches the local files.
+
+Findings and adjudication:
+
+1. `scripts/og-image.mjs` passed the escaped seed text as a replacement
+   string, so a `$'` or `$&` in the copy would have been read as a
+   pattern, and neither replace checked that it matched (template drift
+   would have rendered the fallback words silently). **required_fix**:
+   a function replacer with a match count that throws unless exactly one
+   element is filled.
+2. A missing Chrome (`CHROME_BIN` wrong) crashed with a raw stack and
+   left the temp profile behind, since the spawn and the profile lived
+   outside the `try`. **required_fix**: both moved inside; the spawn
+   error is raced against the endpoint wait and names `CHROME_BIN`; the
+   profile is removed on every path (checked with a bogus `CHROME_BIN`).
+3. The 300 ms sleep after `Page.navigate` instead of awaiting the load
+   event, and a random debugging port instead of port 0. **defer**: two
+   renders were byte-identical for the reviewer and for the author; the
+   hash test makes a bad render visible.
+4. This proof said three smoke checks were new; the diff adds two (the
+   `/og-image.png` 200 `image/png` check existed at `b32f2ea`; 67 + 2 =
+   69). **required_fix**: reworded above.
+5. The alt text repeats the hero sentence as a literal with nothing tying
+   it to the seed. **required_fix**: the content test now asserts the
+   alt contains the seed's hero heading, so a copy amendment fails the
+   test until the alt follows.
+6. The ledger's `verification_ref` is the bare proof path and the
+   decision carries no candidate refs or source identity yet.
+   **defer**: closed by the review entry (bound to the commit) and the
+   re-verification reference recorded with the fix.
+7. README.md still said design.md v2. **required_fix**: the Look line
+   now names v4 and what it covers (one line; the README is otherwise
+   out of this decision's scope).
+8. The two dev fixes (`autoPort`, the dev script's `PORT`) are outside
+   the lock but disclosed. **defer**: kept, named in the commit and here.
