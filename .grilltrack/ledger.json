@@ -7,7 +7,7 @@
     "confirmed_at": "2026-10-07T01:37:37+00:00",
     "domain": "site-scheme-imagery-010: scheme-matched page imagery of repoglance.com; which showcase capture (dark or light) each of the six locked image slots shows per colour scheme, and any treatment the switch needs; subject, crop and slot assignments stay as locked in design.md v4 (site-imagery-007); judged on the real pages at 375 and 1280 px in both schemes",
     "started_at": "2026-10-06T22:08:46+00:00",
-    "status": "confirmed",
+    "status": "inspected",
     "summary": "site-scheme-imagery-010 locked as the confirmed hybrid (E home, D join). Bounded implementation: cut the light showcase captures into public/screenshots/ as <slug>-light-{540,1080}.webp with the recipe and source hashes in docs/content.md (every slug with a light source; repository-prs stays dark-only); Screenshot.astro renders a <picture> with a prefers-color-scheme: dark source, following the page by default and the band for the home hero (Hero.astro passes the policy); src/content/screenshots.ts records which slugs ship light; tests/content.test.mjs requires the light files for those slugs and keeps the alt rules; scripts/smoke.mjs asserts the served pictures on both pages and the light assets; design.md v5 and docs/content.md record the lock, the policy and the rejected candidates; npm run verify; captures of the production build in both schemes compared with the hybrid preview; implement/verify/review in the ledger; commit with the trailer, push, PR against main. No merge, no deploy, no Cloudflare or DNS change, no secrets."
   },
   "decisions": [
@@ -1431,14 +1431,75 @@
           "review_source_identity": null,
           "to": "verified",
           "verification_ref": "npm run verify exit 0 on the tree of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (Node 22.23.2; audit 139 files, 81 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); production captures in both schemes byte-identical to the confirmed hybrid preview; .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:53:14+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "verified",
+          "implementation_ref": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (review round 1 fix: README.md Look line; proof section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "npm run verify exit 0 on the tree of git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:53:14+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (review round 1 fix: README.md Look line; proof section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix"
+          ],
+          "review_ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-1 (the note on the history: 4b2bee5 holds only the ledger entries, not the README fix its message claims)",
+          "review_result": "findings",
+          "review_source_identity": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7",
+          "to": "implemented",
+          "verification_ref": "npm run verify exit 0 on the tree of git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:53:47+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "implemented",
+          "implementation_ref": "git:41c283e829498c49c2247a66b78cf6cc53318843 (review round 1 fix: README.md Look line; the proof's review section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md); 4b2bee5 between them carries only ledger entries",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "npm run verify exit 0 on the tree of git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:57:10+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "verified",
+          "implementation_ref": "git:41c283e829498c49c2247a66b78cf6cc53318843 (review round 1 fix: README.md Look line; the proof's review section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md); 4b2bee5 between them carries only ledger entries",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "npm run verify exit 0 on the tree of git:41c283e829498c49c2247a66b78cf6cc53318843 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
         }
       ],
       "id": "site-scheme-imagery-010",
-      "implementation_ref": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (review round 1 fix: README.md Look line; proof section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md)",
+      "implementation_ref": "git:41c283e829498c49c2247a66b78cf6cc53318843 (review round 1 fix: README.md Look line; the proof's review section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md); 4b2bee5 between them carries only ledger entries",
       "question": "When the page is on the light scheme, should the images be the light showcase captures (and the dark ones on the dark scheme), and how: a plain picture swap on every slot, the swap with the cut-outs ringed per scheme, light throughout, the phones following with the cut-outs kept dark, or each image following the surface it sits on?",
       "rationale": "Maintainer, 2026-10-06: 'E for homepage D for join page' on the round-1 picker, then 'lock it' on the hybrid previewed alone (proof: scheme-round-1-captures-20261006.md, scheme-hybrid-1-captures-20261006.md).",
-      "repair_required": false,
-      "review_classifications": [],
+      "repair_required": true,
+      "review_classifications": [
+        "required_fix",
+        "defer"
+      ],
       "review_history": [
         {
           "classifications": [
@@ -1451,15 +1512,34 @@
           "result": "findings",
           "reviewed_at": "2026-10-07T01:50:49+00:00",
           "source_identity": "git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97"
+        },
+        {
+          "classifications": [
+            "required_fix"
+          ],
+          "ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-1 (the note on the history: 4b2bee5 holds only the ledger entries, not the README fix its message claims)",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T01:53:14+00:00",
+          "source_identity": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7"
+        },
+        {
+          "classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-2",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T01:57:10+00:00",
+          "source_identity": "git:41c283e829498c49c2247a66b78cf6cc53318843"
         }
       ],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
-      "status": "verified",
+      "review_ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-2",
+      "review_result": "findings",
+      "review_source_identity": "git:41c283e829498c49c2247a66b78cf6cc53318843",
+      "status": "needs_reverification",
       "superseded_by": null,
-      "updated_at": "2026-10-07T01:51:37+00:00",
-      "verification_ref": "npm run verify exit 0 on the tree of git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+      "updated_at": "2026-10-07T01:57:10+00:00",
+      "verification_ref": "npm run verify exit 0 on the tree of git:41c283e829498c49c2247a66b78cf6cc53318843 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
     }
   ],
   "last_activation": {
@@ -1480,16 +1560,16 @@
   "pause": null,
   "recommendation": {
     "alternatives": [
-      "site-links-010 (carried from the www cycle): point the Play listing's website field and the RepoGlance README at https://repoglance.com; a maintainer Play Console change plus a small PR in saari-co/RepoGlance, now that the apex is the single canonical host.",
-      "typography-010: a font-role round within system faces (the no-bundled-fonts constraint stands), judged on the real pages; or closeout, since the charter's pages, look, copy, imagery and link preview are locked, verified and reviewed, and what remains (the Play opt-in link, the CMS entry's pre-copy-lock description) is maintainer content."
+      "screenshot-options-011: a small hygiene round on the thirteen seed options the CMS can pick: retire or re-word the unused connect-or-explore-sample option (its light cut shows the button text 'Explore with sample data' and its alt says 'Sign in with GitHub' where the screen reads 'Connect GitHub'; both pre-existing, deferred in review round 1 of site-scheme-imagery-010), and close the gap that no check catches an orphan WebP under public/screenshots/ whose slug is not a seed option.",
+      "typography-010: a font-role round within system faces (the no-bundled-fonts constraint stands), judged on the real pages; or site-links-010 (a maintainer action: the Play listing's website field and the RepoGlance README pointing at https://repoglance.com)."
     ],
-    "reason": "Every visible asset is now inside the design contract; the only visible mismatch left is dark captures on the light page, which most visitors see, and the material to fix it already exists. The outside links are the remaining maintainer action.",
-    "recommended": "site-scheme-imagery-010: scheme-matched page imagery; show the light showcase captures on the light scheme and the dark ones on the dark scheme (imagery round 1's rejected D revisited on its own, now that the slots and crops are locked); the light captures already sit in the showcase-048 release with recorded hashes, so the round is five framings of the same switch on the real pages.",
-    "recorded_at": "2026-10-02T03:01:49+00:00"
+    "reason": "Every slot the design contract names is now decided and shipped from one source of truth; the deferred findings of this cycle are hygiene, not product decisions, and the outside links need the maintainer's accounts.",
+    "recommended": "closeout: the charter's two pages are built, hosted behind the www redirect and the edge cache, and every visible decision (the look, the copy, the imagery, the link-preview image, the colour scheme of the imagery) is locked, verified and reviewed on an exact commit; what remains is the maintainer's (merge and deploy this cycle, the Play opt-in link when Play Console shows it, the CMS entry's pre-copy-lock description, the outside links of site-links-010), so no meaningful grill is left in the track.",
+    "recorded_at": "2026-10-07T01:57:10+00:00"
   },
   "schema_version": "grilltrack/v0.1",
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-07T01:51:37+00:00"
+  "updated_at": "2026-10-07T01:57:10+00:00"
 }

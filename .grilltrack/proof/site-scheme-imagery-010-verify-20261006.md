@@ -157,11 +157,13 @@ are untouched and the dark cuts are not in the diff; the 24 files are
 WebP with the declared dimensions, showing the fictional owners, no
 sample marker and the fixture code only on the sign-in screen; every
 hash in this file and in the round-1 proof matches the committed files;
-the content test fails on a missing or undeclared light file, and the
-smoke's picture checks fail on six deliberate mutations of the served
-markup (inverted hero files, a label-only band, a wrong-width source, a
-light file in the dark srcset, a card with band markup, a card without a
-source).
+the content test's assertions fail on a missing or undeclared light
+file (confirmed by reading them, not by running a broken tree), and the
+smoke's picture checks, run from a scratch script against the served
+pages, fail on six deliberate mutations of the markup (the hero's files
+inverted, a `page` label over band-correct files, the source's 1080
+entry pointing at the dark cut, a light file in the dark srcset, a card
+with band markup, a card without a source).
 
 Findings and adjudication:
 
@@ -177,8 +179,8 @@ Findings and adjudication:
    pre-existing (the dark cut shipped with v3 and the alt with it), the
    slug is a seed option used on no page, and AGENTS.md's rule targets
    the sample-mode marker, which no image shows; retiring or re-wording
-   the option is a later grill's call, noted in the ledger's
-   recommendation.
+   the option is a later grill's call, named as an alternative in the
+   recommendation this cycle recorded (`screenshot-options-011`).
 3. No check catches an orphan WebP under `public/screenshots/` whose
    slug is not a seed option (pre-existing for the dark files).
    **defer**: low risk; a tracked-file listing compared with
@@ -215,4 +217,45 @@ follows it, which the re-verification and re-review below are bound to.
 `4b2bee5` was never pushed on its own; it stays in the branch because the
 ledger's events already name it.
 
-Re-verification and re-review of the fix commit follow below.
+Re-verification on `41c283e829498c49c2247a66b78cf6cc53318843` (the fix
+commit; the tree clean): `npm run verify` exit 0 on Node 22.23.2 (audit
+140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge
+tests; the Cloudflare build; 124 smoke checks). The fix touched
+`README.md`, this file and the ledger only, so the production captures
+above stand for its tree. (`4b2bee5`'s tree verified the same way with
+the same counts, before the fix was found missing from it.)
+
+## Review round 2
+
+Re-review of `4b2bee5` by the same reviewer found what the note above
+records (the commit lacked the fix its message claimed): **required_fix**,
+repaired by `41c283e`, and the ledger's review entry for `4b2bee5` says
+so. Re-review of `41c283e` by the same reviewer: the diff touches
+`README.md`, this file and the ledger only; the Look line is accurate
+against design.md v5 and the ledger (seven rounds of five candidates,
+hybrids for the look, the copy, the imagery and the scheme, none for
+the link preview); the eight findings and the note on the history are
+faithful; no defect introduced. Findings and adjudication:
+
+1. Finding 2 above said the connect-screen option was "noted in the
+   ledger's recommendation" while no recommendation had been recorded
+   since 2026-10-02. **required_fix**: the recommendation of this cycle
+   is now recorded in the ledger (closeout recommended, with
+   `screenshot-options-011` as an alternative naming that option) and
+   the sentence points at it.
+2. Two mutation labels in round 1's summary were loose, and the content
+   test's failure modes were confirmed by reading, not running.
+   **defer**, applied anyway: the summary above now says exactly what
+   was mutated and how the test was checked.
+3. The README's Look line says the rounds were "on the real pages",
+   while the link-preview round was judged in card mimics fed by the
+   real meta tags. **defer**: a summary-line nuance; design.md v4 is
+   exact about that round, and the line is not touched again after the
+   clean review.
+4. This file's forward reference to the re-verification had nothing
+   below it at `41c283e`. **defer**, honoured here.
+
+The ledger records the review of `41c283e` with these classifications;
+the repair (the recommendation and this section) lands in the commit
+that follows, which the ledger's implement, verify and clean-review
+entries then name.
