@@ -259,3 +259,18 @@ The ledger records the review of `41c283e` with these classifications;
 the repair (the recommendation and this section) lands in the commit
 that follows, which the ledger's implement, verify and clean-review
 entries then name.
+
+## Review round 3
+
+Re-review of `2d14557eda13acd04802f6c5ba0b53b3cfd1a05d` by the same
+reviewer: the diff touches this file and the ledger only; the round-2
+section states the four findings with the classifications given and the
+adjudications as applied; the reworded round-1 sentences are exact to
+what was run; the committed ledger holds the review of `41c283e`
+(findings) and the recommendation whose alternative names the
+connect-screen option, so this file's reference is true; no code,
+tests, seed or README touched; no defect. Recorded clean, bound to
+`git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d`. `npm run verify` on that
+tree: exit 0 with the counts above (audit 140 files, 82 scanned; 0 type
+errors; 11, 9 and 12 tests; 124 smoke checks). The ledger commit that
+follows carries the implement, verify and clean-review entries for it.
