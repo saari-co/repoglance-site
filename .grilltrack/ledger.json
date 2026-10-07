@@ -1,5 +1,94 @@
 {
-  "closeout": null,
+  "closeout": {
+    "closed_at": "2026-10-07T02:27:03+00:00",
+    "confirmed_by": "user",
+    "deferred_decisions": [],
+    "proof_refs": [
+      ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+    ],
+    "reason": "Maintainer, 2026-10-06: 'close the grill' (with 'merge #7' and 'merge #6 as well'). No meaningful grill remains in the track. The charter's two pages are built and hosted (site-home-001 to site-foundation-004, site-hosting-007, cms-access-008, www-redirect-and-cache-009) and every visible decision is locked, verified and reviewed on an exact commit: the look (site-look-005), the copy (site-copy-006), the imagery (site-imagery-007), the link-preview image (og-image-009) and the colour scheme of the imagery (site-scheme-imagery-010, reviewed clean at git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d). What remains is maintainer action or hygiene, each a new track if wanted: deploying PR #7, the Play opt-in link when Play Console shows it, the CMS sync model (cms-sync-011, queued by PR #6's drift proof: the live pages render from the seed since 2026-10-06 and the CMS entries are unpublished drafts), the outside links (site-links-010), and screenshot-options-011 (the unused connect-screen option's sample text and alt, the orphan-WebP gap).",
+    "reviews": [
+      {
+        "classifications": [],
+        "decision_id": "site-foundation-004",
+        "ref": "proof/site-foundation/PROOF.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:6e1dda367020821ced3879619c6e6fd19c691508"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-look-005",
+        "ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:2e8621d18ffcc577dc313ec172cab6c949542c8a"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-hosting-007",
+        "ref": "proof/hosting-20261001/PROOF.md",
+        "result": "clean",
+        "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+      },
+      {
+        "classifications": [],
+        "decision_id": "cms-access-008",
+        "ref": "proof/cms-access-20261001/PROOF.md",
+        "result": "clean",
+        "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-copy-006",
+        "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-imagery-007",
+        "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645"
+      },
+      {
+        "classifications": [],
+        "decision_id": "www-redirect-and-cache-009",
+        "ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 2: clean, three wording nits applied in 5943b0e)",
+        "result": "clean",
+        "source_identity": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0"
+      },
+      {
+        "classifications": [],
+        "decision_id": "og-image-009",
+        "ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-scheme-imagery-010",
+        "ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-3",
+        "result": "clean",
+        "source_identity": "git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d"
+      }
+    ],
+    "summary": "Verified results: eleven decisions verified; the five visual ones reviewed clean on exact commits (site-look-005 and site-copy-006 at their fix commits, site-imagery-007 at git:add4e6992eb859e22350069ecbadf145bb3a4645, og-image-009 at git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391, site-scheme-imagery-010 at git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d). Superseded choices: the foundation's Play-listing sample-mode captures (replaced by the showcase-048 cut-outs and phones), the Play feature graphic as og:image (replaced by the generated 1200x630 card), the Connect screen for the sign-in slots (replaced by the device-code screen), dark cuts on both schemes (replaced by the scheme-matched pictures with the home hero on its band). Deferrals and unresolved risk: the connect-or-explore-sample option shows 'Explore with sample data' and its alt names a button the screen does not show (pre-existing, unused on any page); no check catches an orphan WebP under public/screenshots/; the live site serves the dark cuts until PR #7 is deployed; the CMS entries are stale, unpublished drafts and the pages render from the seed (PR #6, cms-sync-011 queued as a new track); the Play opt-in link is not published; every capture is Chromium only. Proof: .grilltrack/proof/ (look rounds 1 to 4 and hybrid, copy round 1 and hybrid, imagery round 1 and hybrid, og round 1, scheme round 1 and hybrid, and the five *-verify-* files) and proof/ (site-foundation, hosting-20261001, cms-access-20261001, www-redirect-cache-20261001, og-image-deploy-20261006 and cms-drift-20261006 via PR #6). Delivery: PRs saari-co/repoglance-site#1 to #5 merged by the maintainer before this closeout; #7 (this cycle, branch claude/site-scheme-imagery) and #6 (the deploy and drift proof) merged on the maintainer's instruction of 2026-10-06 after this record.",
+    "superseded_decisions": [],
+    "verified_decisions": [
+      "site-home-001",
+      "site-pages-002",
+      "site-signup-link-003",
+      "site-foundation-004",
+      "site-look-005",
+      "site-hosting-007",
+      "cms-access-008",
+      "site-copy-006",
+      "site-imagery-007",
+      "www-redirect-and-cache-009",
+      "og-image-009",
+      "site-scheme-imagery-010"
+    ]
+  },
   "created_at": "2026-10-01T10:23:01+00:00",
   "current_focus": {
     "cadence": "sequential",
@@ -7,7 +96,7 @@
     "confirmed_at": "2026-10-07T01:37:37+00:00",
     "domain": "site-scheme-imagery-010: scheme-matched page imagery of repoglance.com; which showcase capture (dark or light) each of the six locked image slots shows per colour scheme, and any treatment the switch needs; subject, crop and slot assignments stay as locked in design.md v4 (site-imagery-007); judged on the real pages at 375 and 1280 px in both schemes",
     "started_at": "2026-10-06T22:08:46+00:00",
-    "status": "inspected",
+    "status": "closed",
     "summary": "site-scheme-imagery-010 locked as the confirmed hybrid (E home, D join). Bounded implementation: cut the light showcase captures into public/screenshots/ as <slug>-light-{540,1080}.webp with the recipe and source hashes in docs/content.md (every slug with a light source; repository-prs stays dark-only); Screenshot.astro renders a <picture> with a prefers-color-scheme: dark source, following the page by default and the band for the home hero (Hero.astro passes the policy); src/content/screenshots.ts records which slugs ship light; tests/content.test.mjs requires the light files for those slugs and keeps the alt rules; scripts/smoke.mjs asserts the served pictures on both pages and the light assets; design.md v5 and docs/content.md record the lock, the policy and the rejected candidates; npm run verify; captures of the production build in both schemes compared with the hybrid preview; implement/verify/review in the ledger; commit with the trailer, push, PR against main. No merge, no deploy, no Cloudflare or DNS change, no secrets."
   },
   "decisions": [
@@ -1578,29 +1667,20 @@
     }
   ],
   "last_activation": {
-    "at": "2026-10-07T01:37:37+00:00",
+    "at": "2026-10-07T02:26:34+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
-    "artifact_refs": [
-      ".grilltrack/proof/scheme-hybrid-1-captures-20261006.md",
-      ".grilltrack/work/scheme-hybrid-1/candidates/h.config.json",
-      "https://github.com/saari-co/swarm-pr-assets/releases/tag/repoglance-site-scheme-hybrid-1-20261006"
-    ],
-    "next_safe_action": "On an explicit confirmation: lock site-scheme-imagery-010 as the hybrid (home hero band, home cards page, join hero page), confirm the summary, cut the five light slugs into public/screenshots/ with the recipe and hashes in docs/content.md, implement the per-slot policy in Screenshot.astro (a <picture> with a dark-scheme source; the band policy as the hero's), update src/content/screenshots.ts, tests/content.test.mjs and scripts/smoke.mjs, design.md v5 and docs/content.md, npm run verify, capture the production build in both schemes, record implement/verify/review, commit with the trailer, push, open a PR against main. No merge, no deploy.",
-    "paused_at": "2026-10-07T01:32:08+00:00",
-    "reason": "Scheme hybrid 1 previewed alone on http://127.0.0.1:4365/?c=h&p=home&s=system as the replacement for round 1's five (maintainer's pick, 2026-10-06: 'E for homepage D for join page'): E on the home page (the hero follows the band, the cards follow the page) and D on the join page (the hero follows the page). Waiting for the maintainer's explicit confirmation to lock.",
-    "resumed_at": "2026-10-07T01:37:37+00:00"
-  },
-  "pause": {
     "artifact_refs": [
       "https://github.com/saari-co/repoglance-site/pull/7",
       ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
     ],
     "next_safe_action": "On the maintainer's word: close the track (closeout facts: verified results, superseded choices, the deferrals of review round 1, the proof and delivery references) or open the next grill (screenshot-options-011 or typography-010); if main moves before the merge, merge origin/main into claude/site-scheme-imagery with the ledger united and re-verify.",
     "paused_at": "2026-10-07T01:59:25+00:00",
-    "reason": "site-scheme-imagery-010 implemented, verified and reviewed clean at git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d; delivered as PR saari-co/repoglance-site#7 (branch claude/site-scheme-imagery, head 7bc66d2 the ledger commit) on the maintainer's separate request. Waiting on the maintainer's gates: merge after CI is green and a review is clean on the exact head, then deploy. The recommendation is closeout, which the maintainer confirms."
+    "reason": "site-scheme-imagery-010 implemented, verified and reviewed clean at git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d; delivered as PR saari-co/repoglance-site#7 (branch claude/site-scheme-imagery, head 7bc66d2 the ledger commit) on the maintainer's separate request. Waiting on the maintainer's gates: merge after CI is green and a review is clean on the exact head, then deploy. The recommendation is closeout, which the maintainer confirms.",
+    "resumed_at": "2026-10-07T02:26:34+00:00"
   },
+  "pause": null,
   "recommendation": {
     "alternatives": [
       "screenshot-options-011: a small hygiene round on the thirteen seed options the CMS can pick: retire or re-word the unused connect-or-explore-sample option (its light cut shows the button text 'Explore with sample data' and its alt says 'Sign in with GitHub' where the screen reads 'Connect GitHub'; both pre-existing, deferred in review round 1 of site-scheme-imagery-010), and close the gap that no check catches an orphan WebP under public/screenshots/ whose slug is not a seed option.",
@@ -1611,8 +1691,8 @@
     "recorded_at": "2026-10-07T01:57:10+00:00"
   },
   "schema_version": "grilltrack/v0.1",
-  "status": "paused",
+  "status": "closed",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-07T01:59:25+00:00"
+  "updated_at": "2026-10-07T02:27:03+00:00"
 }
