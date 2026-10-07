@@ -172,7 +172,13 @@ printed. This was done for repoglance.com on 2026-10-01
    the repository's `main`) into the Media Library; EmDash 1.2.0 stores the
    primary of each reference and drops the nested dark variant, so
    `npm run cms:media -- --apply` (below) completes the pairing and imports
-   the captures the pages do not use. From then on the CMS owns the content and
+   the captures the pages do not use. Two more facts of that resolver: it
+   records no content hash for a sideloaded file (the scripts and the audit
+   match such an item by file name, size and dimensions, and `cms:media`
+   verifies its bytes), and it spends at most five downloads per setup
+   request, so a capture two pages share can land twice in the library
+   (the same bytes under two ids; `cms:media` lists the duplicate and
+   nothing depends on it). From then on the CMS owns the content and
    `src/content/load-page.ts` renders the CMS entry whenever one exists.
    History: the 1 October entries were unpublished on 2026-10-06 because
    they predated the copy and imagery locks

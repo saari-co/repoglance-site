@@ -522,10 +522,38 @@
           "review_source_identity": null,
           "to": "locked",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T22:46:24+00:00",
+          "choice": "EmDash's Media Library (maintainer, 2026-10-07, grilled against WooCommerce's model). (1) The two pages' pictures move into the Media Library; the hero and feature block types replace the screenshot select with an image field carrying a darkVariant; the Open Graph image and the mark stay build products. (2) Alt text lives on the media item, with a render-time fallback to the block's own heading; the imagery rules audit the library's alt. (3) Serving through the Worker: the namespace guard admits the public media-file route and the image endpoint, edge-cached like the pages; the image endpoint serves the widths from one source per capture (the hand-cut 540 and 1080 files retire), with a visual capture confirming the crops; a public bucket or CDN is a later option. (4) Import like WooCommerce's: a migration script uploads the 26 files (13 captures, dark and light) once with their alt text, records each file's hash as the source and skips files already present; the seed declares the same files as $media so a fresh site sideloads them at bootstrap. (5) Any uploaded image may be used on a page; the mirror writes a media manifest next to the seed (id, hash, alt, dimensions, dark pairing) and the repository's tests judge it on the mirror PR, red when a rule breaks (approved captures only, honest alt, no fixture code, no live data). (6) darkVariant replaces the -light file naming; the home hero's follows-the-band policy stays in the component. (7) A block whose image reference is gone renders no figure and the audit flags it. (8) Commerce follows the same pattern later: a primary image, an ordered gallery, a variation image falling back to the product's, a store placeholder, named size presets, API shapes with src, srcset, sizes and alt; a media plugin is only WooCommerce's extension layer (bulk and feed import deduped by source and hash, CDN offload, regeneration, video) talking to the library's API, never its own store; alt stored on the item with a render-time fallback to the product name.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T22:46:29+00:00",
+          "choice": "EmDash's Media Library (maintainer, 2026-10-07, grilled against WooCommerce's model). (1) The two pages' pictures move into the Media Library; the hero and feature block types replace the screenshot select with an image field carrying a darkVariant; the Open Graph image and the mark stay build products. (2) Alt text lives on the media item, with a render-time fallback to the block's own heading; the imagery rules audit the library's alt. (3) Serving through the Worker: the namespace guard admits the public media-file route and the image endpoint, edge-cached like the pages; the image endpoint serves the widths from one source per capture (the hand-cut 540 and 1080 files retire), with a visual capture confirming the crops; a public bucket or CDN is a later option. (4) Import like WooCommerce's: a migration script uploads the 26 files (13 captures, dark and light) once with their alt text, records each file's hash as the source and skips files already present; the seed declares the same files as $media so a fresh site sideloads them at bootstrap. (5) Any uploaded image may be used on a page; the mirror writes a media manifest next to the seed (id, hash, alt, dimensions, dark pairing) and the repository's tests judge it on the mirror PR, red when a rule breaks (approved captures only, honest alt, no fixture code, no live data). (6) darkVariant replaces the -light file naming; the home hero's follows-the-band policy stays in the component. (7) A block whose image reference is gone renders no figure and the audit flags it. (8) Commerce follows the same pattern later: a primary image, an ordered gallery, a variation image falling back to the product's, a store placeholder, named size presets, API shapes with src, srcset, sizes and alt; a media plugin is only WooCommerce's extension layer (bulk and feed import deduped by source and hash, CDN offload, regeneration, video) talking to the library's API, never its own store; alt stored on the item with a render-time fallback to the product name.",
+          "from": "implemented",
+          "implementation_ref": "proof/media-library-20261007/PROOF.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
         }
       ],
       "id": "media-library-014",
-      "implementation_ref": null,
+      "implementation_ref": "proof/media-library-20261007/PROOF.md",
       "question": "Where do the images of repoglance.com live and how does an editor manage them, now that the CMS owns content: repository-owned static files picked by a select of slugs (the admin's Media page empty), or EmDash's Media Library with image fields, and with which serving path, bootstrap, import, rules, dark pairing and fallback?",
       "rationale": "The admin is the editor's whole view of the site; imagery the editor cannot find under Content > Media reads as broken and cannot be acted on. WooCommerce, read in its documentation and source (the product-images doc, the v3 REST products controller, the product importer, wc-product-functions.php, WC_Regenerate_Images, the Store API image schema), owns no files: products reference the platform's Media Library, alt lives on the attachment with a render-time fallback, sizes are named presets regenerated in the background and on demand, every import path sideloads into the library and records the source, and extensions are a layer on top. EmDash has every equivalent piece (the Media Library on R2 with content hashes, image/gallery/media/video fields, darkVariant, the Image component and image endpoint, $media in seeds). The static path shipped under site-imagery-007 protected repository tests; those rules move to a manifest the mirror writes and do not disappear.",
       "repair_required": false,
@@ -534,36 +562,27 @@
       "review_ref": null,
       "review_result": null,
       "review_source_identity": null,
-      "status": "locked",
+      "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-07T21:54:43+00:00",
-      "verification_ref": null
+      "updated_at": "2026-10-07T22:46:29+00:00",
+      "verification_ref": ".grilltrack/proof/media-library-014-verify-20261007.md"
     }
   ],
   "last_activation": {
-    "at": "2026-10-07T21:54:43+00:00",
+    "at": "2026-10-07T22:46:20+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
-    "artifact_refs": [
-      "https://github.com/saari-co/repoglance-site/pull/13",
-      "proof/cms-first-20261007/PROOF.md#deploy-2026-10-07-2119-utc",
-      ".grilltrack/proof/cms-first-013-verify-20261007.md"
-    ],
-    "next_safe_action": "The maintainer's slice-2 gates: the GITHUB_MIRROR_TOKEN secret, auto-merge on and a ruleset on main requiring a pull request and the site checks, Email Routing on repoglance.com with the mailbox verified, REPOGLANCE_MIRROR_EMAIL_TO in the deploy env, a redeploy, one real admin edit (expect a cms-edit PR that auto-merges) and one forced failure (expect the email). Then record the production results in proof/cms-first-20261007/PROOF.md and the ledger and open slice 3 or the chosen alternative.",
-    "paused_at": "2026-10-07T21:21:13+00:00",
-    "reason": "cms-first-013 slice 1 delivered and deployed on the maintainer's instruction (2026-10-07): PR #13 merged as d9b05f55fee42d280de68bcd0f5acbf3f24a000b; main built with the Access team domain and deployed as Worker version 27e90382-0642-4786-bf8c-2a979748120e with both custom domains, the cron and the send_email binding; live: both pages 200 from the CMS with this build's validator, the editor and a token-only API call answer the Access login, www redirects, check:live equal. The mirror and the email are dormant until slice 2 (no token secret, no recipient var). Open human-gate items: the ruleset must require pull requests on main; the role mailbox is quoted in the committed ledger text.",
-    "resumed_at": "2026-10-07T21:54:43+00:00"
-  },
-  "pause": {
     "artifact_refs": [
       ".grilltrack/ledger.json",
       "proof/cms-first-20261007/PROOF.md"
     ],
     "next_safe_action": "In the fresh session: read the ledger, implement media-library-014 as confirmed, verify, review, record implement/verify/review, commit with the trailer, push, PR against main (the PR carries this lock commit). On the maintainer's word afterwards: deploy, cloudflared access login, npm run cms:sync, npm run cms:media -- --apply, npm run check:live.",
     "paused_at": "2026-10-07T21:54:43+00:00",
-    "reason": "media-library-014 locked and confirmed; handed to a fresh session for implementation from branch claude/media-library-014-lock (main b40808e plus this ledger state). cms-first-013's slice-2 gates remain the maintainer's and are unaffected."
+    "reason": "media-library-014 locked and confirmed; handed to a fresh session for implementation from branch claude/media-library-014-lock (main b40808e plus this ledger state). cms-first-013's slice-2 gates remain the maintainer's and are unaffected.",
+    "resumed_at": "2026-10-07T22:46:20+00:00"
   },
+  "pause": null,
   "predecessor_track_id": "gt-20261001102301-89ec89",
   "recommendation": {
     "alternatives": [
@@ -575,8 +594,8 @@
     "recorded_at": "2026-10-07T21:15:10+00:00"
   },
   "schema_version": "grilltrack/v0.1",
-  "status": "paused",
+  "status": "active",
   "title": "repoglance.com website: CMS sync and maintenance",
   "track_id": "gt-20261007120417-1b0a54",
-  "updated_at": "2026-10-07T21:54:43+00:00"
+  "updated_at": "2026-10-07T22:46:29+00:00"
 }

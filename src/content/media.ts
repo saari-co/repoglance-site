@@ -232,6 +232,23 @@ export function approvedByFile(manifest: Pick<MediaManifest, 'approved'> | undef
   return new Map((manifest?.approved ?? []).map((capture) => [capture.file, capture]));
 }
 
+/**
+ * Whether a library item is one approved capture: by EmDash's content hash
+ * when the item carries one (an upload through the admin or the media API
+ * always does), else by file name, size and dimensions, since EmDash 1.2.0
+ * records no hash for a file its seed resolver sideloaded at setup
+ * (`npm run cms:media` verifies such an item's bytes).
+ */
+export function matchesCapture(item: Pick<LibraryItem, 'filename' | 'size' | 'width' | 'height' | 'contentHash'>, capture: ApprovedCapture): boolean {
+  if (item.contentHash) return item.contentHash === capture.contentHash;
+  return item.filename === capture.file && item.size === capture.size && item.width === capture.width && item.height === capture.height;
+}
+
+/** The approved capture a library item is, or undefined. */
+export function captureOf(item: Pick<LibraryItem, 'filename' | 'size' | 'width' | 'height' | 'contentHash'>, approved: readonly ApprovedCapture[]): ApprovedCapture | undefined {
+  return approved.find((capture) => matchesCapture(item, capture));
+}
+
 /** Whether a canonical pathname is the public media-file route with a key the route may serve. */
 export function publicMediaKey(pathname: string): string | null {
   if (!pathname.startsWith(MEDIA_FILE_ROUTE)) return null;

@@ -102,5 +102,14 @@ try {
   cdp.close();
 } finally {
   child.kill('SIGKILL');
-  await rm(profile, { recursive: true, force: true });
+  // Chrome may still be writing its profile for a moment after the kill;
+  // the captures are already on disk, so the cleanup retries and then lets go.
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      await rm(profile, { recursive: true, force: true });
+      break;
+    } catch {
+      await sleep(200);
+    }
+  }
 }

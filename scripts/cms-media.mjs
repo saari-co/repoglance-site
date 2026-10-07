@@ -36,7 +36,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { canon, imageFieldsOf, mediaReference } from '../src/content/cms-shape.ts';
-import { captureName } from '../src/content/media.ts';
+import { MEDIA_FILE_ROUTE, captureOf } from '../src/content/media.ts';
 import { IDENTITY_HELP, createClient, describeApiError, readBlockTypes, readEntries, readLibrary, resolveIdentity } from './lib/cms-client.mjs';
 import { webpFacts } from './lib/webp.mjs';
 
@@ -89,14 +89,36 @@ function approvedCaptures() {
   });
 }
 
+/**
+ * EmDash 1.2.0 records no content hash for a file its seed resolver
+ * sideloaded at setup. Such an item is matched by file name, size and
+ * dimensions, and its bytes are downloaded through the public media route
+ * and hashed here, so the check is as exact as for an uploaded item.
+ */
+async function verifyHashes(client, library) {
+  const verified = new Map();
+  for (const item of library) {
+    if (item.contentHash) continue;
+    const response = await client.send('GET', `${MEDIA_FILE_ROUTE.replace(/^\/_emdash\/api/, '')}${item.storageKey}`, {});
+    if (!response.ok) throw new Error(`could not read ${item.filename} (${item.id}) to verify its bytes: HTTP ${response.status}`);
+    verified.set(item.id, webpFacts(Buffer.from(await response.arrayBuffer())).contentHash);
+  }
+  return verified;
+}
+
 /** Compare the library with the approved captures. */
-function compareLibrary(approved, library) {
+function compareLibrary(approved, library, verifiedHashes) {
+  const hashOf = (item) => item.contentHash ?? verifiedHashes.get(item.id) ?? null;
   const byHash = new Map();
-  for (const item of library) if (item.contentHash && !byHash.has(item.contentHash)) byHash.set(item.contentHash, item);
+  for (const item of library) {
+    const hash = hashOf(item);
+    if (hash && !byHash.has(hash)) byHash.set(hash, item);
+  }
   const rows = approved.map((capture) => {
     const item = byHash.get(capture.contentHash) ?? null;
     const notes = [];
     if (item) {
+      if (!item.contentHash) notes.push('seeded by EmDash setup without a content hash; bytes verified');
       if (!item.alt) notes.push('alt empty');
       else if (item.alt !== capture.alt) notes.push('alt differs from the repository text (the library wins)');
       if (item.width !== capture.width || item.height !== capture.height) notes.push(`dimensions ${item.width}x${item.height}, expected ${capture.width}x${capture.height}`);
@@ -105,8 +127,9 @@ function compareLibrary(approved, library) {
     return { file: capture.file, capture: capture.capture, scheme: capture.scheme, present: Boolean(item), id: item?.id ?? null, notes };
   });
   const approvedHashes = new Set(approved.map((capture) => capture.contentHash));
-  const extras = library.filter((item) => !item.contentHash || !approvedHashes.has(item.contentHash)).map((item) => ({ id: item.id, filename: item.filename, alt: item.alt }));
-  return { rows, extras, byHash };
+  const extras = library.filter((item) => !approvedHashes.has(hashOf(item))).map((item) => ({ id: item.id, filename: item.filename, alt: item.alt }));
+  const duplicates = library.filter((item) => approvedHashes.has(hashOf(item)) && byHash.get(hashOf(item)) !== item).map((item) => ({ id: item.id, filename: item.filename }));
+  return { rows, extras, duplicates, byHash, hashOf };
 }
 
 /** The media value a block stores for a library item (EmDash fills the rest on write). */
@@ -128,10 +151,11 @@ function cutsOf(capture, approved, byHash) {
  * What each image slot of the live pages shows and what, if anything, to
  * change. Returns rows for the report and the planned block rewrites.
  */
-function comparePages(entries, approved, byHash, library, blockTypes) {
+function comparePages(entries, approved, byHash, library, blockTypes, hashOf) {
   const imageFields = imageFieldsOf(seed);
   const mediaById = new Map(library.map((item) => [item.id, item]));
   const approvedByHash = new Map(approved.map((capture) => [capture.contentHash, capture]));
+  const approvedOf = (item) => approvedByHash.get(hashOf(item)) ?? captureOf(item, approved);
   const currentVersion = (type) => blockTypes.get(type)?.currentVersion ?? 1;
   const rows = [];
   const plans = [];
@@ -180,7 +204,7 @@ function comparePages(entries, approved, byHash, library, blockTypes) {
           rows.push(row);
           continue;
         }
-        const capture = item.contentHash ? approvedByHash.get(item.contentHash) : undefined;
+        const capture = approvedOf(item);
         if (!capture) {
           row.state = 'unapproved';
           row.detail = `${item.filename} is not an approved capture`;
@@ -190,9 +214,10 @@ function comparePages(entries, approved, byHash, library, blockTypes) {
         const cuts = cutsOf(capture.capture, approved, byHash);
         const darkReference = mediaReference(value.darkVariant, mediaById);
         const dark = darkReference?.id ? mediaById.get(darkReference.id) : undefined;
-        const wantsPair = Boolean(cuts.light && cuts.dark);
-        if (wantsPair && (capture.scheme !== 'light' || !dark || dark.id !== cuts.dark.id)) {
-          if (dark && dark.id !== cuts.dark.id && dark.id !== cuts.light.id) {
+        // The pairing the lock wants is the approved pair, whether or not the library holds both cuts yet.
+        const wantsPair = approved.some((entry) => entry.capture === capture.capture && entry.scheme === 'light') && approved.some((entry) => entry.capture === capture.capture && entry.scheme === 'dark');
+        if (wantsPair && (capture.scheme !== 'light' || !dark || !cuts.dark || dark.id !== cuts.dark.id)) {
+          if (dark && cuts.dark && dark.id !== cuts.dark.id && dark.id !== cuts.light?.id) {
             row.state = 'pairing';
             row.detail = `${item.filename} paired with ${dark.filename}, expected ${cuts.dark.filename}`;
           } else {
@@ -245,6 +270,7 @@ function print(report, pages, label) {
   console.log(label);
   for (const row of report.rows) console.log(`  ${row.file}: ${row.present ? `present (${row.id})` : 'MISSING'}${row.notes.length ? `; ${row.notes.join('; ')}` : ''}`);
   if (report.extras.length) console.log(`  not approved captures (unused ones are only listed): ${report.extras.map((item) => `${item.filename} (${item.id})`).join(', ')}`);
+  if (report.duplicates.length) console.log(`  duplicates of an approved capture (the same bytes twice; harmless, only listed): ${report.duplicates.map((item) => `${item.filename} (${item.id})`).join(', ')}`);
   for (const row of pages.rows) console.log(`  ${row.page}/${row.block}.${row.field}: ${row.state === 'ok' ? row.detail : `${row.state.toUpperCase()} ${row.detail}`}`);
 }
 
@@ -260,9 +286,9 @@ try {
   const approved = approvedCaptures();
   const readState = async () => {
     const library = await readLibrary(client);
-    const report = compareLibrary(approved, library);
+    const report = compareLibrary(approved, library, await verifyHashes(client, library));
     const entries = await readEntries(client, COLLECTION);
-    const pages = comparePages(entries, approved, report.byHash, library, await readBlockTypes(client));
+    const pages = comparePages(entries, approved, report.byHash, library, await readBlockTypes(client), report.hashOf);
     return { library, report, entries, pages };
   };
   let state = await readState();
@@ -310,7 +336,7 @@ const finalReport = after ?? before;
 const finalPages = afterPages ?? beforePages;
 const ok = settled(finalReport, finalPages);
 if (args.json) {
-  console.log(JSON.stringify(canon({ at: new Date().toISOString(), mode, url: base, identity: identity.label, before: { library: before.rows, extras: before.extras, pages: beforePages.rows }, applied, after: after ? { library: after.rows, extras: after.extras, pages: afterPages.rows } : null, ok }), null, 2));
+  console.log(JSON.stringify(canon({ at: new Date().toISOString(), mode, url: base, identity: identity.label, before: { library: before.rows, extras: before.extras, duplicates: before.duplicates, pages: beforePages.rows }, applied, after: after ? { library: after.rows, extras: after.extras, duplicates: after.duplicates, pages: afterPages.rows } : null, ok }), null, 2));
 } else if (ok) {
   console.log(mode === 'apply' && after ? 'Result: the library now holds every approved capture and every page slot is connected.' : 'Result: the library holds every approved capture and every page slot is connected.');
 } else {

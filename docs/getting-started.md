@@ -28,8 +28,12 @@ endpoint (`/_image`). In development the EmDash editor is at
 `/_emdash/admin`; its setup wizard creates a local admin with a passkey and
 applies the seed, downloading the captures the seed names from the
 repository's `main` on GitHub (a `$media` reference cannot point at the dev
-server itself: EmDash refuses loopback hosts). The local database and
-uploads live in ignored `.wrangler/` directories.
+server itself: EmDash refuses loopback hosts). The admin's sign-in page
+redirects to the configured `siteUrl` (the live site), so drive the local
+CMS through the scripts and the API (`POST /_emdash/api/setup` with
+`X-EmDash-Request: 1` seeds it; EmDash's development bypass signs the
+scripts in). The local database and uploads live in ignored `.wrangler/`
+directories.
 
 ## Production build on local workerd
 

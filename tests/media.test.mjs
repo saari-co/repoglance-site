@@ -9,12 +9,14 @@ import {
   SEED_MEDIA_BASE,
   approvedByFile,
   captureName,
+  captureOf,
   captureScheme,
   imageEndpointUrl,
   imageSrcset,
   isSeedMediaRef,
   publicMediaKey,
   resolveImageValue,
+  matchesCapture,
   resolveMediaSource,
   seedRefFile,
   storageKeyOf,
@@ -78,6 +80,17 @@ test('every rendition goes through the image endpoint at the two widths', () => 
   assert.equal(imageSrcset('/_image', '/screenshots/x.webp'), '/_image?href=%2Fscreenshots%2Fx.webp&w=540&f=webp 540w, /_image?href=%2Fscreenshots%2Fx.webp&w=1080&f=webp 1080w');
 });
 
+test('a library item is an approved capture by content hash, or, for a seeded item without one, by file name, size and dimensions', () => {
+  const capture = manifest.approved.find((entry) => entry.file === 'tile-row-light.webp');
+  assert.equal(matchesCapture({ filename: 'anything.webp', size: 1, width: 1, height: 1, contentHash: capture.contentHash }, capture), true);
+  assert.equal(matchesCapture({ filename: 'tile-row-light.webp', size: capture.size, width: capture.width, height: capture.height, contentHash: 'sha1:other' }, capture), false, 'a hash that differs is another file, whatever the name says');
+  assert.equal(matchesCapture({ filename: 'tile-row-light.webp', size: capture.size, width: capture.width, height: capture.height, contentHash: null }, capture), true, 'seeded by EmDash setup: no hash recorded');
+  assert.equal(matchesCapture({ filename: 'tile-row-light.webp', size: capture.size + 1, width: capture.width, height: capture.height, contentHash: null }, capture), false);
+  assert.equal(matchesCapture({ filename: 'tile-row-dark.webp', size: capture.size, width: capture.width, height: capture.height, contentHash: null }, capture), false);
+  assert.equal(captureOf({ filename: 'tile-row-light.webp', size: capture.size, width: capture.width, height: capture.height, contentHash: null }, manifest.approved), capture);
+  assert.equal(captureOf({ filename: 'x.webp', size: 1, width: 1, height: 1, contentHash: null }, manifest.approved), undefined);
+});
+
 test('the public media route admits only a flat storage key', () => {
   assert.equal(publicMediaKey('/_emdash/api/media/file/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp'), '01ARZ3NDEKTSV4RRFFQ69G5FAV.webp');
   assert.equal(publicMediaKey('/_emdash/api/media/file/a.b-c_d'), 'a.b-c_d');
@@ -119,7 +132,6 @@ test('the mirrored library and usage follow the imagery rules: approved captures
     t.diagnostic('the mirror has not recorded the live library yet; nothing to judge');
     return;
   }
-  const byHash = new Map(manifest.approved.map((capture) => [capture.contentHash, capture]));
   const byId = new Map(manifest.library.map((item) => [item.id, item]));
   const cuts = new Map();
   for (const capture of manifest.approved) cuts.set(capture.capture, { ...(cuts.get(capture.capture) ?? {}), [capture.scheme]: capture });
@@ -134,8 +146,8 @@ test('the mirrored library and usage follow the imagery rules: approved captures
     assert.ok(row.image, `${where}: the slot has an image (a block without one renders no figure)`);
     const item = byId.get(row.image.id);
     assert.ok(item, `${where}: references ${row.image.filename ?? row.image.id}, which the library has`);
-    const capture = item.contentHash ? byHash.get(item.contentHash) : undefined;
-    assert.ok(capture, `${where}: ${item.filename} is an approved capture (its content hash is recorded in seed/media.json)`);
+    const capture = captureOf(item, manifest.approved);
+    assert.ok(capture, `${where}: ${item.filename} is an approved capture (recorded in seed/media.json)`);
     assert.ok(honestAlt(item.alt), `${where}: the library's alt text for ${item.filename} is honest: ${item.alt}`);
     assert.deepEqual([item.width, item.height], [capture.width, capture.height], `${where}: ${item.filename} keeps the capture's dimensions`);
     const pair = cuts.get(capture.capture);
@@ -143,7 +155,7 @@ test('the mirrored library and usage follow the imagery rules: approved captures
       assert.equal(capture.scheme, 'light', `${where}: the primary is the light cut; the page follows the colour scheme (site-scheme-imagery-010)`);
       assert.ok(row.darkVariant, `${where}: the dark cut is the dark variant`);
       const dark = byId.get(row.darkVariant.id);
-      assert.ok(dark && dark.contentHash === pair.dark.contentHash, `${where}: the dark variant is ${pair.dark.file}`);
+      assert.ok(dark && matchesCapture(dark, pair.dark), `${where}: the dark variant is ${pair.dark.file}`);
     } else {
       assert.equal(row.darkVariant, null, `${where}: ${capture.capture} has no light cut and renders its dark cut alone`);
     }
