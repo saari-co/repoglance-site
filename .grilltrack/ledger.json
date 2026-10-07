@@ -2,13 +2,13 @@
   "closeout": null,
   "created_at": "2026-10-07T12:04:17+00:00",
   "current_focus": {
-    "cadence": "sequential",
+    "cadence": "frontier-batch",
     "confirmed": true,
-    "confirmed_at": "2026-10-07T20:23:10+00:00",
-    "domain": "cms-first-013 slice 1 (no gates): the CMS owns content and the repository owns structure; scripts/cms-mirror.mjs (export the CMS into seed/seed.json, open the cms-edit PR, --check); cms:sync slimmed to schema only; the Worker mirror on publish/unpublish and the failure email through a Cloudflare Email Routing send_email binding, both dormant until their bindings and secrets exist; the namespace gate's machine-identity rules (reads and _rev-bearing draft writes only); check:live redefined; the cms-edit auto-merge workflow; docs, AGENTS.md, proof",
-    "started_at": "2026-10-07T20:23:10+00:00",
-    "status": "inspected",
-    "summary": "Maintainer 'go; use cloudflare email routing' on 2026-10-07 for slice 1 of cms-first-013 (no gates): (1) scripts/cms-mirror.mjs: reads the live CMS pages (identity ladder as the sync), writes them into seed/seed.json (pages only; block types and collections stay as the repo says and schema drift is reported), and unless --check or --no-pr pushes a cms-edit/<timestamp> branch from origin/main and opens a PR 'CMS edit: ...' labelled cms-edit; --check exits 1 when the repo differs from the CMS and names the fixing command. (2) scripts/cms-sync.mjs becomes schema-only (block types create/update/activate; never writes page content; EmDash setup is the one-time bootstrap). (3) A Worker module triggered by a successful POST .../publish or .../unpublish on pages: after the response (waitUntil) it reads the live pages from D1, builds the seed, and through a GitHub fine-grained token (secret GITHUB_MIRROR_TOKEN, repo from a var) creates a branch, commit and PR with the cms-edit label; it never merges; on any failure it emails agent@smokyproduct.co (recipient from a var, sender mirror@repoglance.com) through a send_email binding with the page, the error and the npm run cms:mirror re-run; when the token or the email binding is absent it logs that it is unconfigured and does nothing else (dormant until slice 2). (4) src/namespace-gate.ts admits a machine identity (an Access JWT with common_name and no email, verified with jose against the team's JWKS and audience, carrying an EmDash Bearer token) only to GET on content and schema routes, PUT on a content entry whose JSON body carries a non-empty _rev and no status other than draft, POST create with status draft, and POST .../preview-url; everything else answers 404; unit-tested. (5) scripts/live-check.mjs: a difference now means the repo is behind the CMS (run cms:mirror) and the live source is expected to be cms. (6) .github/workflows/cms-edit-automerge.yml arms auto-merge (merge commit) for cms-edit PRs on cms-edit/* branches with the repository token. (7) Docs: AGENTS.md boundaries (CMS owns content, repo owns structure, agents draft only, the mirror), docs/cms-access.md runbook, README, docs/content.md, docs/getting-started.md; wrangler.jsonc declares the send_email binding and the vars; prepare-deploy passes them through; jose pinned as a direct dependency. (8) Proof under proof/cms-first-20261007/PROOF.md and .grilltrack/proof/cms-first-013-verify-20261007.md: unit tests, npm run verify, a dev-server round trip (bootstrap, an admin-style publish, mirror --check and --no-pr showing the edit, the Worker trigger against a local GitHub stub), a separate read-only review on the exact commit, commit with the trailer, push, PR against main. Slice 2 (gates, maintainer): the GitHub token secret, repo auto-merge on, a ruleset on main requiring the site checks, Email Routing on repoglance.com with agent@smokyproduct.co verified and the send_email binding, deploy, one real edit and one forced failure. Slice 3 (gates, later): the agent draft lane. No merge, deploy, Cloudflare, DNS, Access or secret action by the agent."
+    "confirmed_at": "2026-10-07T21:54:43+00:00",
+    "domain": "media-library-014: where the images of repoglance.com live and how editors manage them; EmDash's Media Library with image fields and dark variants in place of repository-owned static files picked by slug; serving, bootstrap, import, the imagery rules as an audit of what is live; the pattern commerce will follow",
+    "started_at": "2026-10-07T21:54:43+00:00",
+    "status": "confirmed",
+    "summary": "Maintainer 'agree on all; lock it and spawn the session' on 2026-10-07 after a frontier batch grilled against WooCommerce. Bounded implementation of media-library-014, to be built by a fresh session: (1) seed/seed.json: hero and feature block types get an image field (darkVariant) in place of the screenshot select, the pages' blocks reference the captures, and the seed declares the 26 captures as $media for bootstrap; the content tests follow. (2) src/components/Screenshot.astro and Hero.astro render from the media reference with EmDash's Image component or the image endpoint, the dark source from darkVariant, alt from the media item with a fallback to the heading, no figure when the reference is gone; the home hero keeps the band policy. (3) src/namespace-gate.ts and the guard admit anonymous GET on the public media-file route and the image endpoint, cached at the edge like the pages, everything else unchanged; smoke and guard tests follow. (4) scripts/cms-media.mjs: --check lists the library against the approved captures (hash, alt, dimensions, dark pairing) and --apply uploads the missing files with alt through the media API, recording the source hash; identity as the other CMS scripts. (5) The mirror (src/cms/mirror.ts, scripts/cms-mirror.mjs) also writes seed/media.json, the media manifest, and tests/content.test.mjs judges it (approved captures only, honest alt, no fixture code, no live data). (6) cms:sync carries the breaking block-type change. (7) docs/content.md, docs/cms-access.md, README, design.md note and AGENTS.md follow; the SmokySkills reference is updated separately. Verification: unit tests, npm run verify, a dev-server round trip (setup from the seed with $media, the library listing the captures, the pages rendering from media references with light and dark sources, an admin-style image swap mirrored into the manifest, the migration script's --check and --apply against the dev server), browser captures of both pages in both schemes compared with the current site, a separate read-only review on the exact commit, ledger records, commit with the trailer, push, PR against main. Maintainer gates after merge: deploy, cloudflared access login, npm run cms:sync (the breaking block-type change), npm run cms:media -- --apply, npm run check:live. No merge, deploy, Cloudflare, DNS, Access or secret action by the agent."
   },
   "decisions": [
     {
@@ -497,24 +497,54 @@
       "superseded_by": null,
       "updated_at": "2026-10-07T21:15:10+00:00",
       "verification_ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-3"
+    },
+    {
+      "baseline_ref": "git:b40808e",
+      "candidate_refs": [],
+      "choice": "EmDash's Media Library (maintainer, 2026-10-07, grilled against WooCommerce's model). (1) The two pages' pictures move into the Media Library; the hero and feature block types replace the screenshot select with an image field carrying a darkVariant; the Open Graph image and the mark stay build products. (2) Alt text lives on the media item, with a render-time fallback to the block's own heading; the imagery rules audit the library's alt. (3) Serving through the Worker: the namespace guard admits the public media-file route and the image endpoint, edge-cached like the pages; the image endpoint serves the widths from one source per capture (the hand-cut 540 and 1080 files retire), with a visual capture confirming the crops; a public bucket or CDN is a later option. (4) Import like WooCommerce's: a migration script uploads the 26 files (13 captures, dark and light) once with their alt text, records each file's hash as the source and skips files already present; the seed declares the same files as $media so a fresh site sideloads them at bootstrap. (5) Any uploaded image may be used on a page; the mirror writes a media manifest next to the seed (id, hash, alt, dimensions, dark pairing) and the repository's tests judge it on the mirror PR, red when a rule breaks (approved captures only, honest alt, no fixture code, no live data). (6) darkVariant replaces the -light file naming; the home hero's follows-the-band policy stays in the component. (7) A block whose image reference is gone renders no figure and the audit flags it. (8) Commerce follows the same pattern later: a primary image, an ordered gallery, a variation image falling back to the product's, a store placeholder, named size presets, API shapes with src, srcset, sizes and alt; a media plugin is only WooCommerce's extension layer (bulk and feed import deduped by source and hash, CDN offload, regeneration, video) talking to the library's API, never its own store; alt stored on the item with a render-time fallback to the product name.",
+      "context_ref": "https://github.com/saari-co/SmokySkills/pull/12",
+      "created_at": "2026-10-07T21:54:43+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [],
+      "domain": "media-library-014: where the images of repoglance.com live and how editors manage them; EmDash's Media Library with image fields and dark variants in place of repository-owned static files picked by slug; serving, bootstrap, import, the imagery rules as an audit of what is live; the pattern commerce will follow",
+      "history": [
+        {
+          "at": "2026-10-07T21:54:43+00:00",
+          "choice": "EmDash's Media Library (maintainer, 2026-10-07, grilled against WooCommerce's model). (1) The two pages' pictures move into the Media Library; the hero and feature block types replace the screenshot select with an image field carrying a darkVariant; the Open Graph image and the mark stay build products. (2) Alt text lives on the media item, with a render-time fallback to the block's own heading; the imagery rules audit the library's alt. (3) Serving through the Worker: the namespace guard admits the public media-file route and the image endpoint, edge-cached like the pages; the image endpoint serves the widths from one source per capture (the hand-cut 540 and 1080 files retire), with a visual capture confirming the crops; a public bucket or CDN is a later option. (4) Import like WooCommerce's: a migration script uploads the 26 files (13 captures, dark and light) once with their alt text, records each file's hash as the source and skips files already present; the seed declares the same files as $media so a fresh site sideloads them at bootstrap. (5) Any uploaded image may be used on a page; the mirror writes a media manifest next to the seed (id, hash, alt, dimensions, dark pairing) and the repository's tests judge it on the mirror PR, red when a rule breaks (approved captures only, honest alt, no fixture code, no live data). (6) darkVariant replaces the -light file naming; the home hero's follows-the-band policy stays in the component. (7) A block whose image reference is gone renders no figure and the audit flags it. (8) Commerce follows the same pattern later: a primary image, an ordered gallery, a variation image falling back to the product's, a store placeholder, named size presets, API shapes with src, srcset, sizes and alt; a media plugin is only WooCommerce's extension layer (bulk and feed import deduped by source and hash, CDN offload, regeneration, video) talking to the library's API, never its own store; alt stored on the item with a render-time fallback to the product name.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        }
+      ],
+      "id": "media-library-014",
+      "implementation_ref": null,
+      "question": "Where do the images of repoglance.com live and how does an editor manage them, now that the CMS owns content: repository-owned static files picked by a select of slugs (the admin's Media page empty), or EmDash's Media Library with image fields, and with which serving path, bootstrap, import, rules, dark pairing and fallback?",
+      "rationale": "The admin is the editor's whole view of the site; imagery the editor cannot find under Content > Media reads as broken and cannot be acted on. WooCommerce, read in its documentation and source (the product-images doc, the v3 REST products controller, the product importer, wc-product-functions.php, WC_Regenerate_Images, the Store API image schema), owns no files: products reference the platform's Media Library, alt lives on the attachment with a render-time fallback, sizes are named presets regenerated in the background and on demand, every import path sideloads into the library and records the source, and extensions are a layer on top. EmDash has every equivalent piece (the Media Library on R2 with content hashes, image/gallery/media/video fields, darkVariant, the Image component and image endpoint, $media in seeds). The static path shipped under site-imagery-007 protected repository tests; those rules move to a manifest the mirror writes and do not disappear.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [],
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
+      "status": "locked",
+      "superseded_by": null,
+      "updated_at": "2026-10-07T21:54:43+00:00",
+      "verification_ref": null
     }
   ],
   "last_activation": {
-    "at": "2026-10-07T21:21:13+00:00",
+    "at": "2026-10-07T21:54:43+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
-    "artifact_refs": [
-      "https://github.com/saari-co/repoglance-site/pull/13",
-      "proof/cms-first-20261007/PROOF.md",
-      ".grilltrack/proof/cms-first-013-verify-20261007.md"
-    ],
-    "next_safe_action": "After the merge and the maintainer's slice-2 gates: run one real admin edit and one forced failure in production, record the results (the cms-edit PR, its auto-merge, the failure email) in proof/cms-first-20261007/PROOF.md and the ledger, then open slice 3 (the agent draft lane) or the chosen alternative. If main moves before the merge, merge origin/main into claude/cms-authoring with the ledger united and re-verify.",
-    "paused_at": "2026-10-07T21:15:10+00:00",
-    "reason": "cms-first-013 slice 1 implemented, verified and reviewed clean at git:9a7fbb4b5e2abc44bc181b0e521723a5dbcc4109 after four rounds (round 1 at git:b8b37900fa89726571bc51ebbe092aeda8fa416b with 14 findings, round 2 at git:b98a7c019aa8571aa5e8f30add43d9d30e6bc06e with 7, round 3 at git:46af3218beb0d14ce09ed80209f54d093a588caa with 2, round 4 clean); delivered as PR saari-co/repoglance-site#13 on the maintainer's instruction, CI green. Waiting on the maintainer's gates: merge, then slice 2 (token secret, auto-merge and ruleset, Email Routing and the recipient var, deploy, one real edit, one forced failure). Open human-gate items from the reviews: the ruleset must require pull requests on main (the token has Contents write); the maintainer's role mailbox is quoted in the committed ledger text of the public repository (removed from the docs); scheduled publishes and metadata-only saves are recorded limits of the mirror.",
-    "resumed_at": "2026-10-07T21:21:13+00:00"
-  },
-  "pause": {
     "artifact_refs": [
       "https://github.com/saari-co/repoglance-site/pull/13",
       "proof/cms-first-20261007/PROOF.md#deploy-2026-10-07-2119-utc",
@@ -522,7 +552,17 @@
     ],
     "next_safe_action": "The maintainer's slice-2 gates: the GITHUB_MIRROR_TOKEN secret, auto-merge on and a ruleset on main requiring a pull request and the site checks, Email Routing on repoglance.com with the mailbox verified, REPOGLANCE_MIRROR_EMAIL_TO in the deploy env, a redeploy, one real admin edit (expect a cms-edit PR that auto-merges) and one forced failure (expect the email). Then record the production results in proof/cms-first-20261007/PROOF.md and the ledger and open slice 3 or the chosen alternative.",
     "paused_at": "2026-10-07T21:21:13+00:00",
-    "reason": "cms-first-013 slice 1 delivered and deployed on the maintainer's instruction (2026-10-07): PR #13 merged as d9b05f55fee42d280de68bcd0f5acbf3f24a000b; main built with the Access team domain and deployed as Worker version 27e90382-0642-4786-bf8c-2a979748120e with both custom domains, the cron and the send_email binding; live: both pages 200 from the CMS with this build's validator, the editor and a token-only API call answer the Access login, www redirects, check:live equal. The mirror and the email are dormant until slice 2 (no token secret, no recipient var). Open human-gate items: the ruleset must require pull requests on main; the role mailbox is quoted in the committed ledger text."
+    "reason": "cms-first-013 slice 1 delivered and deployed on the maintainer's instruction (2026-10-07): PR #13 merged as d9b05f55fee42d280de68bcd0f5acbf3f24a000b; main built with the Access team domain and deployed as Worker version 27e90382-0642-4786-bf8c-2a979748120e with both custom domains, the cron and the send_email binding; live: both pages 200 from the CMS with this build's validator, the editor and a token-only API call answer the Access login, www redirects, check:live equal. The mirror and the email are dormant until slice 2 (no token secret, no recipient var). Open human-gate items: the ruleset must require pull requests on main; the role mailbox is quoted in the committed ledger text.",
+    "resumed_at": "2026-10-07T21:54:43+00:00"
+  },
+  "pause": {
+    "artifact_refs": [
+      ".grilltrack/ledger.json",
+      "proof/cms-first-20261007/PROOF.md"
+    ],
+    "next_safe_action": "In the fresh session: read the ledger, implement media-library-014 as confirmed, verify, review, record implement/verify/review, commit with the trailer, push, PR against main (the PR carries this lock commit). On the maintainer's word afterwards: deploy, cloudflared access login, npm run cms:sync, npm run cms:media -- --apply, npm run check:live.",
+    "paused_at": "2026-10-07T21:54:43+00:00",
+    "reason": "media-library-014 locked and confirmed; handed to a fresh session for implementation from branch claude/media-library-014-lock (main b40808e plus this ledger state). cms-first-013's slice-2 gates remain the maintainer's and are unaffected."
   },
   "predecessor_track_id": "gt-20261001102301-89ec89",
   "recommendation": {
@@ -538,5 +578,5 @@
   "status": "paused",
   "title": "repoglance.com website: CMS sync and maintenance",
   "track_id": "gt-20261007120417-1b0a54",
-  "updated_at": "2026-10-07T21:21:13+00:00"
+  "updated_at": "2026-10-07T21:54:43+00:00"
 }
