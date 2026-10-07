@@ -4,11 +4,11 @@
   "current_focus": {
     "cadence": "sequential",
     "confirmed": true,
-    "confirmed_at": "2026-10-07T12:30:16+00:00",
-    "domain": "cms-sync-011: how seed/seed.json (copy, imagery slots, block types) and the EmDash CMS on repoglance.com stay equal so the live site never silently diverges from the locked content again; the sync model, its identity and trigger, and the live-equals-seed check",
-    "started_at": "2026-10-07T12:04:17+00:00",
+    "confirmed_at": "2026-10-07T20:23:10+00:00",
+    "domain": "cms-first-013 slice 1 (no gates): the CMS owns content and the repository owns structure; scripts/cms-mirror.mjs (export the CMS into seed/seed.json, open the cms-edit PR, --check); cms:sync slimmed to schema only; the Worker mirror on publish/unpublish and the failure email through a Cloudflare Email Routing send_email binding, both dormant until their bindings and secrets exist; the namespace gate's machine-identity rules (reads and _rev-bearing draft writes only); check:live redefined; the cms-edit auto-merge workflow; docs, AGENTS.md, proof",
+    "started_at": "2026-10-07T20:23:10+00:00",
     "status": "inspected",
-    "summary": "Maintainer 'go' on 2026-10-07 to: (1) emdash-upgrade-012: pin emdash and @emdash-cms/cloudflare to 1.2.0 exactly in package.json and scripts/audit-repo.mjs via npm, verify on it; (2) cms-sync-011 option D: scripts/cms-sync.mjs (--check default, read-only diff of block types and pages between seed/seed.json and the CMS, exit 1 on drift; --apply writes block types first, compatible in place and breaking as a new activated version, then pages as drafts with the revision token and block migration, then publish, then re-check; identity: cloudflared access token for the live site, EMDASH_TOKEN or EMDASH_HEADERS passthrough, dev bypass on localhost; never prints a header or token), scripts/live-check.mjs (npm run check:live: local workerd seed render of / and /testers compared with the live <main>, reports data-content-source, fails with a diff), a shared workerd helper for smoke and the live check, package scripts cms:check, cms:sync, check:live; docs: README status, docs/cms-access.md sync section plus the deploy runbook step (deploy, sync, live check) and the unattended service-token path as a documented unbuilt option, one AGENTS.md boundary line (the CMS is written only by the sync from the seed), docs/content.md pointer; proof under proof/cms-sync-20261007/PROOF.md and .grilltrack/proof/cms-sync-011-verify-20261007.md. Verification: unit checks of the diff logic; a dev-server round trip (CMS set up from the seed, driven to the 1 October state, synced back, check reports equal), the dev pages' data-content-source=cms render compared with the production build's seed render; npm run verify via mise; a read-only read of the live site. Then a separate read-only review on the exact commit, adjudication, ledger records, commit with the trailer, push, PR against main. The CMS/seed comparison is modulo block _version (seed stays at version 1; the CMS moves to version 2 because removing owner-filter is breaking). Maintainer gates after merge: deploy, cloudflared access login, npm run cms:sync, npm run check:live. No merge, deploy, Cloudflare, DNS, Access or secret action by the agent."
+    "summary": "Maintainer 'go; use cloudflare email routing' on 2026-10-07 for slice 1 of cms-first-013 (no gates): (1) scripts/cms-mirror.mjs: reads the live CMS pages (identity ladder as the sync), writes them into seed/seed.json (pages only; block types and collections stay as the repo says and schema drift is reported), and unless --check or --no-pr pushes a cms-edit/<timestamp> branch from origin/main and opens a PR 'CMS edit: ...' labelled cms-edit; --check exits 1 when the repo differs from the CMS and names the fixing command. (2) scripts/cms-sync.mjs becomes schema-only (block types create/update/activate; never writes page content; EmDash setup is the one-time bootstrap). (3) A Worker module triggered by a successful POST .../publish or .../unpublish on pages: after the response (waitUntil) it reads the live pages from D1, builds the seed, and through a GitHub fine-grained token (secret GITHUB_MIRROR_TOKEN, repo from a var) creates a branch, commit and PR with the cms-edit label; it never merges; on any failure it emails agent@smokyproduct.co (recipient from a var, sender mirror@repoglance.com) through a send_email binding with the page, the error and the npm run cms:mirror re-run; when the token or the email binding is absent it logs that it is unconfigured and does nothing else (dormant until slice 2). (4) src/namespace-gate.ts admits a machine identity (an Access JWT with common_name and no email, verified with jose against the team's JWKS and audience, carrying an EmDash Bearer token) only to GET on content and schema routes, PUT on a content entry whose JSON body carries a non-empty _rev and no status other than draft, POST create with status draft, and POST .../preview-url; everything else answers 404; unit-tested. (5) scripts/live-check.mjs: a difference now means the repo is behind the CMS (run cms:mirror) and the live source is expected to be cms. (6) .github/workflows/cms-edit-automerge.yml arms auto-merge (merge commit) for cms-edit PRs on cms-edit/* branches with the repository token. (7) Docs: AGENTS.md boundaries (CMS owns content, repo owns structure, agents draft only, the mirror), docs/cms-access.md runbook, README, docs/content.md, docs/getting-started.md; wrangler.jsonc declares the send_email binding and the vars; prepare-deploy passes them through; jose pinned as a direct dependency. (8) Proof under proof/cms-first-20261007/PROOF.md and .grilltrack/proof/cms-first-013-verify-20261007.md: unit tests, npm run verify, a dev-server round trip (bootstrap, an admin-style publish, mirror --check and --no-pr showing the edit, the Worker trigger against a local GitHub stub), a separate read-only review on the exact commit, commit with the trailer, push, PR against main. Slice 2 (gates, maintainer): the GitHub token secret, repo auto-merge on, a ruleset on main requiring the site checks, Email Routing on repoglance.com with agent@smokyproduct.co verified and the send_email binding, deploy, one real edit and one forced failure. Slice 3 (gates, later): the agent draft lane. No merge, deploy, Cloudflare, DNS, Access or secret action by the agent."
   },
   "decisions": [
     {
@@ -109,6 +109,34 @@
           "review_source_identity": null,
           "to": "verified",
           "verification_ref": "run:dev-server round trip (setup, reverse sync to the 1 October seed, drift, forward sync, equal, CMS render equal to the seed render)"
+        },
+        {
+          "at": "2026-10-07T19:17:45+00:00",
+          "choice": "D (maintainer, 2026-10-07): the seed stays the only source of truth; scripts/cms-sync.mjs upserts the seed's block types and pages into the CMS through EmDash's API and publishes them, so the CMS is the live source again and equal to the seed (fields and data equal; the CMS's block-type version numbers follow its own history, so the comparison is modulo _version); identity: the maintainer's own Cloudflare Access login cached by cloudflared (cf-access-token), no service token, no Access policy change, no API token, no guard change; trigger: a maintainer step right after every deploy (deploy, sync, live check), never on merge; scripts/live-check.mjs compares the live <main> of both pages with a seed render of the local build and reports data-content-source, failing on any difference.",
+          "from": "verified",
+          "implementation_ref": "file:.grilltrack/proof/cms-sync-011-verify-20261007.md",
+          "note": "Maintainer, 2026-10-07: an admin who logs in to the editor to make a change expects that change to persist; people will let agents build and want the ability to log in and override. Under option D as shipped the next cms:sync overwrites admin edits and check:live reports them as drift, so the direction of truth must be decided again: the admin as a first-class writer, with the repo learning about admin edits instead of reverting them.",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md#review-round-2",
+          "review_result": "clean",
+          "review_source_identity": "git:54b213bef91986b09807aa177ea9f0da1c5a18ac",
+          "to": "reopened",
+          "verification_ref": "proof/cms-sync-20261007/PROOF.md"
+        },
+        {
+          "at": "2026-10-07T20:15:18+00:00",
+          "choice": "D (maintainer, 2026-10-07): the seed stays the only source of truth; scripts/cms-sync.mjs upserts the seed's block types and pages into the CMS through EmDash's API and publishes them, so the CMS is the live source again and equal to the seed (fields and data equal; the CMS's block-type version numbers follow its own history, so the comparison is modulo _version); identity: the maintainer's own Cloudflare Access login cached by cloudflared (cf-access-token), no service token, no Access policy change, no API token, no guard change; trigger: a maintainer step right after every deploy (deploy, sync, live check), never on merge; scripts/live-check.mjs compares the live <main> of both pages with a seed render of the local build and reports data-content-source, failing on any difference.",
+          "from": "reopened",
+          "implementation_ref": "file:.grilltrack/proof/cms-sync-011-verify-20261007.md",
+          "note": "Maintainer's preference change of 2026-10-07: admin edits must persist; the CMS owns content and the repository owns structure; the site mirrors itself into the repository on publish. The sync script, the live check, the validator fix and the EmDash 1.2.0 upgrade shipped under cms-sync-011 remain in the tree; the sync is slimmed to structure and the live check redefined under cms-first-013.",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md#review-round-2",
+          "review_result": "clean",
+          "review_source_identity": "git:54b213bef91986b09807aa177ea9f0da1c5a18ac",
+          "to": "superseded",
+          "verification_ref": "proof/cms-sync-20261007/PROOF.md"
         }
       ],
       "id": "cms-sync-011",
@@ -140,9 +168,9 @@
       "review_ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md#review-round-2",
       "review_result": "clean",
       "review_source_identity": "git:54b213bef91986b09807aa177ea9f0da1c5a18ac",
-      "status": "verified",
-      "superseded_by": null,
-      "updated_at": "2026-10-07T13:02:20+00:00",
+      "status": "superseded",
+      "superseded_by": "cms-first-013",
+      "updated_at": "2026-10-07T20:15:18+00:00",
       "verification_ref": "proof/cms-sync-20261007/PROOF.md"
     },
     {
@@ -221,24 +249,261 @@
       "superseded_by": null,
       "updated_at": "2026-10-07T13:00:21+00:00",
       "verification_ref": "run:npm run verify (audit 151 files, astro check 0/0, content 9/9, guard 11/11, edge 14/14, build, smoke 124/124)"
+    },
+    {
+      "baseline_ref": "git:1ba8ffb",
+      "candidate_refs": [],
+      "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+      "context_ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md",
+      "created_at": "2026-10-07T20:15:18+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [],
+      "domain": "cms-sync-011: how seed/seed.json (copy, imagery slots, block types) and the EmDash CMS on repoglance.com stay equal so the live site never silently diverges from the locked content again; the sync model, its identity and trigger, and the live-equals-seed check",
+      "history": [
+        {
+          "at": "2026-10-07T20:15:18+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T20:40:18+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T20:41:05+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "implemented",
+          "implementation_ref": "proof/cms-first-20261007/PROOF.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T20:58:15+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "verified",
+          "implementation_ref": "proof/cms-first-20261007/PROOF.md",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "run:dev-server round trip with a GitHub stub (publish fired the Worker mirror with the full GitHub sequence; manual check and --no-pr; forced 401 produced the failure log and the email written by Miniflare)"
+        },
+        {
+          "at": "2026-10-07T20:58:15+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "needs_reverification",
+          "implementation_ref": "proof/cms-first-20261007/PROOF.md",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive",
+            "human_gate"
+          ],
+          "review_ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:b8b37900fa89726571bc51ebbe092aeda8fa416b",
+          "to": "implemented",
+          "verification_ref": "run:dev-server round trip with a GitHub stub (publish fired the Worker mirror with the full GitHub sequence; manual check and --no-pr; forced 401 produced the failure log and the email written by Miniflare)"
+        },
+        {
+          "at": "2026-10-07T20:59:12+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "implemented",
+          "implementation_ref": "file:proof/cms-first-20261007/PROOF.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "run:dev-server round trip with a GitHub stub (publish fired the Worker mirror with the full GitHub sequence; manual check and --no-pr; forced 401 produced the failure log and the email written by Miniflare)"
+        },
+        {
+          "at": "2026-10-07T21:10:59+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "verified",
+          "implementation_ref": "file:proof/cms-first-20261007/PROOF.md",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "proof/cms-first-20261007/PROOF.md"
+        },
+        {
+          "at": "2026-10-07T21:10:59+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "needs_reverification",
+          "implementation_ref": "file:proof/cms-first-20261007/PROOF.md",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer",
+            "human_gate"
+          ],
+          "review_ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-2",
+          "review_result": "findings",
+          "review_source_identity": "git:b98a7c019aa8571aa5e8f30add43d9d30e6bc06e",
+          "to": "implemented",
+          "verification_ref": "proof/cms-first-20261007/PROOF.md"
+        },
+        {
+          "at": "2026-10-07T21:11:21+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "implemented",
+          "implementation_ref": "file:docs/cms-access.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "proof/cms-first-20261007/PROOF.md"
+        },
+        {
+          "at": "2026-10-07T21:14:12+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "verified",
+          "implementation_ref": "file:docs/cms-access.md",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "run:npm run verify after round 2 (audit 165 files, astro check 0/0, content 11/11, guard 15/15, edge 14/14, cms 18/18, build, smoke 124/124)"
+        },
+        {
+          "at": "2026-10-07T21:14:12+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "needs_reverification",
+          "implementation_ref": "file:docs/cms-access.md",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "review_ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-3",
+          "review_result": "findings",
+          "review_source_identity": "git:46af3218beb0d14ce09ed80209f54d093a588caa",
+          "to": "implemented",
+          "verification_ref": "run:npm run verify after round 2 (audit 165 files, astro check 0/0, content 11/11, guard 15/15, edge 14/14, cms 18/18, build, smoke 124/124)"
+        },
+        {
+          "at": "2026-10-07T21:14:12+00:00",
+          "choice": "CMS-first (maintainer, 2026-10-07, with four amendments). (1) The CMS owns content: an edit published in the EmDash admin is live and persists; nothing ever writes copy from seed/seed.json into the CMS after the one-time bootstrap. (2) The repository owns structure: block types, components, image slugs, the Worker; they reach the CMS by deploy and a schema-only sync. (3) The site mirrors itself into the repository on publish and unpublish, with no schedule: after answering the admin's request the Worker builds the seed from the CMS, pushes a branch and opens a PR titled 'CMS edit: ...' labelled cms-edit through a GitHub fine-grained token scoped to this repository that may push a branch and open a PR and never merges; a repository workflow arms auto-merge for cms-edit PRs and branch protection lets them merge only when the checks are green; a published edit that fails a truth test leaves its PR open and red. (4) If the mirror fails for any reason (GitHub unreachable, token error, anything) the Worker sends a failure email to agent@smokyproduct.co naming the page, the error and how to re-run npm run cms:mirror; it never fails silently; npm run cms:mirror is the manual and on-touch safety net (every agent session and the schema sync start with it). (5) Agents only write drafts, never publish: a machine identity (Access service token plus a draft-scoped EmDash API token) is admitted by the namespace gate only to read and to write drafts; publish, unpublish, schedule, delete and schema writes answer 404 to it; the agent hands the maintainer EmDash's preview link and the admin link, and the maintainer edits and publishes in the admin. (6) Before writing a draft the agent reads the page's current revision and writes against it: the gate refuses a machine draft write that carries no _rev, and EmDash refuses one whose _rev is stale (409), so the agent re-reads and redoes the draft on the newer version. (7) A brand-new site's first CMS load comes from the seed through EmDash setup, once.",
+          "from": "implemented",
+          "implementation_ref": "file:docs/cms-access.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "run:npm run verify after round 2 (audit 165 files, astro check 0/0, content 11/11, guard 15/15, edge 14/14, cms 18/18, build, smoke 124/124)"
+        }
+      ],
+      "id": "cms-first-013",
+      "implementation_ref": "file:docs/cms-access.md",
+      "question": "Who owns the content of repoglance.com, who owns its structure, how does the repository learn about edits made in the EmDash admin, what may an agent do in the CMS, what happens when the mirror fails, and how is a fresh site bootstrapped?",
+      "rationale": "Replaces cms-sync-011 (option D), reopened on the maintainer's instruction: an admin who logs in to make a change expects it to persist, and people letting agents build will want to log in and override. Alternatives weighed: E (admin wins, repo follows through an export PR, conflict-aware sync) kept two writers of content and a manual export; a scheduled mirror was rejected for a site edited months apart; agents editing the CMS directly without a human gate was rejected because the truth rules exist to stop unproven claims. EmDash 1.2 facts behind the shape: no outbound webhooks but host hooks on publish/unpublish and waitUntil in the Worker; roles have no edit-any-without-publish tier and tokens belong to the user who creates them, so the draft-only rule lives in our gate; PUT /content accepts _rev and answers 409 on a stale revision.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive",
+            "human_gate"
+          ],
+          "ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T20:58:15+00:00",
+          "source_identity": "git:b8b37900fa89726571bc51ebbe092aeda8fa416b"
+        },
+        {
+          "classifications": [
+            "required_fix",
+            "defer",
+            "human_gate"
+          ],
+          "ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-2",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T21:10:59+00:00",
+          "source_identity": "git:b98a7c019aa8571aa5e8f30add43d9d30e6bc06e"
+        },
+        {
+          "classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-3",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T21:14:12+00:00",
+          "source_identity": "git:46af3218beb0d14ce09ed80209f54d093a588caa"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-4",
+          "result": "clean",
+          "reviewed_at": "2026-10-07T21:15:10+00:00",
+          "source_identity": "git:9a7fbb4b5e2abc44bc181b0e521723a5dbcc4109"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-4",
+      "review_result": "clean",
+      "review_source_identity": "git:9a7fbb4b5e2abc44bc181b0e521723a5dbcc4109",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-07T21:15:10+00:00",
+      "verification_ref": ".grilltrack/proof/cms-first-013-verify-20261007.md#review-round-3"
     }
   ],
   "last_activation": {
-    "at": "2026-10-07T14:28:34+00:00",
+    "at": "2026-10-07T19:17:45+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
-    "artifact_refs": [
-      "https://github.com/saari-co/repoglance-site/pull/10",
-      "proof/cms-sync-20261007/PROOF.md#deploy-2026-10-07-1414-utc",
-      ".grilltrack/proof/cms-sync-011-verify-20261007.md"
-    ],
-    "next_safe_action": "After the maintainer's Access login: run npm run cms:sync from a checkout of main (expected: hero and feature get a new activated version without owner-filter, both pages written and published, result equal), then npm run check:live (expected: both equal, live source cms); record the results in proof/cms-sync-20261007/PROOF.md and the ledger; then open live-check-schedule-013 or the chosen alternative.",
-    "paused_at": "2026-10-07T14:18:09+00:00",
-    "reason": "Delivered and deployed on the maintainer's instruction (2026-10-07): PR saari-co/repoglance-site#10 merged as 5d02a7323a1576671c3bf4752666bf9fbf49e44b (ClawSweeper: no findings, 'ready for maintainer look'; blocked only on the operational runbook); main built with the Access team domain from the ignored deploy config and deployed with Wrangler as Worker version afc3e3fb-f7c6-46bc-a593-326cda098908 on repoglance.com and www.repoglance.com with the daily cron; live after the deploy: both pages 200 from the seed with this build's Last-Modified and Cache-Control: no-cache, the editor a 302 to the Access login, www a 301 to the apex, the edge cache a HIT on the second request, and npm run check:live from the deployed build reporting both <main> equal. Remaining maintainer gates: cloudflared access login https://repoglance.com/_emdash, npm run cms:sync, npm run check:live.",
-    "resumed_at": "2026-10-07T14:28:34+00:00"
-  },
-  "pause": {
     "artifact_refs": [
       "https://github.com/saari-co/repoglance-site/pull/10",
       "https://github.com/saari-co/repoglance-site/pull/11",
@@ -246,21 +511,32 @@
     ],
     "next_safe_action": "On the maintainer's word: open the recommended live-check-schedule-013 (or screenshot-options-011, or the outside links) as the next grill in this track, or close the track if no meaningful grill remains. PR #11 is the maintainer's to merge.",
     "paused_at": "2026-10-07T14:28:34+00:00",
-    "reason": "cms-sync-011 complete in production (2026-10-07 14:26 UTC): the maintainer ran cloudflared access login, npm run cms:sync (hero and feature version 2 created and activated, both pages written from the seed and published, result equal) and npm run check:live (both pages equal, live source cms). The live source is the CMS, equal to the seed. Both decisions verified and reviewed clean; delivery PR #10 merged as 5d02a73 and deployed as Worker version afc3e3fb; proof PR #11 (proof and ledger only) open."
+    "reason": "cms-sync-011 complete in production (2026-10-07 14:26 UTC): the maintainer ran cloudflared access login, npm run cms:sync (hero and feature version 2 created and activated, both pages written from the seed and published, result equal) and npm run check:live (both pages equal, live source cms). The live source is the CMS, equal to the seed. Both decisions verified and reviewed clean; delivery PR #10 merged as 5d02a73 and deployed as Worker version afc3e3fb; proof PR #11 (proof and ledger only) open.",
+    "resumed_at": "2026-10-07T19:17:45+00:00"
+  },
+  "pause": {
+    "artifact_refs": [
+      "https://github.com/saari-co/repoglance-site/pull/13",
+      "proof/cms-first-20261007/PROOF.md",
+      ".grilltrack/proof/cms-first-013-verify-20261007.md"
+    ],
+    "next_safe_action": "After the merge and the maintainer's slice-2 gates: run one real admin edit and one forced failure in production, record the results (the cms-edit PR, its auto-merge, the failure email) in proof/cms-first-20261007/PROOF.md and the ledger, then open slice 3 (the agent draft lane) or the chosen alternative. If main moves before the merge, merge origin/main into claude/cms-authoring with the ledger united and re-verify.",
+    "paused_at": "2026-10-07T21:15:10+00:00",
+    "reason": "cms-first-013 slice 1 implemented, verified and reviewed clean at git:9a7fbb4b5e2abc44bc181b0e521723a5dbcc4109 after four rounds (round 1 at git:b8b37900fa89726571bc51ebbe092aeda8fa416b with 14 findings, round 2 at git:b98a7c019aa8571aa5e8f30add43d9d30e6bc06e with 7, round 3 at git:46af3218beb0d14ce09ed80209f54d093a588caa with 2, round 4 clean); delivered as PR saari-co/repoglance-site#13 on the maintainer's instruction, CI green. Waiting on the maintainer's gates: merge, then slice 2 (token secret, auto-merge and ruleset, Email Routing and the recipient var, deploy, one real edit, one forced failure). Open human-gate items from the reviews: the ruleset must require pull requests on main (the token has Contents write); the maintainer's role mailbox is quoted in the committed ledger text of the public repository (removed from the docs); scheduled publishes and metadata-only saves are recorded limits of the mirror."
   },
   "predecessor_track_id": "gt-20261001102301-89ec89",
   "recommendation": {
     "alternatives": [
-      "screenshot-options-011: the hygiene round on the seed's screenshot options the first track deferred (retire or re-word the unused connect-or-explore-sample option, catch orphan WebPs under public/screenshots/), which now also decides whether the sync should prune inactive block-type versions (review round 1, finding 3).",
-      "site-links-010 and the Play opt-in link: maintainer actions outside the repo (the Play listing's website field, the RepoGlance README pointing at repoglance.com, the opt-in link when Play Console shows it), each a seed change that reaches the live site through cms:sync and check:live."
+      "cms-first-013 slice 3 (gates): the agent draft lane: an Access service token admitted by a Service Auth policy on the CMS application, a draft-scoped EmDash API token, the cms:draft tooling (read _rev, stage the draft, hand over the preview and admin links), the maintainer's first review of an agent draft in the editor.",
+      "screenshot-options-011: the hygiene round on the seed's screenshot options (the unused connect-or-explore-sample option, orphan WebPs), now also whether cms:sync should prune inactive block-type versions; a structure change that ships by deploy and cms:sync."
     ],
-    "reason": "The sync and the live check exist and are proven locally, but both run only when the maintainer runs them; the invariant the maintainer asked for ('never silently diverges') is strongest when the live check also runs on a schedule. The other candidates are hygiene or outside actions, not product decisions.",
-    "recommended": "live-check-schedule-013: run scripts/live-check.mjs unattended as a scheduled GitHub Actions workflow against https://repoglance.com (daily, plus workflow_dispatch), building main and failing loudly on any <main> difference or a non-seed, non-synced source; no secrets, no Cloudflare change, the pages are public. It closes the gap this cycle leaves between maintainer runs: drift is caught within a day instead of at the next deploy.",
-    "recorded_at": "2026-10-07T13:02:36+00:00"
+    "reason": "Slice 1 is built, verified and reviewed clean, but the mirror and the email are dormant until the maintainer's gates exist; slice 2 is what turns the decision on in production, and slice 3 is the first product feature on top of it. The hygiene round can wait.",
+    "recommended": "cms-first-013 slice 2 (maintainer gates, one sitting): the GitHub fine-grained token as the GITHUB_MIRROR_TOKEN secret; repository auto-merge on and a ruleset on main requiring a pull request and the site checks; Email Routing on repoglance.com with the maintainer's mailbox verified and REPOGLANCE_MIRROR_EMAIL_TO in the deploy env; deploy; one real admin edit to prove publish, cms-edit PR and auto-merge; one forced failure to prove the email. Then record the production results in proof/cms-first-20261007/PROOF.md and the ledger.",
+    "recorded_at": "2026-10-07T21:15:10+00:00"
   },
   "schema_version": "grilltrack/v0.1",
   "status": "paused",
   "title": "repoglance.com website: CMS sync and maintenance",
   "track_id": "gt-20261007120417-1b0a54",
-  "updated_at": "2026-10-07T14:28:34+00:00"
+  "updated_at": "2026-10-07T21:15:10+00:00"
 }

@@ -148,36 +148,72 @@ printed. This was done for repoglance.com on 2026-10-01
    setup is closed: a second anonymous request to the setup routes still
    answers 404, and the pages report `data-content-source="cms"`.
 
-   **Setup copies the seed once.** EmDash setup imports `seed/seed.json`
-   (pages and block types) as it is in the deployed build and never again;
-   from then on `src/content/load-page.ts` renders the CMS entry whenever
-   one exists, so later seed changes do not reach the live site until they
-   are written into the CMS. On 2026-10-06 the 1 October entries were
-   unpublished for that reason (`proof/cms-drift-20261006/PROOF.md`), and
-   since then the sync below keeps the CMS equal to the seed; the pages
-   render from the seed until its first run.
+   **Setup copies the seed once, and that is the only time.** EmDash setup
+   imports `seed/seed.json` (pages and block types) as it is in the deployed
+   build; from then on the CMS owns the content and
+   `src/content/load-page.ts` renders the CMS entry whenever one exists.
+   History: the 1 October entries were unpublished on 2026-10-06 because
+   they predated the copy and imagery locks
+   (`proof/cms-drift-20261006/PROOF.md`) and re-filled from the seed on
+   2026-10-07 (`proof/cms-sync-20261007/PROOF.md`); since then edits are
+   made in the admin and mirrored back (the section below).
 7. **Second editor**, only after setup is closed: add the email to the
    Access policy and to `EMDASH_OPERATOR_ALLOWLIST` (a new `secret put`).
    Their installed EmDash role is `defaultRole` 40.
 
-## Keeping the CMS equal to the seed
+## Content, structure and the mirror
 
-Decision `cms-sync-011` (2026-10-07, `proof/cms-sync-20261007/PROOF.md`):
-the seed is the only source of truth, the CMS is a copy of it that the
-editor may read, and the live site is proven equal to the seed after every
-deploy. Three commands, all run from a checkout of the deployed commit:
+Decision `cms-first-013` (2026-10-07, `proof/cms-first-20261007/PROOF.md`,
+replacing `cms-sync-011`): **the CMS owns content, the repository owns
+structure, and the site mirrors itself into the repository.**
+
+**Editing.** You edit and publish in the EmDash admin. The published page is
+live at once and persists; nothing ever writes copy from `seed/seed.json`
+into the CMS after the one-time bootstrap (EmDash setup imports the seed
+when a brand-new site is first set up, and never again).
+
+**The mirror.** After every request that changes what is live on a page
+(publish, unpublish, restore from the trash, trash or permanent delete, and
+the on-page visual-editing toolbar's publish), the Worker
+(`src/cms/mirror.ts`, triggered by `src/cms/mirror-trigger.ts` after the
+response is sent) reads the live pages from D1, rebuilds `seed/seed.json`
+on top of `main`, and through a GitHub fine-grained token scoped to this
+repository pushes a `cms-edit/<timestamp>` branch and opens a PR titled
+"CMS edit: …" with the `cms-edit` label, or adds a commit to the open one;
+when live comes back to what `main` already holds, it closes the open
+mirror PR instead. The token may push a branch and open, update or close a
+PR; it never merges. The `CMS edit auto-merge` workflow arms auto-merge
+(merge commit) for a PR that changes only `seed/seed.json`, and GitHub
+merges it when the required checks are green, so the repository lags the
+live site by minutes. A published edit that fails a truth test in
+`tests/content.test.mjs` leaves its PR open and red: fix the wording in the
+admin (the next publish updates the PR, or closes it when the fix restores
+what `main` holds) or change the rule in that PR.
+
+Two recorded limits: a scheduled publish fires from the cron, not from a
+request, and is mirrored at the next admin action or by `npm run
+cms:mirror`; a save that changes a published page's metadata without a
+publish is not mirrored either, since the rendered pages use none of it.
+
+**Never silent.** If the mirror fails for any reason (GitHub unreachable, a
+token error, a database error), the Worker emails the maintainer through
+Cloudflare Email Routing (`send_email` binding `MIRROR_EMAIL`, sender
+`MIRROR_EMAIL_FROM`, recipient `MIRROR_EMAIL_TO`) with the page, the error
+and the manual re-run below. The mirror runs only when both the GitHub
+token and the email channel are configured, so a failure can always reach
+you; until then (the gates below) it logs that it is unconfigured, names
+what is missing, and does nothing else. The manual mirror is the safety
+net in every case.
+
+**Commands**, all read-only against the CMS except `cms:sync`:
 
 | Command | What it does | Identity |
 | --- | --- | --- |
-| `npm run cms:check` | Reports every difference between `seed/seed.json` and the CMS: each block type's label, category, description, icon and active-version fields; each page's slug, status and live data (title, description, layout blocks by key); anything in the CMS the seed does not declare. Exit 1 on drift. Read only. | your Access login (below) |
-| `npm run cms:sync` | Writes the seed into the CMS and publishes it, then re-checks: block types first (a compatible change updates the active version in place; a breaking one, such as a removed select option, creates a new version, or reuses an inactive one with the same fields, and activates it), then each page as a draft with the revision token and block migration, then publish. Never deletes. | your Access login (below) |
-| `npm run check:live` | After `npm run build`: renders both pages from the seed on local workerd, fetches them from the live site, reports the live `data-content-source` and edge-cache status, and fails unless the two `<main>` elements are identical. | none (public pages) |
+| `npm run cms:mirror` | Writes the live CMS pages into `seed/seed.json` on a throwaway worktree of `origin/main`, pushes `cms-edit/<timestamp>` and opens the labelled PR; `-- --no-pr` only rewrites the file here; `npm run cms:mirror:check` only reports (exit 1 when the repository is behind). Block types, collections and everything else stay as the repository says; a CMS schema that differs is reported. Every agent session starts with the check. | your Access login (below) |
+| `npm run cms:check` / `npm run cms:sync` | Compares, or writes, the repository's block types into the CMS (a compatible change in place; a breaking one, such as a removed select option, as a new or reused activated version). Never writes page content. Run after a deploy that changes block types. | your Access login (below) |
+| `npm run check:live` | After `npm run build`: renders both pages from the seed on local workerd, fetches them from the live site, reports the live `data-content-source` (expected `cms`) and edge-cache status, and fails unless the two `<main>` elements are identical, which means the repository is behind the CMS or the mirror failed. | none (public pages) |
 
-The comparison ignores block `_version`: the seed describes a fresh install
-(version 1) while the CMS's versions follow its own history. Rendering does
-not depend on it.
-
-**Identity.** The scripts sign in as you, through the Access login
+**Identity.** The scripts sign in as you through the Access login
 `cloudflared` caches; no service token, no second Access policy, no EmDash
 API token and no Worker secret is involved:
 
@@ -186,36 +222,52 @@ cloudflared access login https://repoglance.com/_emdash
 ```
 
 opens the browser for your Google login once per Access session (24 hours
-here). `npm run cms:check` and `npm run cms:sync` then read the cached JWT
-with `cloudflared access token` and send it as `cf-access-token`; Access
-admits it and EmDash maps it to your operator account, exactly as the admin
-tab does. The scripts never print a token or header value. Without a cached
-login they stop and print the command above.
+here). The scripts then read the cached JWT with `cloudflared access token`
+and send it as `cf-access-token`; Access admits it and EmDash maps it to
+your operator account, exactly as the admin tab does. The scripts never
+print a token or header value.
 
-**When.** After every deploy, in this order, from the deployed commit:
+**Agents.** Agents never publish. A machine identity (a Cloudflare Access
+service token admitted by a Service Auth policy, carrying an EmDash API
+token as Bearer) is admitted by `src/namespace-gate.ts` only to read
+content and schema, to stage a draft on an existing entry against the
+revision it read (the request must carry EmDash's `_rev`, so a stale write
+answers 409 and the agent re-reads and redoes it; the write may carry only
+`data`, `_rev`, `migrateBlocks` and `replaceBlocks`, never a status, since
+EmDash treats a status on a save as live metadata and `status: "draft"`
+would unpublish the page), to create a new entry as a draft, and to ask
+for a preview link; publish, unpublish, schedule,
+delete, schema writes, live metadata and every admin route answer 404. The agent hands you
+the preview link and the admin link; you edit and publish. The identity for
+this lane is a later slice with its own gates.
 
-1. `npx wrangler deploy ...` (the deploy section below).
-2. `npm run cms:sync` (the Worker that renders the new seed is live, so the
-   CMS may now carry it).
-3. `npm run check:live` (the live pages equal the seed render).
+**Structure changes** (block types, components, image slugs, new fields)
+still ship from the repository: PR, merge, deploy, then `npm run cms:sync`
+for block types. Never sync before the deploy.
 
-Never sync before the deploy: the live Worker would render new slugs with
-old components. `npm run cms:check` alone is safe at any time.
+### Gates for the mirror (maintainer, one sitting)
 
-If an editor holds an entry's edit lock in the admin, the sync refuses that
-page; close the editor or pass `npm run cms:sync -- --override-lock`.
+1. A GitHub fine-grained personal access token for this repository only,
+   with **Contents: read and write** and **Pull requests: read and write**,
+   set as the Worker secret from your own terminal and never printed:
 
-**Unattended runs (not built).** A sync from CI or a scheduler would need a
-non-browser identity: a Cloudflare Access service token admitted by a
-separate **Service Auth** policy on the `RepoGlance CMS` application, an
-EmDash API token (`ec_pat_`, scopes `content:read`, `content:write`,
-`schema:read`, `schema:write`, created by an Admin) sent as a Bearer token,
-and a change to `src/namespace-gate.ts`, because a service-token JWT carries
-no email (`sub` is empty, `common_name` is the client id) and the guard
-denies it. The scripts already accept such headers through `EMDASH_HEADERS`
-or `--header` and a token through `EMDASH_TOKEN`; the token, the policy and
-the secrets are maintainer hard gates and would live in ignored `.local/`
-files or repository secrets, never in source or chat.
+   ```sh
+   npx wrangler secret put GITHUB_MIRROR_TOKEN --name repoglance-site
+   ```
+
+2. Repository settings: **Allow auto-merge** on; a ruleset on `main` that
+   **requires a pull request** before merging (the token has Contents write,
+   so this is what keeps it from pushing to `main` directly) and requires the
+   `Site checks` status (and, if you want, the workflow validation), so
+   auto-merge waits for green.
+3. Email: **Email Routing** enabled on the `repoglance.com` zone and the
+   maintainer's mailbox verified as a destination address of the account.
+   The `send_email` binding is declared in `wrangler.jsonc`; the recipient
+   is a deploy-time var (`REPOGLANCE_MIRROR_EMAIL_TO` in the ignored
+   `.local/deploy.env`, written into the config by `prepare:deploy`), never
+   in source.
+4. Deploy (below), then one real edit in the admin to prove publish, PR and
+   auto-merge, and one forced failure (a wrong token) to prove the email.
 
 ## Deploying the public pages (maintainer, gated)
 
@@ -252,5 +304,5 @@ hard gate from `AGENTS.md`.
    `REPOGLANCE_WORKERS_DEV` unset) and deploy again. Wrangler creates the
    DNS records for the custom domains in the zone and turns workers.dev off.
 5. The CMS stays denied until the Access steps above are done.
-6. After every deploy with Access configured: `npm run cms:sync`, then
-   `npm run check:live` (the section above).
+6. After a deploy that changed block types: `npm run cms:sync`. After any
+   deploy: `npm run check:live` (the section above).

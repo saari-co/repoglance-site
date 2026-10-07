@@ -5,26 +5,28 @@ read-only, widget-first GitHub glance for Google Pixels. Two pages: the
 overview at `/` and the closed-test signup at `/testers`.
 
 Built with [Astro](https://astro.build) and [EmDash](https://emdashcms.com)
-1.2 for Cloudflare Workers. Content lives in `seed/seed.json`; the EmDash
-CMS behind Cloudflare Access is kept equal to it by a sync script and is the
-live source once synced (see below).
+1.2 for Cloudflare Workers. The EmDash CMS behind Cloudflare Access owns the
+content; `seed/seed.json` is its record and the first-boot fallback, kept
+equal by a mirror the site runs after every publish (see below).
 
 ## Status
 
 - **Source:** this repository, on `main`.
 - **Live** at <https://repoglance.com> since 2026-10-01 on Cloudflare
   Workers with D1 and R2; the EmDash editor is behind Cloudflare Access.
-  **Live source:** the seed is the only source of truth and the CMS is
-  kept equal to it (decision `cms-sync-011`): after every deploy the
-  maintainer runs `npm run cms:sync`, which writes the seed's block types
-  and pages into the CMS and publishes them, then `npm run check:live`,
-  which fails unless the live pages equal a seed render of the build
-  ([docs/cms-access.md](docs/cms-access.md#keeping-the-cms-equal-to-the-seed)).
-  Until the first sync after the EmDash 1.2 deploy, the pages render from
-  `seed/seed.json`: the 1 October entries were unpublished on 2026-10-06
-  because they predated the copy, imagery and block-type locks
-  ([proof/cms-drift-20261006/](proof/cms-drift-20261006/PROOF.md),
-  [proof/cms-sync-20261007/](proof/cms-sync-20261007/PROOF.md)).
+  **Live source:** the CMS, which owns the content (decision
+  `cms-first-013`): the maintainer edits and publishes in the admin, and
+  the site mirrors every publish into `seed/seed.json` as a `cms-edit` PR
+  that auto-merges when the checks are green, emailing the maintainer if
+  the mirror fails. The repository owns structure (block types, components,
+  image slugs), which ships by deploy and `npm run cms:sync`; `npm run
+  check:live` proves the repository equals the live site
+  ([docs/cms-access.md](docs/cms-access.md#content-structure-and-the-mirror)).
+  History: the 1 October CMS entries predated the copy and imagery locks and
+  were unpublished on 2026-10-06; the first sync from the seed ran on
+  2026-10-07 ([proof/cms-drift-20261006/](proof/cms-drift-20261006/PROOF.md),
+  [proof/cms-sync-20261007/](proof/cms-sync-20261007/PROOF.md),
+  [proof/cms-first-20261007/](proof/cms-first-20261007/PROOF.md)).
   `www.repoglance.com` redirects to the apex
   and the public pages are cached at the edge (purged on every publish). The
   gated steps and their proof are in [docs/cms-access.md](docs/cms-access.md),
@@ -50,12 +52,12 @@ npm run dev
 ```
 
 Open the printed `127.0.0.1` URL. Both pages render from `seed/seed.json`
-until the local CMS holds them. The EmDash editor at `/_emdash/admin` is
-available in development only; production builds deny that namespace unless
-Cloudflare Access is configured. `npm run cms:check -- --url
-http://127.0.0.1:<port>` compares the local CMS with the seed and
-`npm run cms:sync -- --url ...` writes the seed into it (EmDash's development
-bypass signs the script in).
+until the local CMS holds them (EmDash's setup wizard imports the seed once).
+The EmDash editor at `/_emdash/admin` is available in development only;
+production builds deny that namespace unless Cloudflare Access is
+configured. `npm run cms:mirror:check -- --url http://127.0.0.1:<port>`
+compares the seed with the local CMS's pages and `npm run cms:check -- --url
+...` its block types (EmDash's development bypass signs the scripts in).
 
 `npm run start` serves the production build on local workerd (`wrangler dev
 --local`). It does not deploy.
@@ -74,10 +76,11 @@ the `/_emdash` namespace answers 404 with no redirect and no caching, a
 missing route answers 404, and the `www` host answers a permanent redirect to
 the apex.
 
-Two checks need the network and run on demand, not in `verify`:
-`npm run cms:check` compares the CMS on repoglance.com with the seed (read
-only; needs your own Access login, see the runbook) and `npm run check:live`
-compares the live pages with a seed render of the local build.
+Three checks need the network and run on demand, not in `verify`:
+`npm run cms:mirror:check` compares the repository's pages with the live
+CMS and `npm run cms:check` its block types (both read only; they need your
+own Access login, see the runbook), and `npm run check:live` compares the
+live pages with a seed render of the local build.
 
 ## Scope and decisions
 

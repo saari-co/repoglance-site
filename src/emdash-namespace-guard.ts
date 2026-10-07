@@ -1,6 +1,7 @@
 import { defineMiddleware } from 'astro:middleware';
 import { authenticate as accessAuthenticate } from '@emdash-cms/cloudflare/auth';
 import { env as workerEnv } from 'cloudflare:workers';
+import { createRemoteJWKSet, jwtVerify } from 'jose';
 import {
   ALLOWLIST_ENV,
   AUDIENCE_ENV,
@@ -10,6 +11,7 @@ import {
   isEmdashNamespace,
   requestPathname,
   type GateEnv,
+  type MachineIdentity,
 } from './namespace-gate.ts';
 
 /**
@@ -45,13 +47,40 @@ function readEnv(): GateEnv {
   };
 }
 
+const jwksByTeam = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
+
+/**
+ * Verify an Access JWT ourselves and return its claims. The official
+ * `authenticate` above needs an email to map the identity to an operator and
+ * throws for a service token, whose JWT carries `common_name` and no email;
+ * this path exists for those machine identities only, and the gate limits
+ * what they may do (reads and `_rev`-bearing draft writes, cms-first-013).
+ */
+async function verifyMachine(request: Request, config: { teamDomain: string; audienceEnvVar: string }): Promise<MachineIdentity | null> {
+  const jwt = request.headers.get('cf-access-jwt-assertion') ?? (request.headers.get('cookie') ?? '').match(/CF_Authorization=([^;]+)/)?.[1] ?? null;
+  if (!jwt) return null;
+  const audience = readEnv()[config.audienceEnvVar as typeof AUDIENCE_ENV];
+  if (!audience) return null;
+  let jwks = jwksByTeam.get(config.teamDomain);
+  if (!jwks) {
+    jwks = createRemoteJWKSet(new URL(`https://${config.teamDomain}/cdn-cgi/access/certs`));
+    jwksByTeam.set(config.teamDomain, jwks);
+  }
+  const { payload } = await jwtVerify(jwt, jwks, { issuer: `https://${config.teamDomain}`, audience, clockTolerance: 60 });
+  return {
+    commonName: typeof payload.common_name === 'string' ? payload.common_name : undefined,
+    email: typeof payload.email === 'string' ? payload.email : undefined,
+  };
+}
+
 /**
  * Outer middleware, registered before EmDash. Production builds answer 404 for
  * the whole /_emdash namespace, including setup and login, unless Cloudflare
  * Access is configured, the official Access authentication succeeds, and the
- * identity is on the operator allowlist when one is set. Development builds
- * pass the namespace through so the local editor works. Host, forwarded
- * headers, Origin, cookies and query strings are never an unlock.
+ * identity is on the operator allowlist when one is set; a verified service
+ * token is admitted only to the machine routes the gate allows. Development
+ * builds pass the namespace through so the local editor works. Host,
+ * forwarded headers, Origin, cookies and query strings are never an unlock.
  */
 export const onRequest = defineMiddleware(async (context, next) => {
   const pathname = context.url.pathname;
@@ -64,6 +93,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       request: context.request,
       env: readEnv(),
       authenticate: (request, config) => accessAuthenticate(request, config),
+      verifyMachine,
       dev: false,
     });
     return decision.allow ? next() : deniedResponse();

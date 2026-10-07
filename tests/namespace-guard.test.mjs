@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { canonicalPathname, deniedResponse, evaluateGate, isEmdashNamespace } from '../src/namespace-gate.ts';
+import { canonicalPathname, deniedResponse, evaluateGate, evaluateMachineRequest, isEmdashNamespace } from '../src/namespace-gate.ts';
 
 const configured = {
   EMDASH_ACCESS_TEAM_DOMAIN: 'example-team.cloudflareaccess.invalid',
@@ -87,6 +87,86 @@ test('configured Access admits a verified identity, honouring the allowlist', as
     authenticate: identity('someone@example.invalid'),
   });
   assert.deepEqual(unlisted, { allow: false, reason: 'not-on-allowlist' });
+});
+
+const machine = (commonName, email) => async () => ({ commonName, email });
+const bearer = { authorization: 'Bearer ec_pat_test' };
+const json = (path, method, body, headers = bearer) => request(path, { method, headers: { ...headers, 'content-type': 'application/json' }, body: JSON.stringify(body) });
+
+test('a machine identity is admitted only when the human path yields no email and the JWT carries a common name without one', async () => {
+  const base = { pathname: '/_emdash/api/content/pages', env: configured, authenticate: identity(null) };
+  const read = request('/_emdash/api/content/pages', { headers: bearer });
+  assert.deepEqual(await evaluateGate({ ...base, request: read, verifyMachine: machine('abc123.access') }), { allow: true, reason: 'machine-read' });
+  assert.deepEqual(await evaluateGate({ ...base, request: read }), { allow: false, reason: 'no-identity' }, 'no verifier, no machines');
+  assert.deepEqual(await evaluateGate({ ...base, request: read, verifyMachine: machine('abc123.access', 'someone@example.invalid') }), { allow: false, reason: 'no-identity' }, 'a human JWT that failed the official path is not a machine');
+  assert.deepEqual(await evaluateGate({ ...base, request: read, verifyMachine: machine('   ') }), { allow: false, reason: 'no-identity' });
+  assert.deepEqual(await evaluateGate({ ...base, request: read, verifyMachine: throwing }), { allow: false, reason: 'no-identity' });
+  assert.deepEqual(await evaluateGate({ ...base, request: read, authenticate: identity('owner@example.invalid'), verifyMachine: neverCalled }), { allow: true, reason: 'operator' }, 'a human never reaches the machine path');
+});
+
+test('a machine may read content and schema, ask for a preview link, and must carry the EmDash Bearer token', async () => {
+  for (const path of ['/_emdash/api/content/pages', '/_emdash/api/content/pages/home', '/_emdash/api/schema/block-types', '/_emdash/api/schema/block-types/hero']) {
+    assert.deepEqual(await evaluateMachineRequest(request(path, { headers: bearer }), path), { allow: true, reason: 'machine-read' }, path);
+  }
+  assert.deepEqual(await evaluateMachineRequest(request('/_emdash/api/content/pages', { headers: bearer, method: 'HEAD' }), '/_emdash/api/content/pages'), { allow: true, reason: 'machine-read' });
+  assert.deepEqual(await evaluateMachineRequest(json('/_emdash/api/content/pages/home/preview-url', 'POST', {}), '/_emdash/api/content/pages/home/preview-url'), { allow: true, reason: 'machine-preview' });
+  assert.deepEqual(await evaluateMachineRequest(request('/_emdash/api/content/pages'), '/_emdash/api/content/pages'), { allow: false, reason: 'machine-no-bearer' });
+  for (const path of ['/_emdash/api/admin/api-tokens', '/_emdash/api/media', '/_emdash/admin', '/_emdash/api/settings', '/_emdash/api/mcp']) {
+    assert.deepEqual(await evaluateMachineRequest(request(path, { headers: bearer }), path), { allow: false, reason: 'machine-forbidden' }, path);
+  }
+});
+
+test('a machine may stage a draft only against the revision it read, and only as a draft', async () => {
+  const entry = '/_emdash/api/content/pages/01ABC';
+  assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3:1700000000' }), entry), { allow: true, reason: 'machine-draft' });
+  assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3:1700000000', status: 'draft' }), entry), { allow: false, reason: 'machine-draft-rules' }, 'status is live metadata on a PUT: "draft" would unpublish a published page');
+  assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' } }), entry), { allow: false, reason: 'machine-draft-rules' }, 'no _rev');
+  assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: '  ' }), entry), { allow: false, reason: 'machine-draft-rules' }, 'blank _rev');
+  assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3', status: 'published' }), entry), { allow: false, reason: 'machine-draft-rules' }, 'not a draft');
+  assert.deepEqual(await evaluateMachineRequest(request(entry, { method: 'PUT', headers: bearer, body: 'not json' }), entry), { allow: false, reason: 'machine-draft-rules' }, 'unparsable body');
+  assert.deepEqual(await evaluateMachineRequest(json('/_emdash/api/content/pages', 'POST', { slug: 'about', data: {}, status: 'draft' }), '/_emdash/api/content/pages'), { allow: true, reason: 'machine-create-draft' });
+  assert.deepEqual(await evaluateMachineRequest(json('/_emdash/api/content/pages', 'POST', { slug: 'about', data: {} }), '/_emdash/api/content/pages'), { allow: false, reason: 'machine-draft-rules' }, 'create without draft status');
+});
+
+test("a machine's draft write may carry only the content and the revision: live metadata, lock overrides and slug changes are a human's call", async () => {
+  const entry = '/_emdash/api/content/pages/01ABC';
+  for (const extra of [{ overrideLock: true }, { publishedAt: '2026-10-07T00:00:00Z' }, { authorId: 'someone' }, { bylines: [] }, { seo: { title: 'x' } }, { taxonomies: {} }, { references: {} }, { skipRevision: true }, { slug: 'renamed' }, { status: 'draft' }, { status: 'published' }]) {
+    const decision = await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3', ...extra }), entry);
+    assert.deepEqual(decision, { allow: false, reason: 'machine-draft-rules' }, Object.keys(extra)[0]);
+  }
+  assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3', migrateBlocks: true, replaceBlocks: false }), entry), { allow: true, reason: 'machine-draft' });
+  assert.deepEqual(await evaluateMachineRequest(json('/_emdash/api/content/pages', 'POST', { slug: 'about', data: {}, status: 'draft', publishedAt: '2026-10-07T00:00:00Z' }), '/_emdash/api/content/pages'), { allow: false, reason: 'machine-draft-rules' }, 'create with live metadata');
+});
+
+test('a machine cannot send an oversized body or read the operator list', async () => {
+  const entry = '/_emdash/api/content/pages/01ABC';
+  const declared = request(entry, { method: 'PUT', headers: { ...bearer, 'content-type': 'application/json', 'content-length': '5000000' }, body: JSON.stringify({ data: {}, _rev: 'v3' }) });
+  assert.deepEqual(await evaluateMachineRequest(declared, entry), { allow: false, reason: 'machine-draft-rules' }, 'declared oversize');
+  const huge = json(entry, 'PUT', { data: { title: 'x'.repeat(1_100_000) }, _rev: 'v3' });
+  assert.deepEqual(await evaluateMachineRequest(huge, entry), { allow: false, reason: 'machine-draft-rules' }, 'actual oversize');
+  assert.deepEqual(await evaluateMachineRequest(request('/_emdash/api/content/pages/authors', { headers: bearer }), '/_emdash/api/content/pages/authors'), { allow: false, reason: 'machine-forbidden' });
+});
+
+test('a machine can never publish, unpublish, schedule, delete, or write schema', async () => {
+  for (const [path, method, body] of [
+    ['/_emdash/api/content/pages/01ABC/publish', 'POST', { _rev: 'v3' }],
+    ['/_emdash/api/content/pages/01ABC/unpublish', 'POST', { _rev: 'v3' }],
+    ['/_emdash/api/content/pages/01ABC/schedule', 'POST', { scheduledAt: '2027-01-01T00:00:00Z' }],
+    ['/_emdash/api/content/pages/01ABC/discard-draft', 'POST', {}],
+    ['/_emdash/api/content/pages/01ABC/restore', 'POST', {}],
+    ['/_emdash/api/content/pages/01ABC', 'DELETE', undefined],
+    ['/_emdash/api/content/pages/01ABC/permanent', 'DELETE', undefined],
+    ['/_emdash/api/schema/block-types/hero', 'PUT', { expectedFingerprint: 'x', fields: [] }],
+    ['/_emdash/api/schema/block-types', 'POST', { slug: 'x', label: 'x', fields: [] }],
+    ['/_emdash/api/schema/block-types/hero/versions/2/activate', 'POST', { expectedFingerprint: 'x' }],
+    ['/_emdash/api/content/pages/01ABC', 'PATCH', { _rev: 'v3' }],
+    ['/_emdash/api/content/%2E%2E/pages/01ABC/publish', 'POST', { _rev: 'v3' }],
+  ]) {
+    const req = body === undefined ? request(path, { method, headers: bearer }) : json(path, method, body);
+    const decision = await evaluateMachineRequest(req, path);
+    assert.equal(decision.allow, false, `${method} ${path}`);
+    assert.equal(decision.reason, 'machine-forbidden', `${method} ${path}`);
+  }
 });
 
 test('the denied response is a small, uncached 404 without a redirect', async () => {
