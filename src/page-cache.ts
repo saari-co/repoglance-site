@@ -125,10 +125,15 @@ export function mediaCacheOptions(): PageCacheOptions {
   return { maxAge: PUBLIC_PAGE_MAX_AGE, swr: PUBLIC_PAGE_SWR, tags: [MEDIA_TAG] };
 }
 
-/** The slice of a middleware context the media policy needs. */
+/**
+ * The slice of a middleware context the media policy needs. `locals` is
+ * whatever the host declares (EmDash adds `user` for a signed-in editor);
+ * it is read structurally so the type holds with or without EmDash's
+ * generated declarations.
+ */
 export interface MediaResponseContext {
   cache?: { set(options: PageCacheOptions | false): void };
-  locals?: { user?: unknown };
+  locals?: object;
 }
 
 const UNSHARED_CACHE_CONTROL = /\b(?:private|no-store)\b/i;
@@ -146,7 +151,7 @@ const UNSHARED_CACHE_CONTROL = /\b(?:private|no-store)\b/i;
 export function applyMediaResponse(context: MediaResponseContext, response: Response): boolean {
   if (response.status !== 200 && response.status !== 304) return false;
   if (!context.cache?.set) return false;
-  if (context.locals?.user) return false;
+  if ((context.locals as { user?: unknown } | undefined)?.user) return false;
   if (UNSHARED_CACHE_CONTROL.test(response.headers.get('cache-control') ?? '')) return false;
   context.cache.set(mediaCacheOptions());
   try {

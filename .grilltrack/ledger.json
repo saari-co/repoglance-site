@@ -686,6 +686,50 @@
           "review_source_identity": null,
           "to": "verified",
           "verification_ref": ".grilltrack/proof/media-library-014-verify-20261007.md"
+        },
+        {
+          "at": "2026-10-07T23:54:15+00:00",
+          "choice": "EmDash's Media Library (maintainer, 2026-10-07, grilled against WooCommerce's model). (1) The two pages' pictures move into the Media Library; the hero and feature block types replace the screenshot select with an image field carrying a darkVariant; the Open Graph image and the mark stay build products. (2) Alt text lives on the media item, with a render-time fallback to the block's own heading; the imagery rules audit the library's alt. (3) Serving through the Worker: the namespace guard admits the public media-file route and the image endpoint, edge-cached like the pages; the image endpoint serves the widths from one source per capture (the hand-cut 540 and 1080 files retire), with a visual capture confirming the crops; a public bucket or CDN is a later option. (4) Import like WooCommerce's: a migration script uploads the 26 files (13 captures, dark and light) once with their alt text, records each file's hash as the source and skips files already present; the seed declares the same files as $media so a fresh site sideloads them at bootstrap. (5) Any uploaded image may be used on a page; the mirror writes a media manifest next to the seed (id, hash, alt, dimensions, dark pairing) and the repository's tests judge it on the mirror PR, red when a rule breaks (approved captures only, honest alt, no fixture code, no live data). (6) darkVariant replaces the -light file naming; the home hero's follows-the-band policy stays in the component. (7) A block whose image reference is gone renders no figure and the audit flags it. (8) Commerce follows the same pattern later: a primary image, an ordered gallery, a variation image falling back to the product's, a store placeholder, named size presets, API shapes with src, srcset, sizes and alt; a media plugin is only WooCommerce's extension layer (bulk and feed import deduped by source and hash, CDN offload, regeneration, video) talking to the library's API, never its own store; alt stored on the item with a render-time fallback to the product name.",
+          "from": "verified",
+          "implementation_ref": "proof/media-library-20261007/PROOF.md",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": ".grilltrack/proof/media-library-014-verify-20261007.md#review-round-4",
+          "review_result": "clean",
+          "review_source_identity": "git:1bd0fb885837d2d99575823bc2b773602bbfc1c0",
+          "to": "needs_reverification",
+          "verification_ref": ".grilltrack/proof/media-library-014-verify-20261007.md"
+        },
+        {
+          "at": "2026-10-07T23:54:15+00:00",
+          "choice": "EmDash's Media Library (maintainer, 2026-10-07, grilled against WooCommerce's model). (1) The two pages' pictures move into the Media Library; the hero and feature block types replace the screenshot select with an image field carrying a darkVariant; the Open Graph image and the mark stay build products. (2) Alt text lives on the media item, with a render-time fallback to the block's own heading; the imagery rules audit the library's alt. (3) Serving through the Worker: the namespace guard admits the public media-file route and the image endpoint, edge-cached like the pages; the image endpoint serves the widths from one source per capture (the hand-cut 540 and 1080 files retire), with a visual capture confirming the crops; a public bucket or CDN is a later option. (4) Import like WooCommerce's: a migration script uploads the 26 files (13 captures, dark and light) once with their alt text, records each file's hash as the source and skips files already present; the seed declares the same files as $media so a fresh site sideloads them at bootstrap. (5) Any uploaded image may be used on a page; the mirror writes a media manifest next to the seed (id, hash, alt, dimensions, dark pairing) and the repository's tests judge it on the mirror PR, red when a rule breaks (approved captures only, honest alt, no fixture code, no live data). (6) darkVariant replaces the -light file naming; the home hero's follows-the-band policy stays in the component. (7) A block whose image reference is gone renders no figure and the audit flags it. (8) Commerce follows the same pattern later: a primary image, an ordered gallery, a variation image falling back to the product's, a store placeholder, named size presets, API shapes with src, srcset, sizes and alt; a media plugin is only WooCommerce's extension layer (bulk and feed import deduped by source and hash, CDN offload, regeneration, video) talking to the library's API, never its own store; alt stored on the item with a render-time fallback to the product name.",
+          "from": "needs_reverification",
+          "implementation_ref": "proof/media-library-20261007/PROOF.md",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix"
+          ],
+          "review_ref": ".grilltrack/proof/media-library-014-verify-20261007.md#review-round-5",
+          "review_result": "findings",
+          "review_source_identity": "git:1bd0fb885837d2d99575823bc2b773602bbfc1c0",
+          "to": "implemented",
+          "verification_ref": ".grilltrack/proof/media-library-014-verify-20261007.md"
+        },
+        {
+          "at": "2026-10-07T23:54:34+00:00",
+          "choice": "EmDash's Media Library (maintainer, 2026-10-07, grilled against WooCommerce's model). (1) The two pages' pictures move into the Media Library; the hero and feature block types replace the screenshot select with an image field carrying a darkVariant; the Open Graph image and the mark stay build products. (2) Alt text lives on the media item, with a render-time fallback to the block's own heading; the imagery rules audit the library's alt. (3) Serving through the Worker: the namespace guard admits the public media-file route and the image endpoint, edge-cached like the pages; the image endpoint serves the widths from one source per capture (the hand-cut 540 and 1080 files retire), with a visual capture confirming the crops; a public bucket or CDN is a later option. (4) Import like WooCommerce's: a migration script uploads the 26 files (13 captures, dark and light) once with their alt text, records each file's hash as the source and skips files already present; the seed declares the same files as $media so a fresh site sideloads them at bootstrap. (5) Any uploaded image may be used on a page; the mirror writes a media manifest next to the seed (id, hash, alt, dimensions, dark pairing) and the repository's tests judge it on the mirror PR, red when a rule breaks (approved captures only, honest alt, no fixture code, no live data). (6) darkVariant replaces the -light file naming; the home hero's follows-the-band policy stays in the component. (7) A block whose image reference is gone renders no figure and the audit flags it. (8) Commerce follows the same pattern later: a primary image, an ordered gallery, a variation image falling back to the product's, a store placeholder, named size presets, API shapes with src, srcset, sizes and alt; a media plugin is only WooCommerce's extension layer (bulk and feed import deduped by source and hash, CDN offload, regeneration, video) talking to the library's API, never its own store; alt stored on the item with a render-time fallback to the product name.",
+          "from": "implemented",
+          "implementation_ref": "proof/media-library-20261007/PROOF.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": ".grilltrack/proof/media-library-014-verify-20261007.md"
         }
       ],
       "id": "media-library-014",
@@ -732,32 +776,31 @@
           "result": "clean",
           "reviewed_at": "2026-10-07T23:48:43+00:00",
           "source_identity": "git:1bd0fb885837d2d99575823bc2b773602bbfc1c0"
+        },
+        {
+          "classifications": [
+            "required_fix"
+          ],
+          "ref": ".grilltrack/proof/media-library-014-verify-20261007.md#review-round-5",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T23:54:15+00:00",
+          "source_identity": "git:1bd0fb885837d2d99575823bc2b773602bbfc1c0"
         }
       ],
-      "review_ref": ".grilltrack/proof/media-library-014-verify-20261007.md#review-round-4",
-      "review_result": "clean",
-      "review_source_identity": "git:1bd0fb885837d2d99575823bc2b773602bbfc1c0",
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-07T23:48:43+00:00",
+      "updated_at": "2026-10-07T23:54:34+00:00",
       "verification_ref": ".grilltrack/proof/media-library-014-verify-20261007.md"
     }
   ],
   "last_activation": {
-    "at": "2026-10-07T22:46:20+00:00",
+    "at": "2026-10-07T23:54:01+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
-    "artifact_refs": [
-      ".grilltrack/ledger.json",
-      "proof/cms-first-20261007/PROOF.md"
-    ],
-    "next_safe_action": "In the fresh session: read the ledger, implement media-library-014 as confirmed, verify, review, record implement/verify/review, commit with the trailer, push, PR against main (the PR carries this lock commit). On the maintainer's word afterwards: deploy, cloudflared access login, npm run cms:sync, npm run cms:media -- --apply, npm run check:live.",
-    "paused_at": "2026-10-07T21:54:43+00:00",
-    "reason": "media-library-014 locked and confirmed; handed to a fresh session for implementation from branch claude/media-library-014-lock (main b40808e plus this ledger state). cms-first-013's slice-2 gates remain the maintainer's and are unaffected.",
-    "resumed_at": "2026-10-07T22:46:20+00:00"
-  },
-  "pause": {
     "artifact_refs": [
       ".grilltrack/ledger.json",
       "proof/media-library-20261007/PROOF.md",
@@ -766,8 +809,10 @@
     ],
     "next_safe_action": "On the maintainer's word: merge PR #16 and run the gates in docs/cms-access.md (Gates for the Media Library) in one sitting, then record the production results in proof/media-library-20261007/PROOF.md and the ledger; then the slice-2 gates of cms-first-013.",
     "paused_at": "2026-10-07T23:49:40+00:00",
-    "reason": "media-library-014 implemented, verified and reviewed clean at git:1bd0fb885837d2d99575823bc2b773602bbfc1c0 after four rounds; PR saari-co/repoglance-site#16 open against main. The maintainer's gates remain: merge, deploy, cloudflared access login, npm run cms:sync, npm run cms:media -- --apply, npm run cms:mirror -- --no-pr, npm run check:live, the mirror PR; and the one decision on how cms:media connects the slots (publish as the maintainer, as built, or a draft to publish in the admin). Nothing was deployed, synced or uploaded to production."
+    "reason": "media-library-014 implemented, verified and reviewed clean at git:1bd0fb885837d2d99575823bc2b773602bbfc1c0 after four rounds; PR saari-co/repoglance-site#16 open against main. The maintainer's gates remain: merge, deploy, cloudflared access login, npm run cms:sync, npm run cms:media -- --apply, npm run cms:mirror -- --no-pr, npm run check:live, the mirror PR; and the one decision on how cms:media connects the slots (publish as the maintainer, as built, or a draft to publish in the admin). Nothing was deployed, synced or uploaded to production.",
+    "resumed_at": "2026-10-07T23:54:01+00:00"
   },
+  "pause": null,
   "predecessor_track_id": "gt-20261001102301-89ec89",
   "recommendation": {
     "alternatives": [
@@ -779,8 +824,8 @@
     "recorded_at": "2026-10-07T23:49:30+00:00"
   },
   "schema_version": "grilltrack/v0.1",
-  "status": "paused",
+  "status": "active",
   "title": "repoglance.com website: CMS sync and maintenance",
   "track_id": "gt-20261007120417-1b0a54",
-  "updated_at": "2026-10-07T23:49:40+00:00"
+  "updated_at": "2026-10-07T23:54:34+00:00"
 }

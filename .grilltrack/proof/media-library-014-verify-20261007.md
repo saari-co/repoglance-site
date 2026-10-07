@@ -224,8 +224,28 @@ commit message is accurate; the unit suites pass (content and media
 ledger's events and transitions are consistent. Result: clean, no
 findings.
 
+## Review round 5 (CI)
+
+Source identity: `git:1bd0fb885837d2d99575823bc2b773602bbfc1c0`. The
+repository's own rail, the `Site checks` job of CI on PR #16 (runs
+37704364486 and 37704456790), failed at `astro check` with three
+`ts(2345)` errors in `src/emdash-namespace-guard.ts`: `MediaResponseContext.locals`
+was typed `{ user?: unknown }`, and in CI `App.Locals` is only the
+adapter's `Runtime` (the generated `emdash-env.d.ts` that adds `user`
+exists on a developer machine and is ignored by git), so the weak type
+shared no property with it. The local `astro check` passed with the
+generated file present, which is why `verify` was green here.
+
+| # | Finding | Classification | Resolution |
+| --- | --- | --- | --- |
+| 1 | `applyMediaResponse`'s context type did not type-check against the adapter's `Runtime` locals without EmDash's generated declarations; CI red. | required_fix | `locals` typed `object` and `user` read structurally through a cast; `astro check` run locally with the generated file removed, as CI sees it: 0 errors. |
+
+Ledger: `media-library-014` reviewed with findings (required_fix) at
+`git:1bd0fb88…` (the rail's evidence), returned to implementation; round
+6 below.
+
 Delivery: PR saari-co/repoglance-site#16 (`claude/media-library-014`
-against `main`, head `1bd0fb8`), opened on the task's instruction; the PR body names the
+against `main`, head `1bd0fb8` at opening), opened on the task's instruction; the PR body names the
 maintainer's one decision (the `cms:media --apply` connection, round-1
 finding 3) and the gates. Merge, the deploy, `cloudflared access login`,
 `npm run cms:sync`, `npm run cms:media -- --apply`, `npm run cms:mirror
