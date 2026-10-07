@@ -85,7 +85,12 @@ action.
   is one cache key); any other request to the endpoint is served,
   uncached, only to an operator Access admits (the admin's Media gallery
   asks it for 400 px thumbnails of library files) and answers an uncached
-  404 to everyone else, before anything is transformed. EmDash's own
+  404 to everyone else, before anything is transformed. `/_image` lies
+  outside the Access application's `_emdash` path, so those operator
+  requests authenticate through the Access session cookie, which the
+  Worker verifies itself; leave the application's cookie path attribute
+  off (the default), or every thumbnail answers 404 and the admin falls
+  back to the full-size files. EmDash's own
   middleware returns a fresh copy of every response; the guard makes a
   second copy of a rendition before the route cache writes its headers.
   Nothing is transformed at build time. Local workerd and `astro dev`
@@ -135,6 +140,9 @@ printed. This was done for repoglance.com on 2026-10-01
      instant authentication (the DinkusKit CMS pattern).
    - Policy: add the maintainer's existing reusable owner policy (the one
      the DinkusKit CMS application uses). No other rules.
+   - Cookie settings: leave the path attribute off (the default), so the
+     session cookie also reaches the image endpoint outside `_emdash`
+     (the admin's thumbnails, "How production behaves" above).
    - Save. The application's audience (AUD) tag is on its settings tab; it is
      also the `kid` parameter of the login redirect that an anonymous request
      to the gated path now receives.

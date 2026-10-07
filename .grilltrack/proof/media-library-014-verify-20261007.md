@@ -164,3 +164,44 @@ skipping the endpoint and the toolbar not requesting it.
 Ledger: `media-library-014` reviewed with findings (required_fix,
 reject_false_positive) at `git:6e94bc13…`, returned to implementation;
 round 3 below.
+
+## Review round 3
+
+Source identity: `git:96de6a6707a3750e80941f249030b0df0914db88` (the
+round-2 fix commit; parent `6e94bc1`). A separate read-only agent
+verified the six round-2 resolutions against the diff, probed the
+rendition rule under Node over every URL the pages can emit (106 URLs,
+none refused) and some forty spellings that must be refused, compared
+the gate refactor with the previous source, followed the admin's
+thumbnail request through the guard, EmDash's middleware and the
+endpoint wrapper in production and in development, read EmDash's
+`finalizeResponse` and Astro's cache handler for the round-2 correction,
+and ran the four suites and `node --check`. Findings and adjudication:
+
+| # | Finding | Classification | Resolution |
+| --- | --- | --- | --- |
+| 1 | The operator thumbnail path authenticates through the Access session cookie, because `/_image` lies outside the Access application's `_emdash` path and Cloudflare injects no JWT header there; it works with the application's cookie path attribute off (the default) and would fail silently (404, the admin falling back to full-size files) if that attribute were ever enabled. The docs did not name the mechanism. | required_fix (docs; reviewer: defer) | The runbook's Images bullet and the Access application step say so; the packet's limits too. |
+| 2 | The packet still said a missing repository asset answers 500 through `/_image`; since round 2 an anonymous request for an unapproved name answers the guard's 404, and the 500 remains for an approved file missing from a deploy or an operator's own request. | required_fix (wording; reviewer: defer) | Reworded. |
+
+Checked and found clean by the reviewer: the rendition rule (exact keys
+in order, the exact width strings, the exact spelling, the approved set,
+the media key; every page URL admitted, every probed spelling refused;
+lower-case `get` and `Head` admitted, `OPTIONS` and `PUT` refused); the
+gate refactor behaviour-preserving (the same config object, the same
+fallthrough to the machine path only in `evaluateGate`, the thrown
+authentication, the allowlist); the guard's approved set, dev flag,
+denials, the uncached pass-through for an operator (no `cache.set`, the
+adapter stamping no-store, the wrapper never touching the Cache API) and
+the cached copy for a rendition; the production thumbnail chain through
+`accessAuthenticate`'s cookie fallback, EmDash's image-route handling
+and the wrapper's absolute-href parsing; the round-2 correction (EmDash's
+`finalizeResponse` copies on every path, Astro's handler writes on the
+returned response); the docs truthful; the tests and the smoke asserting
+what the code does (the base test failing without the fix; 223 = 203 +
+five queries × four records); the ledger transitions and events. Noted
+without action: a human `POST /_image` is denied under the reason
+`machine-forbidden` (the guard reads `allow` alone).
+
+Ledger: `media-library-014` reviewed with findings (required_fix) at
+`git:96de6a67…`, returned to implementation for the two sentences; round
+4 below.

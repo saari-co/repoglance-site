@@ -202,9 +202,11 @@ near-white band, the cut-outs on the cards).
   and a reordered query are refused, so one rendition is one cache key);
   anything else is served uncached only to an operator Access admits (the
   admin's Media gallery asks the endpoint for 400 px thumbnails of
-  library files; an anonymous request answers the guard's 404 before the
-  adapter transforms anything, where it would otherwise transform any
-  allowed source at any size). EmDash's middleware already returns a
+  library files, authenticated through the Access session cookie since
+  the endpoint lies outside the application's path, so the application's
+  cookie path attribute stays off; an anonymous request answers the
+  guard's 404 before the adapter transforms anything, where it would
+  otherwise transform any allowed source at any size). EmDash's middleware already returns a
   fresh copy of every response, so the immutable-headers failure round 1
   feared cannot occur; the guard's own copy of a rendition stays as a
   second, defensive one, and the smoke fetches a rendition twice.
@@ -223,8 +225,10 @@ near-white band, the cut-outs on the cards).
   EmDash's `max-age=0, must-revalidate` and validators. At the edge both
   are cached five minutes; EmDash's media writes do not purge the `media`
   tag, so a replaced original is stale at the edge for at most that
-  window. A missing repository asset through `/_image` answers 500
-  (the adapter), uncached.
+  window. An approved capture missing from a deploy (or a stranger an
+  operator asks for by hand) answers 500 through `/_image` (the
+  adapter), uncached; an anonymous request for a name the repository does
+  not approve answers the guard's 404.
 - `cms:media --apply` connects the slots and publishes the pages under
   the maintainer's own identity, the one step of the migration that
   writes page content: what the live blocks already said (the old slug)
