@@ -128,18 +128,26 @@ export function mediaCacheOptions(): PageCacheOptions {
 /** The slice of a middleware context the media policy needs. */
 export interface MediaResponseContext {
   cache?: { set(options: PageCacheOptions | false): void };
+  locals?: { user?: unknown };
 }
+
+const UNSHARED_CACHE_CONTROL = /\b(?:private|no-store)\b/i;
 
 /**
  * Opt a served media response into the edge cache. Only a full or
  * not-modified answer is cached; an error, a partial-content answer and
- * anything else stay no-store (the adapter's default). Must run after
- * `next()`, once the route has answered, since EmDash's own middleware
- * settles the cache state while rendering. Returns whether it applied.
+ * anything else stay no-store (the adapter's default), and so does an
+ * answer rendered for a signed-in user or marked private or no-store by
+ * the route, which EmDash's own middleware keeps out of the shared cache.
+ * Must run after `next()`, once the route has answered, since EmDash's
+ * middleware settles the cache state while rendering. Returns whether it
+ * applied.
  */
 export function applyMediaResponse(context: MediaResponseContext, response: Response): boolean {
   if (response.status !== 200 && response.status !== 304) return false;
   if (!context.cache?.set) return false;
+  if (context.locals?.user) return false;
+  if (UNSHARED_CACHE_CONTROL.test(response.headers.get('cache-control') ?? '')) return false;
   context.cache.set(mediaCacheOptions());
   try {
     response.headers.set('Vary', MEDIA_VARY);

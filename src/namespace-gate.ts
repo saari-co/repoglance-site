@@ -2,7 +2,7 @@
  * Pure decision logic for the /_emdash namespace. No Astro imports, so the
  * unit tests run it directly.
  */
-import { publicMediaKey } from './content/media.ts';
+import { CAPTURES_PATH, RENDER_FORMAT, RENDER_WIDTHS, publicMediaKey } from './content/media.ts';
 
 export const NAMESPACE = '/_emdash';
 export const TEAM_DOMAIN_ENV = 'EMDASH_ACCESS_TEAM_DOMAIN';
@@ -116,6 +116,27 @@ export function publicMediaRead(method: string, pathnames: string[]): string | n
 export function isImageEndpoint(pathname: string, route = '/_image'): boolean {
   const wanted = `/${route.replace(/^\/+|\/+$/g, '')}`;
   return canonicalPathname(pathname).replace(/\/+$/, '') === wanted;
+}
+
+const CAPTURE_FILE = /^[A-Za-z0-9._-]+\.webp$/;
+
+/**
+ * Whether an image-endpoint request is one of the site's own renditions
+ * (decision media-library-014): a repository capture or a Media Library
+ * file at one of the widths and in the format `Screenshot.astro` emits,
+ * and nothing else in the query. The endpoint would otherwise transform
+ * any allowed source at any size on request, each a separate edge entry
+ * and an Images transform; the site serves only what its pages ask for.
+ */
+export function isSiteRendition(url: URL): boolean {
+  const params = url.searchParams;
+  const keys = [...params.keys()];
+  if (keys.length !== 3 || new Set(keys).size !== 3 || !keys.every((key) => key === 'href' || key === 'w' || key === 'f')) return false;
+  const width = Number(params.get('w'));
+  if (!(RENDER_WIDTHS as readonly number[]).includes(width) || params.get('f') !== RENDER_FORMAT) return false;
+  const href = params.get('href') ?? '';
+  if (href.startsWith(`${CAPTURES_PATH}/`)) return CAPTURE_FILE.test(href.slice(CAPTURES_PATH.length + 1));
+  return publicMediaKey(href) !== null;
 }
 
 function parseAllowlist(value: string | undefined): string[] {

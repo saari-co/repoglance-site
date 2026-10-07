@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { canonicalPathname, deniedResponse, evaluateGate, evaluateMachineRequest, isEmdashNamespace, isImageEndpoint, publicMediaRead } from '../src/namespace-gate.ts';
+import { canonicalPathname, deniedResponse, evaluateGate, evaluateMachineRequest, isEmdashNamespace, isImageEndpoint, isSiteRendition, publicMediaRead } from '../src/namespace-gate.ts';
 
 const configured = {
   EMDASH_ACCESS_TEAM_DOMAIN: 'example-team.cloudflareaccess.invalid',
@@ -220,6 +220,38 @@ test("Astro's image endpoint is recognised by its route, in canonical form only"
   assert.equal(isImageEndpoint('/x/_image'), false);
   assert.equal(isImageEndpoint('/_image', '/pictures'), false);
   assert.equal(isImageEndpoint('/pictures', 'pictures/'), true);
+});
+
+test("the image endpoint serves only the site's own renditions: a capture or a library file at 540 or 1080 px as WebP, nothing else in the query", () => {
+  const url = (query) => new URL(`https://repoglance.com/_image?${query}`);
+  for (const query of [
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-light.webp&w=1080&f=webp',
+    'f=webp&w=540&href=%2Fscreenshots%2Ftile-row-dark.webp',
+    'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2F01ARZ3NDEKTSV4RRFFQ69G5FAV.webp&w=540&f=webp',
+  ]) {
+    assert.equal(isSiteRendition(url(query)), true, query);
+  }
+  for (const query of [
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=333&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=avif',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&q=100',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&h=10',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&w=1080&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.png&w=540&f=webp',
+    'href=%2Fscreenshots%2F..%2Fmark.svg&w=540&f=webp',
+    'href=%2Fscreenshots%2Fa%2Fb.webp&w=540&f=webp',
+    'href=%2Fmark.svg&w=540&f=webp',
+    'href=https%3A%2F%2Fexample.com%2Fx.webp&w=540&f=webp',
+    'href=https%3A%2F%2Frepoglance.com%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp',
+    'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2Fa%2Fb.webp&w=540&f=webp',
+    'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2F&w=540&f=webp',
+    'w=540&f=webp',
+    '',
+  ]) {
+    assert.equal(isSiteRendition(url(query)), false, query || '(empty)');
+  }
 });
 
 test('the denied response is a small, uncached 404 without a redirect', async () => {

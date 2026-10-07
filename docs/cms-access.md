@@ -55,16 +55,8 @@ action.
   the edge for at most the fresh window); every other response, including
   the rest of the `/_emdash` namespace (EmDash opts out), a media 404, the
   404 page and the redirect, carries `Cloudflare-CDN-Cache-Control:
-  no-store`, so the guard runs for every namespace request.
-- Images: the Cloudflare adapter's `cloudflare-binding` image service with
-  the `IMAGES` binding (`wrangler.jsonc`). `src/components/Screenshot.astro`
-  asks the image endpoint for each width (`/_image?href=…&w=540&f=webp`,
-  `w=1080`); EmDash's endpoint wrapper reads a Media Library file straight
-  from R2 and resizes it with the binding, and the repository's own
-  captures (the seed fallback, `/screenshots/<file>`) go through the
-  adapter's endpoint and the `ASSETS` binding. Nothing is transformed at
-  build time. Local workerd and `astro dev` resize through Miniflare's
-  local Images binding, so the smoke proves the renditions. The adapter writes `cache.enabled` into the generated
+  no-store`, so the guard runs for every namespace request. The adapter
+  writes `cache.enabled` into the generated
   deploy config (`wrangler.jsonc` declares it too), which turns on Cloudflare's
   Workers Cache: no KV namespace, API token or dashboard rule is involved.
   EmDash's admin routes call Astro's `cache.invalidate` with the entry and
@@ -81,6 +73,21 @@ action.
   backstop if a purge fails. The Workers Cache keys by path and query, not by
   host; the `Host` variant is what keeps a cached apex page from answering
   www requests ahead of the redirect.
+- Images: the Cloudflare adapter's `cloudflare-binding` image service with
+  the `IMAGES` binding (`wrangler.jsonc`). `src/components/Screenshot.astro`
+  asks the image endpoint for each width (`/_image?href=…&w=540&f=webp`,
+  `w=1080`); EmDash's endpoint wrapper reads a Media Library file straight
+  from R2 and resizes it with the binding, and the repository's own
+  captures (the seed fallback, `/screenshots/<file>`) go through the
+  adapter's endpoint and the `ASSETS` binding. The guard serves only those
+  renditions (a capture or a library file, 540 or 1080 px, WebP, nothing
+  else in the query); any other request to the endpoint answers an
+  uncached 404 before anything is transformed, and a served rendition is
+  copied into a fresh response before the route cache writes its headers
+  (a hit in the adapter's Cache API carries immutable headers). Nothing
+  is transformed at build time. Local workerd and `astro dev` resize
+  through Miniflare's local Images binding, so the smoke proves the
+  renditions.
 - The Astro Cloudflare adapter adds a `SESSION` KV binding to the built
   config for Astro sessions, and `wrangler deploy` auto-provisions a KV
   namespace named `repoglance-site-session` for it on first deploy (it did
@@ -227,7 +234,8 @@ repository pushes a `cms-edit/<timestamp>` branch and opens a PR titled
 when live comes back to what `main` already holds, it closes the open
 mirror PR instead. The token may push a branch and open, update or close a
 PR; it never merges. The `CMS edit auto-merge` workflow arms auto-merge
-(merge commit) for a PR that changes only `seed/seed.json`, and GitHub
+(merge commit) for a PR that changes only `seed/seed.json` and
+`seed/media.json`, and GitHub
 merges it when the required checks are green, so the repository lags the
 live site by minutes. A published edit that fails a truth test in
 `tests/content.test.mjs` or `tests/media.test.mjs` leaves its PR open and
@@ -257,7 +265,7 @@ net in every case.
 | `npm run cms:mirror` | Writes the live CMS pages into `seed/seed.json` and the Media Library into `seed/media.json` on a throwaway worktree of `origin/main`, pushes `cms-edit/<timestamp>` and opens the labelled PR; `-- --no-pr` only rewrites the files here; `npm run cms:mirror:check` only reports (exit 1 when the repository is behind). Block types, collections, the approved captures and everything else stay as the repository says; a CMS schema that differs is reported. Every agent session starts with the check. | your Access login (below) |
 | `npm run cms:check` / `npm run cms:sync` | Compares, or writes, the repository's block types into the CMS (a compatible change in place; a breaking one, such as a removed select option or the `screenshot` select replaced by the `image` field, as a new or reused activated version). Never writes page content. Run after a deploy that changes block types. | your Access login (below) |
 | `npm run cms:media` / `npm run cms:media -- --apply` | Compares the Media Library with the approved captures of `seed/media.json` (matched by content hash: present or missing, alt text, dimensions) and each hero or feature slot of the live pages (a legacy `screenshot` slug awaiting its reference, an image that is not an approved capture, a reference the library no longer has, the dark pairing); `--apply` uploads the missing captures once with their alt text and dimensions (deduplicated, so a second run uploads nothing), writes the alt of an item that has none (never overwriting yours), connects the slots from the library (a legacy slug becomes the capture's light cut with its dark cut as the variant; an approved primary without its dark cut gets it) and publishes the page as you; a page with a pending draft is left alone and reported. Never deletes anything. | your Access login (below) |
-| `npm run check:live` | After `npm run build`: renders both pages from the seed on local workerd, fetches them from the live site, reports the live `data-content-source` (expected `cms`) and edge-cache status, and fails unless the two `<main>` elements are identical, which means the repository is behind the CMS or the mirror failed. | none (public pages) |
+| `npm run check:live` | After `npm run build`: renders both pages from the seed on local workerd, fetches them from the live site, resolves every Media Library file the live page renders to the capture `seed/media.json` records for it (so the manifest's `library` must be current in the checkout: run the mirror first), reports the live `data-content-source` (expected `cms`) and edge-cache status, and fails unless the two `<main>` elements are identical, which means the repository is behind the CMS or the mirror failed. | none (public pages) |
 
 **Identity.** The scripts sign in as you through the Access login
 `cloudflared` caches; no service token, no second Access policy, no EmDash
@@ -304,12 +312,17 @@ reference). Do the four in one sitting:
 3. `npm run cms:sync`: the breaking block-type change (hero and feature get
    a new activated version with the `image` field).
 4. `npm run cms:media -- --apply`: uploads the 25 approved captures with
-   their alt text, connects the six slots from the old slugs (publishing
-   both pages as you, which purges the edge), then re-checks.
-5. `npm run check:live`: both pages equal, live source `cms`. Then
-   `npm run cms:mirror` once, so `seed/media.json` records the library and
-   the usage (the Worker mirror is dormant until the slice-2 gates of
-   `cms-first-013`).
+   their alt text, connects the six slots from the old slugs and publishes
+   both pages as you (which purges the edge), then re-checks. This is the
+   one step of the migration that writes page content; it writes what the
+   live blocks already said (the old slug) as library references, never
+   copy from the seed, and only under your own login.
+5. `npm run cms:mirror -- --no-pr`, so `seed/media.json` in your checkout
+   records the library and the usage (the Worker mirror is dormant until
+   the slice-2 gates of `cms-first-013`), then `npm run check:live`: both
+   pages equal, live source `cms`. Commit the two rewritten files as the
+   mirror PR (or run `npm run cms:mirror` from a clean checkout to open
+   it).
 
 Until step 4 `npm run cms:mirror:check` reports the pages as differing
 (the old slug against the new reference); that is the migration, not an

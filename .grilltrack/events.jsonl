@@ -52,3 +52,6 @@
 {"action": "track_resumed", "at": "2026-10-07T22:46:20+00:00", "data": {"activation": "implicit"}, "event_id": "ba3f37cc-f19e-4625-89a8-133f75c77d54"}
 {"action": "decision_implemented", "at": "2026-10-07T22:46:24+00:00", "data": {"decision_id": "media-library-014"}, "event_id": "9e96ed8d-05f3-4f83-84fb-fb41465f562f"}
 {"action": "decision_verified", "at": "2026-10-07T22:46:29+00:00", "data": {"decision_id": "media-library-014"}, "event_id": "d4fa1ec9-b564-4900-9230-fd6bc0e5f987"}
+{"action": "decision_reviewed", "at": "2026-10-07T23:09:39+00:00", "data": {"classifications": ["required_fix", "defer", "human_gate", "reject_false_positive"], "decision_id": "media-library-014", "ref": ".grilltrack/proof/media-library-014-verify-20261007.md#review-round-1", "result": "findings", "reviewed_at": "2026-10-07T23:09:39+00:00", "source_identity": "git:da5905f9577dd0f514b1df47274e22f844282e81"}, "event_id": "28d4da77-2881-4524-82ba-934d30c213ff"}
+{"action": "decision_implemented", "at": "2026-10-07T23:09:48+00:00", "data": {"decision_id": "media-library-014"}, "event_id": "29609e36-4840-4bfc-be1c-9b4d7b7b58d3"}
+{"action": "decision_verified", "at": "2026-10-07T23:09:48+00:00", "data": {"decision_id": "media-library-014"}, "event_id": "962e0cb7-b135-4409-ba92-ece59ca45907"}

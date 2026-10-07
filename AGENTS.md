@@ -48,7 +48,9 @@ closed test. Assume every committed byte is public.
   cms:sync` writes block types only, `npm run cms:mirror` brings the live
   pages into the repository, `npm run check:live` proves the repository
   equals the live site, and `npm run cms:media -- --apply` imports the
-  approved captures into the Media Library once (`docs/cms-access.md`).
+  approved captures into the Media Library once and, for the migration of
+  `media-library-014`, connects the pages' slots from their old slugs and
+  publishes them under the maintainer's own login (`docs/cms-access.md`).
   Agents never publish: a
   machine identity may read and stage drafts against the revision it read,
   and the maintainer reviews and publishes in the admin. No agent edits the

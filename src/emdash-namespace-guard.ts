@@ -11,6 +11,7 @@ import {
   evaluateGate,
   isEmdashNamespace,
   isImageEndpoint,
+  isSiteRendition,
   publicMediaRead,
   requestPathname,
   type GateEnv,
@@ -98,9 +99,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const inNamespace = candidates.some(isEmdashNamespace);
   if (!inNamespace) {
     if (!candidates.every((candidate) => isImageEndpoint(candidate, imageEndpointRoute))) return next();
+    // The endpoint serves only the site's own renditions (a repository
+    // capture or a library file at the widths the pages ask for).
     const method = context.request.method.toUpperCase();
-    const response = await next();
-    if (method === 'GET' || method === 'HEAD') applyMediaResponse(context, response);
+    if ((method !== 'GET' && method !== 'HEAD') || !isSiteRendition(context.url)) return deniedResponse();
+    // A hit in the adapter's Cache API comes back with immutable headers;
+    // a fresh copy lets the route cache write its own.
+    const served = await next();
+    const response = new Response(served.body, served);
+    applyMediaResponse(context, response);
     return response;
   }
   const publicMedia = publicMediaRead(context.request.method, candidates) !== null;

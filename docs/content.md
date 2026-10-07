@@ -156,7 +156,14 @@ use. `seed/media.json` also carries the mirror's record of the live
 library (`library`) and which block uses which item (`usage`), written
 by `npm run cms:mirror` and the site's own mirror after every publish;
 `tests/media.test.mjs` judges that record: approved captures only on the
-pages, honest alt text, the locked dark pairing, every slot filled.
+pages, honest alt text, the locked dark pairing, every slot filled (a hero
+or feature block without an image renders no figure, and the audit says
+so). The EmDash seed format has no media section of its own, so the seed
+declares the captures the pages use (ten files, twelve references); the
+other fifteen enter the library through `npm run cms:media -- --apply`.
+A media item deleted in the admin after a page referenced it leaves the
+page's stored reference in place (the renditions answer 404 until the
+page is edited); the audit sees it at that page's next publish.
 
 ### Colour scheme
 

@@ -99,4 +99,12 @@ test('a served media response is cached like the pages, tagged media, varied by 
     assert.equal(response.headers.get('vary'), null);
   }
   assert.equal(applyMediaResponse({}, new Response('x')), false, 'no cache provider, nothing to set');
+  for (const [label, context, response] of [
+    ['a signed-in user', { cache: { set: () => assert.fail('must not set') }, locals: { user: { id: 'u' } } }, new Response('x')],
+    ['a private response', { cache: { set: () => assert.fail('must not set') } }, new Response('x', { headers: { 'cache-control': 'private, max-age=0' } })],
+    ['a no-store response', { cache: { set: () => assert.fail('must not set') } }, new Response('x', { headers: { 'cache-control': 'no-store' } })],
+  ]) {
+    assert.equal(applyMediaResponse(context, response), false, label);
+    assert.equal(response.headers.get('vary'), null, label);
+  }
 });

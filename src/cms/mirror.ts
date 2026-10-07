@@ -150,7 +150,7 @@ export interface MirrorMedia {
 /** The PR title and body for a mirror of `live` on top of `baseSeed`. */
 export function describeChange(baseSeed: SeedFile, live: LivePage[], trigger: MirrorTrigger, at: Date, media?: MirrorMedia): { title: string; body: string; message: string; slugs: string[] } {
   const mediaById = new Map((media?.library ?? []).map((item) => [item.id, item]));
-  const differences = pageDifferences(baseSeed, live, 'pages', { mediaById });
+  const differences = pageDifferences(baseSeed, live, 'pages', { mediaById, base: media?.before.base });
   const mediaLines = media ? manifestDifferences(media.before, media.after) : [];
   const slugs = [...new Set(differences.map((difference) => difference.slug))];
   const subject = slugs.length ? slugs.join(', ') : (trigger.slug ?? trigger.id);

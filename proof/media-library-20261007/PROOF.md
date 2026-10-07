@@ -85,11 +85,15 @@ Read in `node_modules/emdash/dist` and proven on the dev server:
 
 ## Verification (this Mac, Node 22.23.2 through mise)
 
-`npm run verify` on the final tree: repository audit (145 files, 111
-scanned), Wrangler types, `astro check` 0 errors 0 warnings, the
-approved-captures record (25 captures), content and media 20/20, guard
-17/17, edge 15/15, CMS 23/23, the Cloudflare build, smoke 172/172 on local
-workerd (the production build on an empty D1).
+`npm run verify` on the tree reviewed in round 1: repository audit (145
+files, 111 scanned), Wrangler types, `astro check` 0 errors 0 warnings,
+the approved-captures record (25 captures), content and media 20/20,
+guard 17/17, edge 15/15, CMS 23/23, the Cloudflare build, smoke 172/172
+on local workerd (the production build on an empty D1). On the tree after
+the round-1 fixes: audit 147 files, 113 scanned; `astro check` 0/0;
+captures 25; content and media 20/20; guard 18/18; edge 15/15; CMS
+23/23; build; smoke 203/203 (the rendition fetched twice, seven refused
+endpoint queries and a refused POST added).
 
 ### Local workerd (the production build, seed render)
 
@@ -100,11 +104,15 @@ hero follow the page; `width="1080" height="1920"` from the source. A
 rendition at 540 px is a 17 500-byte WebP from the 45 466-byte source, at
 1080 px 40 446 bytes, with `Cloudflare-CDN-Cache-Control: public,
 max-age=300, stale-while-revalidate=60`, `Cache-Tag: media,…` and `Vary:
-Host`. `GET /_image?href=https://example.com/x.webp` answers 403; a GET or
-HEAD of `/_emdash/api/media/file/<key>` reaches EmDash (404 JSON `NOT_FOUND`,
-no-store); POST there, `..`, an encoded slash, a nested path, an empty key,
-the media list, an item, `upload-url` and the upper-cased namespace answer
-the guard's 404.
+Host`. A GET or HEAD of `/_emdash/api/media/file/<key>` reaches EmDash (404 JSON
+`NOT_FOUND`, no-store); POST there, `..`, an encoded slash, a nested
+path, an empty key, the media list, an item, `upload-url` and the
+upper-cased namespace answer the guard's 404. Since the round-1 fixes
+the endpoint serves only the site's own renditions: the same rendition
+fetched twice answers the same bytes and policy, and another width,
+format or parameter, a non-capture path, a foreign source, a nested
+media key, an empty query and a POST answer the guard's uncached 404
+(before the fixes a foreign source answered the adapter's 403).
 
 ### Dev-server round trip (EmDash 1.2.0, `astro dev`, a fresh local D1 and R2)
 
@@ -117,7 +125,7 @@ the run.
 | --- | --- |
 | 1 | Baseline: both pages from the seed (`data-content-source="seed"`), five and one pictures with both sources, every candidate a rendition of a repository capture. |
 | 2 | `POST /_emdash/api/setup` (`includeContent: true`): two calls (the five-download budget): media created 5 then 1, content created 1 then 1, block types skipped 6; `seedComplete`. |
-| 3 | The library (the API the admin's Media page lists): 6 ready items, the five light cuts the pages use plus `signin-code-light.webp` twice (shared by both pages, downloaded in both calls); dimensions and alt text from the seed; no content hash on any. |
+| 3 | The library (the API the admin's Media page lists): 6 ready items, the five light cuts the pages use plus `signin-code-light.webp` twice (shared by both pages, downloaded in both calls); alt text from the seed, dimensions measured by EmDash from the bytes; no content hash on any. |
 | 4 | Both pages from the CMS (`data-content-source="cms"`), five and one pictures, every slot `data-scheme="single"` (the resolver dropped the dark variants), every image `/_image?href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2F<key>.webp&w=540&f=webp`; each rendition 200 `image/webp`, a real WebP, with EmDash's weak ETag (`W/"<size>-<mtime>-w=540&f=webp"`) and Last-Modified. |
 | 5 | `npm run cms:media -- --check --url …`: 20 captures missing, 5 present ("seeded by EmDash setup without a content hash; bytes verified"), the duplicate listed, six slots with their primary only; exit 1. |
 | 6 | `npm run cms:media -- --apply --url …`: 20 uploads with alt and dimensions, `page testers: connected and published`, `page home: connected and published`; after: 25 present, six slots each with its dark variant; exit 0. A second `--check`: exit 0. |
@@ -171,6 +179,25 @@ near-white band, the cut-outs on the cards).
 - The lock counts 26 files; the repository has 25 (`repository-prs` has
   no light capture in the release), the number `docs/content.md` has
   recorded since `site-scheme-imagery-010`.
+- The seed declares the captures the pages use (ten files, twelve
+  references), not all 25: EmDash's seed format has no media section, a
+  `$media` reference resolves only inside content. The other fifteen
+  enter the library through `npm run cms:media -- --apply`, which the
+  confirmed runbook already names.
+- A media item deleted in the admin after a page referenced it keeps the
+  page's stored reference (file name and storage key stay in the value),
+  so the page renders a `<picture>` whose renditions answer 404 until the
+  page is edited; the audit sees it at that page's next publish, since a
+  media write is not a mirror trigger. Recorded in `docs/content.md`;
+  extending the trigger to media writes is a follow-up.
+- `/_image` serves only the site's own renditions: a repository capture
+  or a library file at 540 or 1080 px as WebP with nothing else in the
+  query; any other request answers an uncached 404 (the adapter would
+  otherwise transform any allowed source at any size on request). A hit
+  in the adapter's Cache API is copied into a fresh response before the
+  route cache writes its headers (a cached response carries immutable
+  headers on Workers; local workerd did not reproduce the failure, the
+  smoke fetches a rendition twice).
 - A seeded media row has no content hash (EmDash); the audit and the
   scripts match such an item by file name, size and dimensions, and
   `cms:media` verifies its bytes. A capture two pages share is downloaded
@@ -188,9 +215,16 @@ near-white band, the cut-outs on the cards).
   tag, so a replaced original is stale at the edge for at most that
   window. A missing repository asset through `/_image` answers 500
   (the adapter), uncached.
-- `cms:media --apply` publishes the connected pages as the maintainer's
-  own identity; it never writes copy from the seed, never deletes, and
-  leaves a page with a pending draft alone.
+- `cms:media --apply` connects the slots and publishes the pages under
+  the maintainer's own identity, the one step of the migration that
+  writes page content: what the live blocks already said (the old slug)
+  becomes library references; never copy from the seed, never a
+  deletion, and a page with a pending draft is left alone. The lock's
+  letter scopes the script to the uploads; the confirmed runbook
+  (`cms:media -- --apply` then `check:live`) needs the pages connected,
+  which is why the script does it. Whether to keep that or to stage the
+  connection as a draft the maintainer publishes in the admin is the
+  maintainer's call (review finding 3).
 - Production is untouched: no upload, no sync, no deploy.
 
 ## Maintainer gates (after the merge, one sitting)
@@ -199,6 +233,7 @@ In `docs/cms-access.md`, "Gates for the Media Library": deploy;
 `cloudflared access login https://repoglance.com/_emdash`; `npm run
 cms:sync` (the breaking block-type change); `npm run cms:media -- --apply`
 (the 25 uploads, the six slots connected and published); `npm run
-check:live`; then `npm run cms:mirror` once so `seed/media.json` records
-the library and the usage. The slice-2 gates of `cms-first-013` are
-unaffected.
+cms:mirror -- --no-pr` so the checkout's `seed/media.json` records the
+library and the usage, then `npm run check:live` (it resolves the live
+media files through that record), then the two files as the mirror PR.
+The slice-2 gates of `cms-first-013` are unaffected.

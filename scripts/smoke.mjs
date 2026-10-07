@@ -157,9 +157,15 @@ try {
   record('GET /_image rendition is edge-cached like the pages and tagged media', heroRendition.headers.get('cloudflare-cdn-cache-control') === EDGE_POLICY && (heroRendition.headers.get('cache-tag') ?? '').split(',').map((tag) => tag.trim()).includes('media') && /^host$/i.test(heroRendition.headers.get('vary') ?? ''), `cdn ${heroRendition.headers.get('cloudflare-cdn-cache-control')} tags ${heroRendition.headers.get('cache-tag')} vary ${heroRendition.headers.get('vary')}`);
   const wide = await request(base, renditionUrl('home-widgets-dark.webp', 1080).replace(/&amp;/g, '&'));
   record('GET /_image rendition at 1080 px is served', wide.status === 200 && (wide.headers.get('content-type') ?? '').includes('image/webp'), `${wide.status}`);
-  const foreign = await request(base, '/_image?href=https%3A%2F%2Fexample.com%2Fx.webp&w=540&f=webp');
-  record('GET /_image refuses a foreign source', foreign.status === 403, `status ${foreign.status}`);
-  expectUncached('GET /_image (foreign)', foreign.headers.get('cloudflare-cdn-cache-control'));
+  const again = await request(base, renditionUrl('home-widgets-dark.webp', 540).replace(/&amp;/g, '&'));
+  record('GET /_image rendition answers the same way a second time (the adapter caches it)', again.status === 200 && Buffer.from(await again.arrayBuffer()).equals(heroBytes) && again.headers.get('cloudflare-cdn-cache-control') === EDGE_POLICY, `status ${again.status} cdn ${again.headers.get('cloudflare-cdn-cache-control')}`);
+  // Only the site's own renditions are served: another width, format,
+  // parameter or source answers the guard's 404, uncached, before the
+  // endpoint transforms anything.
+  for (const query of ['href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=333&f=webp', 'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=avif', 'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&q=100', 'href=%2Fmark.svg&w=540&f=webp', 'href=https%3A%2F%2Fexample.com%2Fx.webp&w=540&f=webp', 'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2Fa%2Fb.webp&w=540&f=webp', '']) {
+    await expectDenied(base, `/_image?${query}`);
+  }
+  await expectDenied(base, renditionUrl('home-widgets-dark.webp', 540).replace(/&amp;/g, '&'), { method: 'POST' });
   await expectDenied(base, '/_emdash/api/setup', { method: 'POST', headers: { 'content-type': 'application/json', origin: base, host: 'repoglance.com', 'x-forwarded-host': 'repoglance.com', cookie: 'CF_Authorization=forged' }, body: '{}' });
   await expectDenied(base, '/_emdash/admin', { headers: { 'cf-access-jwt-assertion': 'forged', cookie: 'CF_Authorization=forged' } });
 
