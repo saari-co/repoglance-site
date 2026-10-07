@@ -212,3 +212,34 @@ Two observations:
 The CMS entries are still the unpublished 1 October drafts: the remaining
 runbook steps are the maintainer's Access login, `npm run cms:sync` and
 `npm run check:live`.
+
+## Production sync (2026-10-07 14:26 UTC, maintainer)
+
+The maintainer ran the runbook from this worktree at the deployed commit:
+`cloudflared access login https://repoglance.com/_emdash` (the browser
+returned the token to the Mac), `npm run cms:sync`, `npm run check:live`.
+The sync's output, with no secrets in it:
+
+- identity: cloudflared's cached Access login for the `_emdash` app.
+- Before: `hero` and `feature` active version 1 differed from the seed in
+  the screenshot field's label and options; both pages were `draft` (the
+  seed says published), their live data differed from the seed in the
+  description and the copy of every block, and each carried a pending
+  draft that also differed; nothing extra in the CMS.
+- Applying: `hero` and `feature` "breaking change, version 2 created and
+  activated (was 1)"; `home` and `testers` "draft written from the seed
+  (replaced a pending draft)" and "published".
+- After: every block type and both pages `equal`, no extras; "Result:
+  the CMS now equals the seed."
+
+`check:live` right after: `/` and `/testers` equal, live 200 from `cms`
+(`cf-cache-status MISS`, the publish purged the edge), local 200 from
+seed. A fresh-key read a minute later (curl from this Mac): both pages
+`data-content-source="cms"`, the locked headings, the five locked slots
+on `/` in order and `signin-code` on `/testers`, `cache-control:
+no-cache`, `last-modified` 14:27:00 and 14:27:02 GMT (the entries'
+publish times, now the validator in place of the build time).
+
+From here the live source is the CMS, equal to the seed; every later seed
+change reaches the site through deploy, sync and live check. The
+1 October data stays in the entries' revision history.
