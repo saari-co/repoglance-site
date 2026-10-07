@@ -1356,10 +1356,38 @@
           "review_source_identity": null,
           "to": "locked",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T01:43:14+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T01:43:14+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "implemented",
+          "implementation_ref": "git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md, README.md)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
         }
       ],
       "id": "site-scheme-imagery-010",
-      "implementation_ref": null,
+      "implementation_ref": "git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md, README.md)",
       "question": "When the page is on the light scheme, should the images be the light showcase captures (and the dark ones on the dark scheme), and how: a plain picture swap on every slot, the swap with the cut-outs ringed per scheme, light throughout, the phones following with the cut-outs kept dark, or each image following the surface it sits on?",
       "rationale": "Maintainer, 2026-10-06: 'E for homepage D for join page' on the round-1 picker, then 'lock it' on the hybrid previewed alone (proof: scheme-round-1-captures-20261006.md, scheme-hybrid-1-captures-20261006.md).",
       "repair_required": false,
@@ -1368,10 +1396,10 @@
       "review_ref": null,
       "review_result": null,
       "review_source_identity": null,
-      "status": "locked",
+      "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-07T01:37:37+00:00",
-      "verification_ref": null
+      "updated_at": "2026-10-07T01:43:14+00:00",
+      "verification_ref": "npm run verify exit 0 on the tree of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (Node 22.23.2; audit 139 files, 81 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); production captures in both schemes byte-identical to the confirmed hybrid preview; .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
     }
   ],
   "last_activation": {
@@ -1403,5 +1431,5 @@
   "status": "active",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-07T01:37:37+00:00"
+  "updated_at": "2026-10-07T01:43:14+00:00"
 }
