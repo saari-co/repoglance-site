@@ -12,8 +12,12 @@ in EmDash behind Cloudflare Access (see below).
 
 - **Source:** this repository, on `main`.
 - **Live** at <https://repoglance.com> since 2026-10-01 on Cloudflare
-  Workers with D1 and R2; the EmDash editor is behind Cloudflare Access, and
-  the pages render from the CMS. `www.repoglance.com` redirects to the apex
+  Workers with D1 and R2; the EmDash editor is behind Cloudflare Access.
+  Since 2026-10-06 the pages render from `seed/seed.json`: the CMS entries
+  from the 1 October setup predate the copy, imagery and block-type changes
+  and are unpublished until a sync path is decided
+  ([proof/cms-drift-20261006/](proof/cms-drift-20261006/PROOF.md)).
+  `www.repoglance.com` redirects to the apex
   and the public pages are cached at the edge (purged on every publish). The
   gated steps and their proof are in [docs/cms-access.md](docs/cms-access.md),
   [proof/hosting-20261001/](proof/hosting-20261001/PROOF.md),

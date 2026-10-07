@@ -147,6 +147,15 @@ printed. This was done for repoglance.com on 2026-10-01
    pages switch to the CMS). The first Access login becomes Admin. Confirm
    setup is closed: a second anonymous request to the setup routes still
    answers 404, and the pages report `data-content-source="cms"`.
+
+   **Setup copies the seed once.** EmDash setup imports `seed/seed.json`
+   (pages and block types) as it is in the deployed build and never again;
+   from then on `src/content/load-page.ts` renders the CMS entry whenever
+   one exists, so later seed changes do not reach the live site until they
+   are written into the CMS or the entries are unpublished. On 2026-10-06
+   the entries were unpublished for that reason
+   (`proof/cms-drift-20261006/PROOF.md`); the pages render from the seed
+   until `cms-sync-011` decides the sync model.
 7. **Second editor**, only after setup is closed: add the email to the
    Access policy and to `EMDASH_OPERATOR_ALLOWLIST` (a new `secret put`).
    Their installed EmDash role is `defaultRole` 40.
