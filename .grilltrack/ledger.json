@@ -1592,7 +1592,15 @@
     "reason": "Scheme hybrid 1 previewed alone on http://127.0.0.1:4365/?c=h&p=home&s=system as the replacement for round 1's five (maintainer's pick, 2026-10-06: 'E for homepage D for join page'): E on the home page (the hero follows the band, the cards follow the page) and D on the join page (the hero follows the page). Waiting for the maintainer's explicit confirmation to lock.",
     "resumed_at": "2026-10-07T01:37:37+00:00"
   },
-  "pause": null,
+  "pause": {
+    "artifact_refs": [
+      "https://github.com/saari-co/repoglance-site/pull/7",
+      ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+    ],
+    "next_safe_action": "On the maintainer's word: close the track (closeout facts: verified results, superseded choices, the deferrals of review round 1, the proof and delivery references) or open the next grill (screenshot-options-011 or typography-010); if main moves before the merge, merge origin/main into claude/site-scheme-imagery with the ledger united and re-verify.",
+    "paused_at": "2026-10-07T01:59:25+00:00",
+    "reason": "site-scheme-imagery-010 implemented, verified and reviewed clean at git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d; delivered as PR saari-co/repoglance-site#7 (branch claude/site-scheme-imagery, head 7bc66d2 the ledger commit) on the maintainer's separate request. Waiting on the maintainer's gates: merge after CI is green and a review is clean on the exact head, then deploy. The recommendation is closeout, which the maintainer confirms."
+  },
   "recommendation": {
     "alternatives": [
       "screenshot-options-011: a small hygiene round on the thirteen seed options the CMS can pick: retire or re-word the unused connect-or-explore-sample option (its light cut shows the button text 'Explore with sample data' and its alt says 'Sign in with GitHub' where the screen reads 'Connect GitHub'; both pre-existing, deferred in review round 1 of site-scheme-imagery-010), and close the gap that no check catches an orphan WebP under public/screenshots/ whose slug is not a seed option.",
@@ -1603,8 +1611,8 @@
     "recorded_at": "2026-10-07T01:57:10+00:00"
   },
   "schema_version": "grilltrack/v0.1",
-  "status": "active",
+  "status": "paused",
   "title": "repoglance.com website",
   "track_id": "gt-20261001102301-89ec89",
-  "updated_at": "2026-10-07T01:58:50+00:00"
+  "updated_at": "2026-10-07T01:59:25+00:00"
 }
