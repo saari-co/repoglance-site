@@ -1,8 +1,10 @@
 # Design contract: repoglance.com
 
-- **Version:** 4 (2026-10-01): the Open Graph image [og-image-009],
-  decided in one five-candidate round judged as link-preview cards.
-  Version 3 (2026-10-01) locked the imagery [site-imagery-007], decided in
+- **Version:** 5 (2026-10-06): scheme-matched page imagery
+  [site-scheme-imagery-010], decided in one five-candidate round on the
+  real pages and a confirmed hybrid. Version 4 (2026-10-01) locked the
+  Open Graph image [og-image-009], decided in one five-candidate round
+  judged as link-preview cards; version 3 (2026-10-01) locked the imagery [site-imagery-007], decided in
   one five-candidate round and a confirmed hybrid, with one card's copy
   amended to match [site-copy-006]; version 2 (2026-10-01) locked the copy
   [site-copy-006]; version 1 (2026-10-01) locked the layout and visual
@@ -57,17 +59,43 @@
   rows, the Quick Settings row with the tile, the sign-in code screen as
   a centred phone crop); the join hero shows the sign-in code screen phone
   at 220 px. `Screenshot.astro` carries `data-shot` and each slug's own
-  dimensions; `site.css` sets the card image to 280 px, `object-fit:
-  cover` from the top with 12 px corners (16 px for widgets, left-aligned
-  for the tile row, centred for phones).
+  dimensions (and, since v5, `data-scheme` and the `<picture>` that
+  follows the colour scheme); `site.css` sets the card image to 280 px,
+  `object-fit: cover` from the top with 12 px corners (16 px for widgets,
+  left-aligned for the tile row, centred for phones).
   - **Rejected (round 1, do not reintroduce without a new grill):** the
     shipped framing of top-cropped phones (A), aimed phone crops (B),
-    scheme-matched images via `<picture>` (D), the widgets cut-out as the
-    hero with no phone (E), and the Connect screen for the sign-in slots
-    (the hybrid replaced it with the device-code screen).
+    scheme-matched images via `<picture>` on the aimed crops (D; the
+    switch itself was decided on its own in v5), the widgets cut-out as
+    the hero with no phone (E), and the Connect screen for the sign-in
+    slots (the hybrid replaced it with the device-code screen).
   - **Rejected earlier:** the Play listing's sample-mode captures (the
     foundation's imagery, reopened by the maintainer on 2026-10-01: marked
     SAMPLE throughout and cropped without regard to the cards).
+- **Colour scheme of the imagery [site-scheme-imagery-010, "E on the
+  home page, D on the join page"]:** every image is a `<picture>` with a
+  `(prefers-color-scheme: dark)` source, cut from the same capture in
+  both themes with the same box, so nothing reflows when the scheme
+  changes. Images follow the page: the light cut on the light scheme,
+  the dark cut on the dark scheme (the four home cards, the join hero,
+  and any slug the CMS picks). The home hero's phone follows the band it
+  sits on instead: the dark home screen on the ink band of the light
+  scheme, the light one on the near-white band of the dark scheme
+  (`Hero.astro` passes `scheme="band"` on the home page only). The light
+  cuts ship beside the dark ones as `<slug>-light-{540,1080}.webp` for
+  every slug with a light capture (`repository-prs` has none and renders
+  its dark cut alone); `src/content/screenshots.ts` declares which. No
+  treatment changed: the cut-outs keep the card rule above, so the light
+  Pinned repos widget shows a thin dark wallpaper margin inside the
+  card's corners on the light scheme (the launcher wallpaper is dark in
+  both themes), a fact of the capture the maintainer saw and kept.
+  - **Rejected (round 1, do not reintroduce without a new grill):** every
+    slot following the page, including the home hero (A); the same with
+    the cut-outs set in clipped, rung boxes and the widget scaled past
+    its wallpaper margin (B); the light captures throughout (C); the
+    cut-outs kept dark with only the phones following (D, kept for the
+    join page only); the join hero following the band (E, kept for the
+    home page only); and the shipped dark-throughout state, the control.
 - **Content structure:** `seed/seed.json` blocks `hero`, `feature`,
   `fact_list`, `steps`, `cta`, `text_section`, rendered through EmDash's
   native `Blocks`. `ContentPage.astro` groups consecutive `feature` blocks
@@ -191,13 +219,12 @@
   `imagery-hybrid-1-captures-20261001.md` and
   `site-imagery-007-verify-20261001.md`; for the Open Graph image,
   `og-round-1-captures-20261001.md` and
-  `site-og-image-009-verify-20261001.md`.
+  `site-og-image-009-verify-20261001.md`; for the colour scheme of the
+  imagery, `scheme-round-1-captures-20261006.md`,
+  `scheme-hybrid-1-captures-20261006.md` and
+  `site-scheme-imagery-010-verify-20261006.md`.
 
 ## Unresolved (decided by GrillTrack, one slot per round)
-
-- **Scheme-matched page imagery:** the light showcase captures exist in
-  the source release but ship nowhere; the dark cuts show on both schemes
-  until a round says otherwise.
 
 - **Typography roles beyond system faces:** not grilled; system faces are
   the lock until a font round says otherwise.

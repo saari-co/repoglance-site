@@ -114,31 +114,52 @@ function screenshotOptions(typeSlug) {
   return seed.blockTypes.find((type) => type.slug === typeSlug).versions[0].fields.find((field) => field.slug === 'screenshot').validation.options;
 }
 
-test('every screenshot reference is a shipped showcase capture with alt text and dimensions', () => {
+test('every screenshot reference is a shipped showcase capture with alt text, dimensions and its light cut when declared', () => {
   const options = screenshotOptions('hero');
   assert.deepEqual(screenshotOptions('feature'), options, 'hero and feature offer the same screenshots');
+  const source = readFileSync(new URL('../src/content/screenshots.ts', import.meta.url), 'utf8');
+  const entryOf = (option) => {
+    const start = source.indexOf(`'${option}': {`);
+    assert.ok(start >= 0, `${option} has an entry in src/content/screenshots.ts`);
+    return source.slice(start, source.indexOf('},', start));
+  };
+  const shipsLight = (option) => {
+    const flag = entryOf(option).match(/light: (true|false),/)?.[1];
+    assert.ok(flag, `${option} declares whether its light cut ships`);
+    return flag === 'true';
+  };
+  const shipped = (name) => existsSync(new URL(`../public/screenshots/${name}`, import.meta.url));
   for (const page of pages) {
     for (const block of page.data.layout) {
       if (!('screenshot' in block)) continue;
       assert.ok(options.includes(block.screenshot), `${block._key}: ${block.screenshot} is an option`);
       if (block.screenshot === 'none') continue;
-      for (const width of [540, 1080]) {
-        const file = new URL(`../public/screenshots/${block.screenshot}-${width}.webp`, import.meta.url);
-        assert.ok(existsSync(file), `${block.screenshot}-${width}.webp exists`);
-      }
+      assert.ok(shipsLight(block.screenshot), `${block._key}: ${block.screenshot} ships a light cut, so the page follows the colour scheme (site-scheme-imagery-010)`);
     }
   }
-  const source = readFileSync(new URL('../src/content/screenshots.ts', import.meta.url), 'utf8');
   for (const option of options.filter((option) => option !== 'none')) {
-    assert.ok(source.includes(`'${option}'`), `${option} has alt text`);
-    const start = source.indexOf(`'${option}': {`);
-    const entry = source.slice(start, source.indexOf('},', start));
+    const entry = entryOf(option);
     assert.match(entry, /width: \d+,\s*height: \d+,\s*alt: '[^']*(made.up|fixture|Sign in with GitHub)[^']*'/i, `${option} has dimensions and an alt text that says the data is made up (or shows the sign-in screen)`);
     assert.ok(!/\blive\b/i.test(entry) && !/HK7N/.test(entry), `${option}: alt text never claims live data and never carries the fixture code`);
+    const light = shipsLight(option);
+    for (const width of [540, 1080]) {
+      assert.ok(shipped(`${option}-${width}.webp`), `${option}-${width}.webp exists`);
+      assert.equal(shipped(`${option}-light-${width}.webp`), light, `${option}-light-${width}.webp ${light ? 'exists' : 'does not exist, as declared'}`);
+    }
   }
   for (const text of allText) {
     assert.ok(!/HK7N/.test(text), 'the fixture code stays out of the copy');
   }
+});
+
+test('the hero image follows the band on the home page and the page elsewhere; every other image follows the page', () => {
+  const shot = readFileSync(new URL('../src/components/Screenshot.astro', import.meta.url), 'utf8');
+  assert.match(shot, /<source media="\(prefers-color-scheme: dark\)"/, 'Screenshot.astro renders a dark-scheme source');
+  assert.match(shot, /scheme = 'page'/, "Screenshot.astro follows the page unless told otherwise");
+  const hero = readFileSync(new URL('../src/components/Hero.astro', import.meta.url), 'utf8');
+  assert.match(hero, /scheme=\{isHome \? 'band' : 'page'\}/, 'Hero.astro asks for the band policy on the home page only');
+  const feature = readFileSync(new URL('../src/components/Feature.astro', import.meta.url), 'utf8');
+  assert.doesNotMatch(feature, /scheme=/, 'Feature.astro leaves the default (page) policy');
 });
 
 test('the Open Graph image is the generated 1200x630 PNG whose hash docs/content.md records', () => {
