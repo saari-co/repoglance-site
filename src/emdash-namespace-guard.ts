@@ -3,21 +3,25 @@ import { defineMiddleware } from 'astro:middleware';
 import { authenticate as accessAuthenticate } from '@emdash-cms/cloudflare/auth';
 import { env as workerEnv } from 'cloudflare:workers';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
+import manifest from '../seed/media.json';
 import {
   ALLOWLIST_ENV,
   AUDIENCE_ENV,
   TEAM_DOMAIN_ENV,
   deniedResponse,
   evaluateGate,
+  evaluateImageRequest,
   isEmdashNamespace,
   isImageEndpoint,
-  isSiteRendition,
   publicMediaRead,
   requestPathname,
   type GateEnv,
   type MachineIdentity,
 } from './namespace-gate.ts';
 import { applyMediaResponse } from './page-cache.ts';
+
+/** The approved captures (seed/media.json): the repository files the endpoint may render for everyone. */
+const approvedFiles: ReadonlySet<string> = new Set(((manifest as { approved?: { file: string }[] }).approved ?? []).map((capture) => capture.file));
 
 /**
  * The team domain is the build input that also wires EmDash's `access()` in
@@ -99,12 +103,26 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const inNamespace = candidates.some(isEmdashNamespace);
   if (!inNamespace) {
     if (!candidates.every((candidate) => isImageEndpoint(candidate, imageEndpointRoute))) return next();
-    // The endpoint serves only the site's own renditions (a repository
-    // capture or a library file at the widths the pages ask for).
-    const method = context.request.method.toUpperCase();
-    if ((method !== 'GET' && method !== 'HEAD') || !isSiteRendition(context.url)) return deniedResponse();
-    // A hit in the adapter's Cache API comes back with immutable headers;
-    // a fresh copy lets the route cache write its own.
+    // The endpoint serves the site's own renditions to everyone, cached
+    // like the pages; anything else only to an operator, uncached.
+    let decision: Awaited<ReturnType<typeof evaluateImageRequest>>;
+    try {
+      decision = await evaluateImageRequest({
+        pathname,
+        request: context.request,
+        env: readEnv(),
+        authenticate: (request, config) => accessAuthenticate(request, config),
+        dev: Boolean(import.meta.env.DEV),
+        approvedFiles,
+      });
+    } catch {
+      return deniedResponse();
+    }
+    if (!decision.allow) return deniedResponse();
+    if (decision.reason !== 'public-rendition') return next();
+    // EmDash's own middleware already returns a fresh copy of every
+    // response; this second copy keeps the route cache's header writes
+    // independent of that.
     const served = await next();
     const response = new Response(served.body, served);
     applyMediaResponse(context, response);

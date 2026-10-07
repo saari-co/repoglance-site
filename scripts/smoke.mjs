@@ -162,7 +162,7 @@ try {
   // Only the site's own renditions are served: another width, format,
   // parameter or source answers the guard's 404, uncached, before the
   // endpoint transforms anything.
-  for (const query of ['href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=333&f=webp', 'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=avif', 'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&q=100', 'href=%2Fmark.svg&w=540&f=webp', 'href=https%3A%2F%2Fexample.com%2Fx.webp&w=540&f=webp', 'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2Fa%2Fb.webp&w=540&f=webp', '']) {
+  for (const query of ['href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=333&f=webp', 'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=0540&f=webp', 'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=5.4e2&f=webp', 'f=webp&w=540&href=%2Fscreenshots%2Fhome-widgets-dark.webp', 'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=avif', 'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&q=100', 'href=%2Fscreenshots%2Fnothing.webp&w=540&f=webp', 'href=%2Fmark.svg&w=540&f=webp', 'href=https%3A%2F%2Fexample.com%2Fx.webp&w=540&f=webp', 'href=https%3A%2F%2Frepoglance.com%2F_emdash%2Fapi%2Fmedia%2Ffile%2F01ARZ3NDEKTSV4RRFFQ69G5FAV.webp&w=400&f=webp', 'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2Fa%2Fb.webp&w=540&f=webp', '']) {
     await expectDenied(base, `/_image?${query}`);
   }
   await expectDenied(base, renditionUrl('home-widgets-dark.webp', 540).replace(/&amp;/g, '&'), { method: 'POST' });

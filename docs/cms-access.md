@@ -79,15 +79,18 @@ action.
   `w=1080`); EmDash's endpoint wrapper reads a Media Library file straight
   from R2 and resizes it with the binding, and the repository's own
   captures (the seed fallback, `/screenshots/<file>`) go through the
-  adapter's endpoint and the `ASSETS` binding. The guard serves only those
-  renditions (a capture or a library file, 540 or 1080 px, WebP, nothing
-  else in the query); any other request to the endpoint answers an
-  uncached 404 before anything is transformed, and a served rendition is
-  copied into a fresh response before the route cache writes its headers
-  (a hit in the adapter's Cache API carries immutable headers). Nothing
-  is transformed at build time. Local workerd and `astro dev` resize
-  through Miniflare's local Images binding, so the smoke proves the
-  renditions.
+  adapter's endpoint and the `ASSETS` binding. The guard serves those
+  renditions to everyone (an approved capture or a library file, 540 or
+  1080 px, WebP, spelled exactly as the pages emit it, so one rendition
+  is one cache key); any other request to the endpoint is served,
+  uncached, only to an operator Access admits (the admin's Media gallery
+  asks it for 400 px thumbnails of library files) and answers an uncached
+  404 to everyone else, before anything is transformed. EmDash's own
+  middleware returns a fresh copy of every response; the guard makes a
+  second copy of a rendition before the route cache writes its headers.
+  Nothing is transformed at build time. Local workerd and `astro dev`
+  resize through Miniflare's local Images binding, so the smoke proves
+  the renditions.
 - The Astro Cloudflare adapter adds a `SESSION` KV binding to the built
   config for Astro sessions, and `wrangler deploy` auto-provisions a KV
   namespace named `repoglance-site-session` for it on first deploy (it did

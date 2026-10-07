@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { canonicalPathname, deniedResponse, evaluateGate, evaluateMachineRequest, isEmdashNamespace, isImageEndpoint, isSiteRendition, publicMediaRead } from '../src/namespace-gate.ts';
+import { canonicalPathname, deniedResponse, evaluateGate, evaluateImageRequest, evaluateMachineRequest, isEmdashNamespace, isImageEndpoint, isSiteRendition, publicMediaRead } from '../src/namespace-gate.ts';
 
 const configured = {
   EMDASH_ACCESS_TEAM_DOMAIN: 'example-team.cloudflareaccess.invalid',
@@ -222,17 +222,30 @@ test("Astro's image endpoint is recognised by its route, in canonical form only"
   assert.equal(isImageEndpoint('/pictures', 'pictures/'), true);
 });
 
-test("the image endpoint serves only the site's own renditions: a capture or a library file at 540 or 1080 px as WebP, nothing else in the query", () => {
+test("the image endpoint's public renditions are exactly the URLs the pages emit: a capture or a library file at 540 or 1080 px as WebP, keys in order, nothing else", () => {
   const url = (query) => new URL(`https://repoglance.com/_image?${query}`);
+  const approved = new Set(['home-widgets-dark.webp', 'home-widgets-light.webp', 'tile-row-dark.webp']);
   for (const query of [
     'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp',
     'href=%2Fscreenshots%2Fhome-widgets-light.webp&w=1080&f=webp',
-    'f=webp&w=540&href=%2Fscreenshots%2Ftile-row-dark.webp',
     'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2F01ARZ3NDEKTSV4RRFFQ69G5FAV.webp&w=540&f=webp',
   ]) {
     assert.equal(isSiteRendition(url(query)), true, query);
+    assert.equal(isSiteRendition(url(query), approved), true, `${query} (approved)`);
   }
+  assert.equal(isSiteRendition(url('href=%2Fscreenshots%2Fother.webp&w=540&f=webp')), true, 'any capture name without the approved set');
+  assert.equal(isSiteRendition(url('href=%2Fscreenshots%2Fother.webp&w=540&f=webp'), approved), false, 'not an approved capture');
   for (const query of [
+    'f=webp&w=540&href=%2Fscreenshots%2Ftile-row-dark.webp',
+    'href=/screenshots/home-widgets-dark.webp&w=540&f=webp',
+    'href=%2fscreenshots%2fhome-widgets-dark.webp&w=540&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=0540&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=5.4e2&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=0x21c&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=%2B540&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540.0&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=%20540&f=webp',
     'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=333&f=webp',
     'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=avif',
     'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&q=100',
@@ -252,6 +265,24 @@ test("the image endpoint serves only the site's own renditions: a capture or a l
   ]) {
     assert.equal(isSiteRendition(url(query)), false, query || '(empty)');
   }
+});
+
+test("the image endpoint: a public rendition for everyone, anything else only for an operator Access admits (the admin's thumbnails), never for a machine or a POST", async () => {
+  const rendition = 'https://repoglance.com/_image?href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp';
+  const thumbnail = 'https://repoglance.com/_image?href=https%3A%2F%2Frepoglance.com%2F_emdash%2Fapi%2Fmedia%2Ffile%2F01ARZ3NDEKTSV4RRFFQ69G5FAV.webp%3F_emdash_media%3Dabc&w=400&f=webp';
+  const input = (url, extra = {}) => ({ pathname: '/_image', request: new Request(url, extra.init), env: extra.env ?? {}, authenticate: extra.authenticate ?? neverCalled, dev: extra.dev, approvedFiles: new Set(['home-widgets-dark.webp']) });
+  assert.deepEqual(await evaluateImageRequest(input(rendition)), { allow: true, reason: 'public-rendition' });
+  assert.deepEqual(await evaluateImageRequest(input(rendition, { init: { method: 'HEAD' } })), { allow: true, reason: 'public-rendition' });
+  assert.deepEqual(await evaluateImageRequest(input(rendition, { env: configured, authenticate: identity('owner@example.invalid') })), { allow: true, reason: 'public-rendition' }, 'a rendition never consults Access');
+  assert.deepEqual(await evaluateImageRequest(input('https://repoglance.com/_image?href=%2Fscreenshots%2Fother.webp&w=540&f=webp')), { allow: false, reason: 'access-not-configured' }, 'not an approved capture');
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail)), { allow: false, reason: 'access-not-configured' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { env: configured, authenticate: identity(null) })), { allow: false, reason: 'no-identity' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { env: configured, authenticate: throwing })), { allow: false, reason: 'no-identity' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { env: configured, authenticate: identity('owner@example.invalid') })), { allow: true, reason: 'operator' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { env: { ...configured, EMDASH_OPERATOR_ALLOWLIST: 'owner@example.invalid' }, authenticate: identity('someone@example.invalid') })), { allow: false, reason: 'not-on-allowlist' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { dev: true })), { allow: true, reason: 'dev' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { init: { method: 'POST' }, env: configured, authenticate: identity('owner@example.invalid') })), { allow: false, reason: 'machine-forbidden' });
+  assert.deepEqual(await evaluateImageRequest(input(rendition, { init: { method: 'POST' } })), { allow: false, reason: 'machine-forbidden' });
 });
 
 test('the denied response is a small, uncached 404 without a redirect', async () => {

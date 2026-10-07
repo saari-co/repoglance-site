@@ -44,6 +44,7 @@ export interface GateInput {
 export type GateReason =
   | 'public'
   | 'public-media'
+  | 'public-rendition'
   | 'dev'
   | 'access-not-configured'
   | 'no-identity'
@@ -122,21 +123,80 @@ const CAPTURE_FILE = /^[A-Za-z0-9._-]+\.webp$/;
 
 /**
  * Whether an image-endpoint request is one of the site's own renditions
- * (decision media-library-014): a repository capture or a Media Library
- * file at one of the widths and in the format `Screenshot.astro` emits,
- * and nothing else in the query. The endpoint would otherwise transform
- * any allowed source at any size on request, each a separate edge entry
- * and an Images transform; the site serves only what its pages ask for.
+ * (decision media-library-014): a repository capture (one of the approved
+ * files when the set is given) or a Media Library file at one of the
+ * widths and in the format `Screenshot.astro` emits, spelled exactly as
+ * the pages emit it (the same keys in the same order and encoding), so
+ * every spelling of one rendition is one cache key. The endpoint would
+ * otherwise transform any allowed source at any size on request, each a
+ * separate edge entry and an Images transform; anonymous visitors get
+ * only what the pages ask for.
  */
-export function isSiteRendition(url: URL): boolean {
+export function isSiteRendition(url: URL, approvedFiles?: ReadonlySet<string>): boolean {
   const params = url.searchParams;
   const keys = [...params.keys()];
-  if (keys.length !== 3 || new Set(keys).size !== 3 || !keys.every((key) => key === 'href' || key === 'w' || key === 'f')) return false;
-  const width = Number(params.get('w'));
-  if (!(RENDER_WIDTHS as readonly number[]).includes(width) || params.get('f') !== RENDER_FORMAT) return false;
+  if (keys.length !== 3 || keys[0] !== 'href' || keys[1] !== 'w' || keys[2] !== 'f') return false;
+  if (!RENDER_WIDTHS.some((width) => String(width) === params.get('w')) || params.get('f') !== RENDER_FORMAT) return false;
+  if (url.search.slice(1) !== params.toString()) return false;
   const href = params.get('href') ?? '';
-  if (href.startsWith(`${CAPTURES_PATH}/`)) return CAPTURE_FILE.test(href.slice(CAPTURES_PATH.length + 1));
+  if (href.startsWith(`${CAPTURES_PATH}/`)) {
+    const file = href.slice(CAPTURES_PATH.length + 1);
+    return CAPTURE_FILE.test(file) && (approvedFiles ? approvedFiles.has(file) : true);
+  }
   return publicMediaKey(href) !== null;
+}
+
+/**
+ * The human path of the gate: Access configured, the official
+ * authentication yielding an email, the allowlist honoured.
+ */
+async function evaluateOperator(input: GateInput, config: { teamDomain: string; audienceEnvVar: string }): Promise<{ decision: GateDecision; email?: string }> {
+  let identity: GateIdentity | null | undefined;
+  try {
+    identity = await input.authenticate(input.request, config);
+  } catch {
+    identity = null;
+  }
+  const email = identity?.email?.trim().toLowerCase();
+  if (!email) return { decision: { allow: false, reason: 'no-identity' } };
+  const allowlist = parseAllowlist(input.env[ALLOWLIST_ENV]);
+  if (allowlist.length > 0 && !allowlist.includes(email)) return { decision: { allow: false, reason: 'not-on-allowlist' }, email };
+  return { decision: { allow: true, reason: 'operator' }, email };
+}
+
+function accessConfig(env: GateEnv): { teamDomain: string; audienceEnvVar: string } | null {
+  const teamDomain = env[TEAM_DOMAIN_ENV]?.trim();
+  const audience = env[AUDIENCE_ENV]?.trim();
+  return teamDomain && audience ? { teamDomain, audienceEnvVar: AUDIENCE_ENV } : null;
+}
+
+export interface ImageGateInput extends GateInput {
+  /** The approved capture files; a repository rendition must name one. */
+  approvedFiles?: ReadonlySet<string>;
+}
+
+/**
+ * The decision for a request to Astro's image endpoint (decision
+ * media-library-014): one of the site's own renditions is public and
+ * cached like the pages; anything else (the admin's Media gallery asks for
+ * 400 px thumbnails of library files, the editor's own preview for other
+ * sizes) is served, uncached, to an operator Access admits, and answers
+ * 404 to everyone else. Machine identities have no business with images.
+ */
+export async function evaluateImageRequest(input: ImageGateInput): Promise<GateDecision> {
+  const method = input.request.method.toUpperCase();
+  if (method !== 'GET' && method !== 'HEAD') return { allow: false, reason: 'machine-forbidden' };
+  let url: URL;
+  try {
+    url = new URL(input.request.url);
+  } catch {
+    return { allow: false, reason: 'machine-forbidden' };
+  }
+  if (isSiteRendition(url, input.approvedFiles)) return { allow: true, reason: 'public-rendition' };
+  if (input.dev) return { allow: true, reason: 'dev' };
+  const config = accessConfig(input.env);
+  if (!config) return { allow: false, reason: 'access-not-configured' };
+  return (await evaluateOperator(input, config)).decision;
 }
 
 function parseAllowlist(value: string | undefined): string[] {
@@ -217,34 +277,21 @@ export async function evaluateGate(input: GateInput): Promise<GateDecision> {
   if (publicMediaRead(input.request.method, candidates)) return { allow: true, reason: 'public-media' };
   if (input.dev) return { allow: true, reason: 'dev' };
 
-  const teamDomain = input.env[TEAM_DOMAIN_ENV]?.trim();
-  const audience = input.env[AUDIENCE_ENV]?.trim();
-  if (!teamDomain || !audience) return { allow: false, reason: 'access-not-configured' };
+  const config = accessConfig(input.env);
+  if (!config) return { allow: false, reason: 'access-not-configured' };
 
-  const config = { teamDomain, audienceEnvVar: AUDIENCE_ENV };
-  let identity: GateIdentity | null | undefined;
+  const operator = await evaluateOperator(input, config);
+  if (operator.email) return operator.decision;
+  if (!input.verifyMachine) return { allow: false, reason: 'no-identity' };
+  let machine: MachineIdentity | null | undefined;
   try {
-    identity = await input.authenticate(input.request, config);
+    machine = await input.verifyMachine(input.request, config);
   } catch {
-    identity = null;
+    machine = null;
   }
-  const email = identity?.email?.trim().toLowerCase();
-  if (!email) {
-    if (!input.verifyMachine) return { allow: false, reason: 'no-identity' };
-    let machine: MachineIdentity | null | undefined;
-    try {
-      machine = await input.verifyMachine(input.request, config);
-    } catch {
-      machine = null;
-    }
-    const commonName = machine?.commonName?.trim();
-    if (!commonName || machine?.email?.trim()) return { allow: false, reason: 'no-identity' };
-    return evaluateMachineRequest(input.request, requestPathname(input.request));
-  }
-
-  const allowlist = parseAllowlist(input.env[ALLOWLIST_ENV]);
-  if (allowlist.length > 0 && !allowlist.includes(email)) return { allow: false, reason: 'not-on-allowlist' };
-  return { allow: true, reason: 'operator' };
+  const commonName = machine?.commonName?.trim();
+  if (!commonName || machine?.email?.trim()) return { allow: false, reason: 'no-identity' };
+  return evaluateMachineRequest(input.request, requestPathname(input.request));
 }
 
 export function deniedResponse(): Response {

@@ -57,7 +57,9 @@ mirror gains a second file and the machine rules are unchanged),
   17/17; edge 15/15; CMS 23/23; build; smoke 172/172 on local workerd.
   After the round-1 fixes: audit 147/113; `astro check` 0/0; captures 25;
   content and media 20/20; guard 18/18; edge 15/15; CMS 23/23; build;
-  smoke 203/203.
+  smoke 203/203. After the round-2 fixes: audit 147/113; `astro check`
+  0/0; captures 25; content and media 20/20; guard 19/19; edge 15/15;
+  CMS 23/23; build; smoke 223/223.
 - Local workerd probe of the production build (the packet): renditions,
   the edge policy and tag, the guard's admissions and refusals.
 - Dev-server round trip (the packet's table): setup from the seed with
@@ -123,3 +125,42 @@ explained; `SEED_MEDIA_BASE` sound; ledger and events consistent).
 Ledger: `media-library-014` reviewed with findings (required_fix, defer,
 human_gate, reject_false_positive) at `git:da5905f9…`, returned to
 implementation; round 2 below.
+
+## Review round 2
+
+Source identity: `git:6e94bc1370d26c9848a2d3189aaacf5126d519d1` (the
+round-1 fix commit; parent `da5905f`). A separate read-only agent
+verified each round-1 resolution against the diff, probed the endpoint
+parsers (`Number.parseInt` in the adapter, `/^\d+$/` in EmDash) and the
+admin bundle, read EmDash's `finalizeResponse` and Astro's cache header
+application, ran the four suites and `node --check`. Findings and
+adjudication:
+
+| # | Finding | Classification | Resolution |
+| --- | --- | --- | --- |
+| 1 | `isSiteRendition` compared the width with `Number()`, so `w=5.4e2`, `0540`, `+540`, `0x21c` passed the guard while the adapter rendered 5, 540, 540 or 0 px and EmDash's wrapper streamed the full original (then edge-cached); "only 540 or 1080 px" was not true. | required_fix | The width is matched as the exact string `540` or `1080`; the whole query must be spelled exactly as the pages emit it (keys `href`, `w`, `f` in order, the pages' encoding), so one rendition is one cache key; unit tests for `0540`, `5.4e2`, `0x21c`, `+540`, `540.0`, a leading space, a reordered query, a raw or lower-case-encoded slash and a trailing `&`; the smoke refuses `0540`, `5.4e2` and a reordered query. |
+| 2 | Round 1's row 1 was a false positive: EmDash's `finalizeResponse` already returns `new Response(response.body, response)` on every path, the image route included, between the guard and the route, so Astro's route cache never writes on an immutable response; the guard's copy is harmless but the record, the guard's comment, the runbook and the packet attributed the mechanism to the guard. | required_fix (record and docs); round-1 row 1 reclassified reject_false_positive in substance | Reworded everywhere: EmDash's copy is the mechanism, the guard's copy a second, defensive one. The round-1 ledger record stands as recorded (a `required_fix` was taken); this round records the correction. |
+| 3 | The deny refused the admin's own Media gallery: it asks the endpoint for 400 px thumbnails of library files (`href` absolute with `?_emdash_media=`, `w=400`), fell back to the full-size originals on error, and the page worked but loaded every file whole. | required_fix (reviewer: docs required, code deferred; the code taken) | `evaluateImageRequest`: a site rendition is public and cached; anything else is served, uncached, to an operator Access admits (the official authentication, the allowlist) and answers 404 to everyone else; machines and non-GET denied. In development everything passes. Unit-tested (rendition without Access, thumbnail with and without an operator, the allowlist, dev, POST); the smoke refuses the thumbnail form anonymously; the runbook and the packet say so. |
+| 4 | Every spelling of one rendition was a distinct cache key, transform and edge entry (`0540`, `540.0`, `%2f`, a reordered query, a trailing `&`). | required_fix (reviewer: defer; taken with 1) | The exact-spelling rule above; the order-insensitive test case flipped to refused. |
+| 5 | `CAPTURE_FILE` admitted any `/screenshots/<name>.webp`; a missing name cost an `ASSETS` fetch and a failing Images call (500) per request. | required_fix (reviewer: defer; taken) | The guard passes the approved captures from `seed/media.json`; a repository rendition must name one; a stranger answers 404 (smoke). |
+| 6 | The `describeChange` base fix had no test. | required_fix (note; taken) | A test rebases the hero's references to another base and asserts the PR body lists no page difference. |
+
+Checked and found clean by the reviewer: the diff's fourteen files all
+accounted for; the ledger and events consistent; `isSiteRendition`
+otherwise refusing repeated keys, a `href` with query or fragment,
+uppercase, `%252F`, `..`, `+`, empty values, remote and same-host
+absolute hrefs; the pages emitting exactly admitted URLs and the smoke
+proving both widths and the repeated fetch; the fresh copy preserving
+status, headers and null bodies for 304 and HEAD and leaving the
+adapter's `cache.put` tee alone; `applyMediaResponse`'s regex identical
+to EmDash's and the normal media responses still cached; `locals.user`
+set by the inner auth middleware on the image route; the base passed as
+on the write path; the runbook's bullets, rows, gates and the auto-merge
+sentence; AGENTS.md matching the script; `docs/content.md`'s counts; the
+packet's figures; the smoke and tests asserting what the code does; no
+site path emitting another endpoint width; EmDash's redirect middleware
+skipping the endpoint and the toolbar not requesting it.
+
+Ledger: `media-library-014` reviewed with findings (required_fix,
+reject_false_positive) at `git:6e94bc13…`, returned to implementation;
+round 3 below.

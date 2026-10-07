@@ -93,7 +93,10 @@ on local workerd (the production build on an empty D1). On the tree after
 the round-1 fixes: audit 147 files, 113 scanned; `astro check` 0/0;
 captures 25; content and media 20/20; guard 18/18; edge 15/15; CMS
 23/23; build; smoke 203/203 (the rendition fetched twice, seven refused
-endpoint queries and a refused POST added).
+endpoint queries and a refused POST added). After the round-2 fixes:
+audit 147/113; `astro check` 0/0; captures 25; content and media 20/20;
+guard 19/19; edge 15/15; CMS 23/23; build; smoke 223/223 (twelve refused
+endpoint queries).
 
 ### Local workerd (the production build, seed render)
 
@@ -108,11 +111,14 @@ Host`. A GET or HEAD of `/_emdash/api/media/file/<key>` reaches EmDash (404 JSON
 `NOT_FOUND`, no-store); POST there, `..`, an encoded slash, a nested
 path, an empty key, the media list, an item, `upload-url` and the
 upper-cased namespace answer the guard's 404. Since the round-1 fixes
-the endpoint serves only the site's own renditions: the same rendition
-fetched twice answers the same bytes and policy, and another width,
-format or parameter, a non-capture path, a foreign source, a nested
-media key, an empty query and a POST answer the guard's uncached 404
-(before the fixes a foreign source answered the adapter's 403).
+the endpoint serves the site's own renditions to everyone: the same
+rendition fetched twice answers the same bytes and policy, and another
+width (`333`, `0540`, `5.4e2`), a reordered query, another format or
+parameter, a capture the repository does not approve, a non-capture
+path, a foreign source, the admin's thumbnail form without an operator,
+a nested media key, an empty query and a POST answer the guard's
+uncached 404 (before the fixes a foreign source answered the adapter's
+403).
 
 ### Dev-server round trip (EmDash 1.2.0, `astro dev`, a fresh local D1 and R2)
 
@@ -190,14 +196,18 @@ near-white band, the cut-outs on the cards).
   page is edited; the audit sees it at that page's next publish, since a
   media write is not a mirror trigger. Recorded in `docs/content.md`;
   extending the trigger to media writes is a follow-up.
-- `/_image` serves only the site's own renditions: a repository capture
-  or a library file at 540 or 1080 px as WebP with nothing else in the
-  query; any other request answers an uncached 404 (the adapter would
-  otherwise transform any allowed source at any size on request). A hit
-  in the adapter's Cache API is copied into a fresh response before the
-  route cache writes its headers (a cached response carries immutable
-  headers on Workers; local workerd did not reproduce the failure, the
-  smoke fetches a rendition twice).
+- `/_image` serves the site's own renditions to everyone: an approved
+  capture or a library file at 540 or 1080 px as WebP, spelled exactly as
+  the pages emit it (keys in order, the pages' encoding; `0540`, `5.4e2`
+  and a reordered query are refused, so one rendition is one cache key);
+  anything else is served uncached only to an operator Access admits (the
+  admin's Media gallery asks the endpoint for 400 px thumbnails of
+  library files; an anonymous request answers the guard's 404 before the
+  adapter transforms anything, where it would otherwise transform any
+  allowed source at any size). EmDash's middleware already returns a
+  fresh copy of every response, so the immutable-headers failure round 1
+  feared cannot occur; the guard's own copy of a rendition stays as a
+  second, defensive one, and the smoke fetches a rendition twice.
 - A seeded media row has no content hash (EmDash); the audit and the
   scripts match such an item by file name, size and dimensions, and
   `cms:media` verifies its bytes. A capture two pages share is downloaded

@@ -192,6 +192,19 @@ test('describeChange names the pages and the manual run; decodeContent handles G
   assert.match(trashed.title, /^CMS edit: home, testers \(delete by Bobby, 2026-10-07\)/);
   assert.deepEqual(change.slugs, ['home']);
   assert.equal(decodeContent(encode('héllo\n{"a":1}')), 'héllo\n{"a":1}');
+  // The PR body compares with the manifest's base, the one the mirrored seed is written with.
+  const base = 'https://captures.example.invalid/files';
+  const rebased = structuredClone(seed);
+  const hero = rebased.content.pages[0].data.layout[0];
+  hero.image.$media.url = hero.image.$media.url.replace(manifest.base, base);
+  hero.image.darkVariant.$media.url = hero.image.darkVariant.$media.url.replace(manifest.base, base);
+  const item = { id: '01MEDIA', filename: 'home-widgets-light.webp', mimeType: 'image/webp', size: 47322, width: 1080, height: 1920, alt: rebased.content.pages[0].data.layout[0].image.$media.alt, contentHash: 'sha1:x', storageKey: '01MEDIA.webp', status: 'ready' };
+  const dark = { ...item, id: '01DARK', filename: 'home-widgets-dark.webp', storageKey: '01DARK.webp' };
+  const livePages = live();
+  livePages[0].data.layout[0].image = { id: item.id, provider: 'local', meta: { storageKey: item.storageKey }, darkVariant: { id: dark.id, provider: 'local', meta: { storageKey: dark.storageKey } } };
+  const before = { ...manifest, base };
+  const rebasedChange = describeChange(rebased, livePages, { collection: 'pages', id: 'home', action: 'publish' }, at, { library: [item, dark], before, after: mirrorManifest(before, [item, dark], livePages, rebased) });
+  assert.ok(!/`home`: content/.test(rebasedChange.body), rebasedChange.body);
 });
 
 test('media: a new library item used by a page commits the seed and the manifest together; a repository without a manifest starts from an empty one', async () => {
