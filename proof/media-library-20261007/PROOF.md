@@ -251,3 +251,11 @@ cms:mirror -- --no-pr` so the checkout's `seed/media.json` records the
 library and the usage, then `npm run check:live` (it resolves the live
 media files through that record), then the two files as the mirror PR.
 The slice-2 gates of `cms-first-013` are unaffected.
+
+## Delivery
+
+PR saari-co/repoglance-site#16 (`claude/media-library-014` against
+`main`, head `1bd0fb8`), opened on the task's instruction after four
+review rounds (`.grilltrack/proof/media-library-014-verify-20261007.md`).
+Merge and the gates above are the maintainer's; nothing was deployed,
+synced or uploaded to production.

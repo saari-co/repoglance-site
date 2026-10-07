@@ -205,3 +205,29 @@ without action: a human `POST /_image` is denied under the reason
 Ledger: `media-library-014` reviewed with findings (required_fix) at
 `git:96de6a67…`, returned to implementation for the two sentences; round
 4 below.
+
+## Review round 4
+
+Source identity: `git:1bd0fb885837d2d99575823bc2b773602bbfc1c0` (the
+round-3 fix commit; parent `96de6a6`). A separate read-only agent
+verified: only the runbook, the packet, this note and the tool-owned
+ledger files changed (five files, no source, test, script, seed or
+workflow); the two sentences are true against the guard, the gate and
+EmDash's Cloudflare auth (the `CF_Authorization` cookie fallback verified
+in the Worker; `w=400` never a site rendition; the admin's own fallback
+to the full-size file; an unapproved name answering the guard's 404, an
+approved-but-missing file or an operator's request reaching the adapter's
+500, both uncached); the round-3 table names the exact source identity,
+classifies both findings and states the resolutions truthfully; the
+commit message is accurate; the unit suites pass (content and media
+20/20, guard 19/19, edge 15/15, CMS 23/23; the audit 147/113); the
+ledger's events and transitions are consistent. Result: clean, no
+findings.
+
+Delivery: PR saari-co/repoglance-site#16 (`claude/media-library-014`
+against `main`, head `1bd0fb8`), opened on the task's instruction; the PR body names the
+maintainer's one decision (the `cms:media --apply` connection, round-1
+finding 3) and the gates. Merge, the deploy, `cloudflared access login`,
+`npm run cms:sync`, `npm run cms:media -- --apply`, `npm run cms:mirror
+-- --no-pr`, `npm run check:live` and the mirror PR are the
+maintainer's.
