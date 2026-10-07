@@ -224,11 +224,10 @@
     }
   ],
   "last_activation": {
-    "at": "2026-10-07T12:04:17+00:00",
+    "at": "2026-10-07T14:18:09+00:00",
     "mechanism": "implicit"
   },
-  "last_pause": null,
-  "pause": {
+  "last_pause": {
     "artifact_refs": [
       "https://github.com/saari-co/repoglance-site/pull/10",
       "proof/cms-sync-20261007/PROOF.md",
@@ -236,7 +235,18 @@
     ],
     "next_safe_action": "After the maintainer's deploy, sync and live check: record the delivery and production results (the CMS equal to the seed, the live source cms, the live check equal) in proof/cms-sync-20261007/PROOF.md and the ledger, then open live-check-schedule-013 or the chosen alternative; if main moves before the merge, merge origin/main into claude/cms-sync with the ledger united and re-verify.",
     "paused_at": "2026-10-07T13:02:36+00:00",
-    "reason": "cms-sync-011 and emdash-upgrade-012 implemented, verified and reviewed clean (cms-sync-011 at git:54b213bef91986b09807aa177ea9f0da1c5a18ac after round 1 at git:0890336b5343f136019d9dd387934dc95497cc96; emdash-upgrade-012 at git:0890336b5343f136019d9dd387934dc95497cc96); delivered as PR saari-co/repoglance-site#10 on the maintainer's instruction. Waiting on the maintainer's gates: merge after CI is green and a review is clean on the exact head, deploy, cloudflared access login, npm run cms:sync, npm run check:live."
+    "reason": "cms-sync-011 and emdash-upgrade-012 implemented, verified and reviewed clean (cms-sync-011 at git:54b213bef91986b09807aa177ea9f0da1c5a18ac after round 1 at git:0890336b5343f136019d9dd387934dc95497cc96; emdash-upgrade-012 at git:0890336b5343f136019d9dd387934dc95497cc96); delivered as PR saari-co/repoglance-site#10 on the maintainer's instruction. Waiting on the maintainer's gates: merge after CI is green and a review is clean on the exact head, deploy, cloudflared access login, npm run cms:sync, npm run check:live.",
+    "resumed_at": "2026-10-07T14:18:09+00:00"
+  },
+  "pause": {
+    "artifact_refs": [
+      "https://github.com/saari-co/repoglance-site/pull/10",
+      "proof/cms-sync-20261007/PROOF.md#deploy-2026-10-07-1414-utc",
+      ".grilltrack/proof/cms-sync-011-verify-20261007.md"
+    ],
+    "next_safe_action": "After the maintainer's Access login: run npm run cms:sync from a checkout of main (expected: hero and feature get a new activated version without owner-filter, both pages written and published, result equal), then npm run check:live (expected: both equal, live source cms); record the results in proof/cms-sync-20261007/PROOF.md and the ledger; then open live-check-schedule-013 or the chosen alternative.",
+    "paused_at": "2026-10-07T14:18:09+00:00",
+    "reason": "Delivered and deployed on the maintainer's instruction (2026-10-07): PR saari-co/repoglance-site#10 merged as 5d02a7323a1576671c3bf4752666bf9fbf49e44b (ClawSweeper: no findings, 'ready for maintainer look'; blocked only on the operational runbook); main built with the Access team domain from the ignored deploy config and deployed with Wrangler as Worker version afc3e3fb-f7c6-46bc-a593-326cda098908 on repoglance.com and www.repoglance.com with the daily cron; live after the deploy: both pages 200 from the seed with this build's Last-Modified and Cache-Control: no-cache, the editor a 302 to the Access login, www a 301 to the apex, the edge cache a HIT on the second request, and npm run check:live from the deployed build reporting both <main> equal. Remaining maintainer gates: cloudflared access login https://repoglance.com/_emdash, npm run cms:sync, npm run check:live."
   },
   "predecessor_track_id": "gt-20261001102301-89ec89",
   "recommendation": {
@@ -252,5 +262,5 @@
   "status": "paused",
   "title": "repoglance.com website: CMS sync and maintenance",
   "track_id": "gt-20261007120417-1b0a54",
-  "updated_at": "2026-10-07T13:02:36+00:00"
+  "updated_at": "2026-10-07T14:18:09+00:00"
 }

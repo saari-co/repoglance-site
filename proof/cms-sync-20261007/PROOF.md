@@ -167,3 +167,48 @@ equality in step 7 is the exact evidence).
    core migrations on its first request).
 2. `cloudflared access login https://repoglance.com/_emdash`.
 3. `npm run cms:sync`, then `npm run check:live`.
+
+## Deploy (2026-10-07 14:14 UTC)
+
+On the maintainer's instruction ("merge #10, and deploy for me"):
+
+- PR saari-co/repoglance-site#10 merged with a merge commit,
+  `5d02a7323a1576671c3bf4752666bf9fbf49e44b`, after CI (three checks) was
+  green and ClawSweeper's review of the exact head reported no findings
+  and no security items ("ready for maintainer look", blocked only on the
+  operational runbook).
+- `main` at that commit built in this worktree with the Access team domain
+  from the ignored deploy config of the sibling `repoglance-site-foundation`
+  worktree (copied for the build and removed afterwards; nine server files
+  reference the team domain, so the official Access auth and the guard are
+  wired), `prepare:deploy` with both custom domains, the production D1 and
+  R2 names, worker loaders, cache, version metadata and the daily cron,
+  then `wrangler deploy`: Worker version
+  `afc3e3fb-f7c6-46bc-a593-326cda098908`, 77 assets, triggers
+  `repoglance.com`, `www.repoglance.com`, `schedule: 0 4 * * *`.
+
+Live after the deploy (curl from this Mac):
+
+| Request | Result |
+| --- | --- |
+| `GET /`, `GET /testers` | 200, `data-content-source="seed"`, the locked headings, `cache-control: no-cache`, `last-modified: Wed, 07 Oct 2026 14:14:32 GMT` (this build), `vary: Host, Cookie`; `cf-cache-status: MISS` then `HIT` on the next request |
+| anonymous `GET /_emdash/admin` | 302 to the team's Access login |
+| `GET https://www.repoglance.com/testers` | 301 to `https://repoglance.com/testers` |
+| `npm run check:live` from the deployed build | both `<main>` equal, live source seed |
+
+Two observations:
+
+- The first `/testers` response after the deploy carried
+  `last-modified: 11:55:42 GMT`, the previous Worker version's build time,
+  from an edge that had not yet switched; a fresh render 20 seconds later
+  and every request since report this build's time. The first `/` request
+  also ran EmDash 1.2.0's two new core migrations (auto mode); both pages
+  answered 200, not 503.
+- No `etag` header reaches the browser from production, as
+  `proof/www-redirect-cache-20261001/PROOF.md` already records (the edge
+  strips it; the local build emits it). Not a regression of this change;
+  the `Last-Modified` validator is live.
+
+The CMS entries are still the unpublished 1 October drafts: the remaining
+runbook steps are the maintainer's Access login, `npm run cms:sync` and
+`npm run check:live`.
