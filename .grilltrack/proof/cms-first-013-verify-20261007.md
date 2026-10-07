@@ -131,3 +131,26 @@ placeholder. Findings and adjudication:
 
 Ledger: `cms-first-013` reviewed with findings (required_fix, defer,
 human_gate) at `git:b98a7c01…`, returned to implementation; round 3 below.
+
+## Review round 3
+
+Source identity: `git:46af3218beb0d14ce09ed80209f54d093a588caa` (the
+round-2 fix commit; parent `b98a7c0`). The reviewer exercised the
+workflow's jq filter against a synthetic rollup (this workflow's own
+in-progress run excluded; null, empty and failed conclusions and pending
+or errored contexts counted as not passed; success and skipped runs and a
+successful context passed; no throw on a context without a workflow
+name), confirmed `--disable-auto` is a documented gh 2.x flag that is
+harmless when nothing was armed, confirmed `status` is gone from the
+machine PUT keys with both statuses tested as denied and the create
+semantics unchanged, ran the suites (guard 15/15, CMS 18/18) and checked
+the round-2 record against the diff. Findings and adjudication:
+
+| # | Finding | Classification | Resolution |
+| --- | --- | --- | --- |
+| 1 | `docs/cms-access.md` said a machine draft write may carry only `data` and `_rev`; the allow-list also admits `migrateBlocks` and `replaceBlocks`. | required_fix (one line) | The runbook names all four keys and "never a status". |
+| 2 | Without the documented ruleset, GitHub reports "clean status" on every PR; if the arm job reads the rollup before the site workflows' check runs are registered, the count is 0 and the PR merges unchecked. | defer | Closed by the slice-2 ruleset (a required status check makes the PR non-clean until it passes); recorded with the gates. |
+
+Ledger: `cms-first-013` reviewed with findings (required_fix, defer) at
+`git:46af3218…`, returned to implementation for the one line; round 4
+below.

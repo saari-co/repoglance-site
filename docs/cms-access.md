@@ -233,9 +233,10 @@ token as Bearer) is admitted by `src/namespace-gate.ts` only to read
 content and schema, to stage a draft on an existing entry against the
 revision it read (the request must carry EmDash's `_rev`, so a stale write
 answers 409 and the agent re-reads and redoes it; the write may carry only
-`data` and `_rev`, since EmDash treats a status on a save as live metadata
-and `status: "draft"` would unpublish the page), to create a new entry as
-a draft, and to ask for a preview link; publish, unpublish, schedule,
+`data`, `_rev`, `migrateBlocks` and `replaceBlocks`, never a status, since
+EmDash treats a status on a save as live metadata and `status: "draft"`
+would unpublish the page), to create a new entry as a draft, and to ask
+for a preview link; publish, unpublish, schedule,
 delete, schema writes, live metadata and every admin route answer 404. The agent hands you
 the preview link and the admin link; you edit and publish. The identity for
 this lane is a later slice with its own gates.
