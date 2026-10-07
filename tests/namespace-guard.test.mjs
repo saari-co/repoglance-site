@@ -119,7 +119,7 @@ test('a machine may read content and schema, ask for a preview link, and must ca
 test('a machine may stage a draft only against the revision it read, and only as a draft', async () => {
   const entry = '/_emdash/api/content/pages/01ABC';
   assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3:1700000000' }), entry), { allow: true, reason: 'machine-draft' });
-  assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3:1700000000', status: 'draft' }), entry), { allow: true, reason: 'machine-draft' });
+  assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3:1700000000', status: 'draft' }), entry), { allow: false, reason: 'machine-draft-rules' }, 'status is live metadata on a PUT: "draft" would unpublish a published page');
   assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' } }), entry), { allow: false, reason: 'machine-draft-rules' }, 'no _rev');
   assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: '  ' }), entry), { allow: false, reason: 'machine-draft-rules' }, 'blank _rev');
   assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3', status: 'published' }), entry), { allow: false, reason: 'machine-draft-rules' }, 'not a draft');
@@ -130,7 +130,7 @@ test('a machine may stage a draft only against the revision it read, and only as
 
 test("a machine's draft write may carry only the content and the revision: live metadata, lock overrides and slug changes are a human's call", async () => {
   const entry = '/_emdash/api/content/pages/01ABC';
-  for (const extra of [{ overrideLock: true }, { publishedAt: '2026-10-07T00:00:00Z' }, { authorId: 'someone' }, { bylines: [] }, { seo: { title: 'x' } }, { taxonomies: {} }, { references: {} }, { skipRevision: true }, { slug: 'renamed' }]) {
+  for (const extra of [{ overrideLock: true }, { publishedAt: '2026-10-07T00:00:00Z' }, { authorId: 'someone' }, { bylines: [] }, { seo: { title: 'x' } }, { taxonomies: {} }, { references: {} }, { skipRevision: true }, { slug: 'renamed' }, { status: 'draft' }, { status: 'published' }]) {
     const decision = await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3', ...extra }), entry);
     assert.deepEqual(decision, { allow: false, reason: 'machine-draft-rules' }, Object.keys(extra)[0]);
   }

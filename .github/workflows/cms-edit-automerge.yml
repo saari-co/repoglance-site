@@ -41,6 +41,8 @@ jobs:
           if [ "$files" != "seed/seed.json" ]; then
             echo "::error::#$PR_NUMBER changes more than seed/seed.json; a CMS mirror never does. Left for a human:"
             echo "$files"
+            # A later push could have added files to an already-armed PR: disarm it.
+            gh pr merge "$PR_NUMBER" --repo "$REPO" --disable-auto 2>/dev/null || true
             exit 1
           fi
           if gh pr merge "$PR_NUMBER" --repo "$REPO" --auto --merge 2>"$RUNNER_TEMP/arm.err"; then
@@ -51,7 +53,9 @@ jobs:
           # GitHub refuses to arm a PR it could merge right now. Merge only when
           # every check on the head has already concluded successfully.
           if grep -qi "clean status" "$RUNNER_TEMP/arm.err"; then
-            pending="$(gh pr view "$PR_NUMBER" --repo "$REPO" --json statusCheckRollup --jq '[.statusCheckRollup[] | select((.conclusion // .state) as $c | ($c | ascii_upcase) | IN("SUCCESS","NEUTRAL","SKIPPED") | not)] | length')"
+            # Every other check on the head must have concluded successfully;
+            # this workflow's own run is still in progress and does not count.
+            pending="$(gh pr view "$PR_NUMBER" --repo "$REPO" --json statusCheckRollup --jq '[.statusCheckRollup[] | select(.workflowName != "CMS edit auto-merge") | select(((.conclusion // .state // "") | ascii_upcase) | IN("SUCCESS","NEUTRAL","SKIPPED") | not)] | length')"
             if [ "$pending" = "0" ]; then
               gh pr merge "$PR_NUMBER" --repo "$REPO" --merge
               echo "Checks had already passed; #$PR_NUMBER merged."

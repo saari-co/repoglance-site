@@ -103,8 +103,14 @@ const MACHINE_ENTRY = /^\/_emdash\/api\/content\/[a-z0-9_-]+\/[^/]+$/;
 const MACHINE_COLLECTION = /^\/_emdash\/api\/content\/[a-z0-9_-]+$/;
 const MACHINE_PREVIEW = /^\/_emdash\/api\/content\/[a-z0-9_-]+\/[^/]+\/preview-url$/;
 const MAX_BODY_BYTES = 1_000_000;
-/** What a draft write may carry: the content and the revision it builds on. Everything else (overrideLock, publishedAt, authorId, bylines, seo, taxonomies, references, skipRevision, slug) is a human's call. */
-const MACHINE_PUT_KEYS = new Set(['data', '_rev', 'status', 'migrateBlocks', 'replaceBlocks']);
+/**
+ * What a draft write may carry: the content and the revision it builds on.
+ * Everything else is a human's call: overrideLock, publishedAt, authorId,
+ * bylines, seo, taxonomies, references, skipRevision, slug, and `status`,
+ * because EmDash treats a status on a PUT as live metadata (`status:
+ * "draft"` on a published page unpublishes it).
+ */
+const MACHINE_PUT_KEYS = new Set(['data', '_rev', 'migrateBlocks', 'replaceBlocks']);
 const MACHINE_POST_KEYS = new Set(['data', 'slug', 'status', 'locale']);
 
 async function readJsonBody(request: Request): Promise<Record<string, unknown> | null> {
@@ -127,11 +133,13 @@ function onlyKeys(body: Record<string, unknown>, allowed: Set<string>): boolean 
 /**
  * What a machine identity may do (cms-first-013): read content and schema,
  * stage a draft on an existing entry against the revision it read (`_rev`
- * required, so EmDash refuses a stale write with 409), create a new entry
- * as a draft, and ask for a preview link. Publish, unpublish, schedule,
- * delete, schema writes and every admin route are denied. The request must
- * also carry EmDash's Bearer token, so a service token alone never reaches
- * the admin or an Access-authenticated session.
+ * required, so EmDash refuses a stale write with 409; on a published entry
+ * EmDash stages the write as the pending draft and live is untouched),
+ * create a new entry as a draft, and ask for a preview link. Publish,
+ * unpublish, schedule, delete, schema writes, live metadata and every
+ * admin route are denied. The request must also carry EmDash's Bearer
+ * token, so a service token alone never reaches the admin or an
+ * Access-authenticated session.
  */
 export async function evaluateMachineRequest(request: Request, pathname: string): Promise<GateDecision> {
   const path = canonicalPathname(pathname);
@@ -142,8 +150,7 @@ export async function evaluateMachineRequest(request: Request, pathname: string)
   if (method === 'PUT' && MACHINE_ENTRY.test(path)) {
     const body = await readJsonBody(request);
     const rev = body?._rev;
-    const status = body?.status;
-    if (body && onlyKeys(body, MACHINE_PUT_KEYS) && typeof rev === 'string' && rev.trim() && (status === undefined || status === 'draft')) return { allow: true, reason: 'machine-draft' };
+    if (body && onlyKeys(body, MACHINE_PUT_KEYS) && typeof rev === 'string' && rev.trim()) return { allow: true, reason: 'machine-draft' };
     return { allow: false, reason: 'machine-draft-rules' };
   }
   if (method === 'POST' && MACHINE_COLLECTION.test(path)) {

@@ -106,3 +106,28 @@ short of it on findings 1, 3 and 4, all resolved above.
 Ledger: `cms-first-013` reviewed with findings (required_fix, defer,
 reject_false_positive, human_gate) at `git:b8b37900…`, returned to
 implementation; round 2 below.
+
+## Review round 2
+
+Source identity: `git:b98a7c019aa8571aa5e8f30add43d9d30e6bc06e` (the
+round-1 fix commit; parent `b8b3790`). The reviewer ran the CMS (18/18)
+and guard (15/15) suites and `node --check`, confirmed the trigger routes
+against EmDash 1.2.0's route files (the collection's `trash` route is
+GET-only, so no collection DELETE can match), the anchored regexes, the
+dormant rule naming every missing piece, the worktree cleanup before the
+deferred exit, own-key checks (so `__proto__` and cased keys are denied),
+the content-length fallthrough, the human path untouched and the docs
+placeholder. Findings and adjudication:
+
+| # | Finding | Classification | Resolution |
+| --- | --- | --- | --- |
+| 1 | The workflow's "clean status" fallback could never merge: the rollup includes this workflow's own in-progress run, so the pending count was always at least one; the commit, the packet and row 7 above claimed a merge that could not happen. | required_fix | The count excludes the `CMS edit auto-merge` workflow and treats a null conclusion as not passed; the packet's wording now says "other checks". |
+| 2 | The seed-only check was not enforced after arming: a later push widening an armed PR failed the run but GitHub kept auto-merge armed, and this workflow is not a required check. | required_fix | On a mismatch the workflow disarms the PR (`--disable-auto`) before failing. |
+| 3 | `status: "draft"` on a machine PUT unpublishes a published page: EmDash treats `status` as live metadata on a save (not a draft-only key), and a PUT is not a mirror trigger. | required_fix (the reviewer allowed deferral to slice 3; taken now) | `status` is no longer a machine PUT key (allowed: `data`, `_rev`, `migrateBlocks`, `replaceBlocks`); the test flipped and both statuses are in the denied list; runbook and packet say why. Stricter than the confirmed text's "no status other than draft", for the reason found. |
+| 4 | If the branch delete fails after the PR was closed, the branch is orphaned and the failure email says the repository is behind although `main` equals live. | defer | Recorded; `npm run cms:mirror` reports equal and the orphan branch is harmless. |
+| 5 | A chunked body without `content-length` is read fully before refusal, and the length is counted in UTF-16 units. | defer | Recorded; a service token holder is already an admitted party, and the limit still bounds the parse. |
+| 6 | The maintainer's mailbox, removed from the docs, remains in the committed ledger and event log (the decision, confirmation and pause texts quote the instruction). | human_gate | The ledger is CLI-only and already pushed; whether to leave the role address in the public history is the maintainer's call. |
+| 7 | Row 3 above said tests cover each missing piece, but a missing `GITHUB_MIRROR_REPO` alone was untested. | required_fix (record) | Test added. |
+
+Ledger: `cms-first-013` reviewed with findings (required_fix, defer,
+human_gate) at `git:b98a7c01…`, returned to implementation; round 3 below.

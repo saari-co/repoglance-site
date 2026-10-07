@@ -57,6 +57,9 @@ test('unconfigured: a missing token, repo or email channel means no calls, a log
   const noBinding = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), log: quiet });
   assert.equal(noBinding.status, 'unconfigured');
   assert.match(noBinding.detail, /the send_email binding missing/);
+  const noRepo = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { ...env, GITHUB_MIRROR_REPO: ' ' }, fetch: github.fetch, readLivePages: async () => live(), sendEmail: channel, log: quiet });
+  assert.equal(noRepo.status, 'unconfigured');
+  assert.match(noRepo.detail, /\(GITHUB_MIRROR_REPO missing\)/);
   assert.equal(github.calls.length, 0, 'never silent: without a channel the mirror does not run at all');
 });
 
