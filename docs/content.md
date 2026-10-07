@@ -36,7 +36,11 @@ five-candidate round on the real pages and a confirmed hybrid
 (`.grilltrack/proof/copy-round-1-captures-20261001.md`,
 `copy-hybrid-1-captures-20261001.md`); `design.md` v2 records the voice.
 The hero heading on `/` is also asserted by `scripts/smoke.mjs`, so change
-the seed and that check together.
+the seed and that check together. The CMS on repoglance.com is kept equal to
+the seed by `scripts/cms-sync.mjs` after every deploy, and `npm run
+check:live` proves the live pages equal a seed render (decision
+`cms-sync-011`, `docs/cms-access.md`); a seed change reaches the live site
+only through that sequence.
 
 ## Screenshots
 

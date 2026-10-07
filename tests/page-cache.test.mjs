@@ -33,6 +33,14 @@ test("EmDash's hint tags and lastModified are folded in without duplicates", () 
 test('an invalid lastModified is dropped rather than sent as a validator', () => {
   const options = publicPageCacheOptions({ lastModified: new Date('not a date') });
   assert.deepEqual(options, { maxAge: 300, swr: 60, tags: ['pages'] });
+  assert.deepEqual(publicPageCacheOptions({}, new Date('also not a date')), { maxAge: 300, swr: 60, tags: ['pages'] });
+});
+
+test('the build time is the validator when the hint carries none, and never overrides the hint', () => {
+  const buildTime = new Date('2026-10-07T08:00:00Z');
+  const entryTime = new Date('2026-10-01T12:00:00Z');
+  assert.deepEqual(publicPageCacheOptions({ tags: ['pages'] }, buildTime), { maxAge: 300, swr: 60, tags: ['pages'], lastModified: buildTime });
+  assert.deepEqual(publicPageCacheOptions({ tags: ['pages'], lastModified: entryTime }, buildTime), { maxAge: 300, swr: 60, tags: ['pages'], lastModified: entryTime });
 });
 
 test('a CMS render opts in with its tags and validator and varies by host and cookie', () => {
@@ -44,14 +52,22 @@ test('a CMS render opts in with its tags and validator and varies by host and co
   assert.equal(context.response.status, undefined);
 });
 
-test('a seed render keeps the purge tags but never inherits the retired entry validator', () => {
+test('a seed render keeps the purge tags, never inherits the retired entry validator, and carries the build time instead', () => {
+  const buildTime = new Date('2026-10-07T08:00:00Z');
   const context = fakeContext();
-  applyPageResponse(context, { found: true, source: 'seed', cacheHint: { tags: ['pages', 'entry-1'], lastModified: new Date('2026-10-01T12:00:00Z') } });
-  assert.deepEqual(context.calls, [{ maxAge: 300, swr: 60, tags: ['pages', 'entry-1'] }]);
+  applyPageResponse(context, { found: true, source: 'seed', cacheHint: { tags: ['pages', 'entry-1'], lastModified: new Date('2026-10-01T12:00:00Z') }, buildTime });
+  assert.deepEqual(context.calls, [{ maxAge: 300, swr: 60, tags: ['pages', 'entry-1'], lastModified: buildTime }]);
   assert.equal(context.response.headers.get('vary'), 'Host, Cookie');
   const bare = fakeContext();
   applyPageResponse(bare, { found: true, source: 'seed' });
   assert.deepEqual(bare.calls, [{ maxAge: 300, swr: 60, tags: ['pages'] }]);
+});
+
+test('a CMS render whose hint carries no validator falls back to the build time', () => {
+  const buildTime = new Date('2026-10-07T08:00:00Z');
+  const context = fakeContext();
+  applyPageResponse(context, { found: true, source: 'cms', cacheHint: { tags: ['pages', 'entry-1'] }, buildTime });
+  assert.deepEqual(context.calls, [{ maxAge: 300, swr: 60, tags: ['pages', 'entry-1'], lastModified: buildTime }]);
 });
 
 test('a missing page answers 404 with no cache opt-in and no Vary', () => {

@@ -21,6 +21,9 @@
     "test:content": "node --test tests/content.test.mjs",
     "test:guard": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test tests/namespace-guard.test.mjs",
     "test:smoke": "node scripts/smoke.mjs",
+    "cms:check": "node scripts/cms-sync.mjs --check",
+    "cms:sync": "node scripts/cms-sync.mjs --apply",
+    "check:live": "node scripts/live-check.mjs",
     "verify": "npm run audit:repo && npm run types:wrangler && npm run typecheck && npm run test:content && npm run test:guard && npm run test:edge && npm run build && npm run test:smoke",
     "prepare:deploy": "node scripts/prepare-deploy.mjs",
     "test:edge": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test tests/host-canonical.test.mjs tests/page-cache.test.mjs"
@@ -28,7 +31,7 @@
   "dependencies": {
     "@astrojs/react": "6.0.5",
     "astro": "7.3.5",
-    "emdash": "1.0.1",
+    "emdash": "1.2.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
@@ -36,11 +39,14 @@
     "@astrojs/check": "0.9.10",
     "@astrojs/cloudflare": "14.3.3",
     "@cloudflare/workers-types": "5.20260926.1",
-    "@emdash-cms/cloudflare": "1.0.1",
+    "@emdash-cms/cloudflare": "1.2.0",
     "@types/node": "26.1.1",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "typescript": "6.0.3",
     "wrangler": "4.144.0"
+  },
+  "overrides": {
+    "@codemirror/language": "6.12.4"
   }
 }

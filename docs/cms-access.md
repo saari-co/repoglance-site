@@ -152,13 +152,70 @@ printed. This was done for repoglance.com on 2026-10-01
    (pages and block types) as it is in the deployed build and never again;
    from then on `src/content/load-page.ts` renders the CMS entry whenever
    one exists, so later seed changes do not reach the live site until they
-   are written into the CMS or the entries are unpublished. On 2026-10-06
-   the entries were unpublished for that reason
-   (`proof/cms-drift-20261006/PROOF.md`); the pages render from the seed
-   until `cms-sync-011` decides the sync model.
+   are written into the CMS. On 2026-10-06 the 1 October entries were
+   unpublished for that reason (`proof/cms-drift-20261006/PROOF.md`), and
+   since then the sync below keeps the CMS equal to the seed; the pages
+   render from the seed until its first run.
 7. **Second editor**, only after setup is closed: add the email to the
    Access policy and to `EMDASH_OPERATOR_ALLOWLIST` (a new `secret put`).
    Their installed EmDash role is `defaultRole` 40.
+
+## Keeping the CMS equal to the seed
+
+Decision `cms-sync-011` (2026-10-07, `proof/cms-sync-20261007/PROOF.md`):
+the seed is the only source of truth, the CMS is a copy of it that the
+editor may read, and the live site is proven equal to the seed after every
+deploy. Three commands, all run from a checkout of the deployed commit:
+
+| Command | What it does | Identity |
+| --- | --- | --- |
+| `npm run cms:check` | Reports every difference between `seed/seed.json` and the CMS: each block type's label, category, description, icon and active-version fields; each page's slug, status and live data (title, description, layout blocks by key); anything in the CMS the seed does not declare. Exit 1 on drift. Read only. | your Access login (below) |
+| `npm run cms:sync` | Writes the seed into the CMS and publishes it, then re-checks: block types first (a compatible change updates the active version in place; a breaking one, such as a removed select option, creates a new version, or reuses an inactive one with the same fields, and activates it), then each page as a draft with the revision token and block migration, then publish. Never deletes. | your Access login (below) |
+| `npm run check:live` | After `npm run build`: renders both pages from the seed on local workerd, fetches them from the live site, reports the live `data-content-source` and edge-cache status, and fails unless the two `<main>` elements are identical. | none (public pages) |
+
+The comparison ignores block `_version`: the seed describes a fresh install
+(version 1) while the CMS's versions follow its own history. Rendering does
+not depend on it.
+
+**Identity.** The scripts sign in as you, through the Access login
+`cloudflared` caches; no service token, no second Access policy, no EmDash
+API token and no Worker secret is involved:
+
+```sh
+cloudflared access login https://repoglance.com/_emdash
+```
+
+opens the browser for your Google login once per Access session (24 hours
+here). `npm run cms:check` and `npm run cms:sync` then read the cached JWT
+with `cloudflared access token` and send it as `cf-access-token`; Access
+admits it and EmDash maps it to your operator account, exactly as the admin
+tab does. The scripts never print a token or header value. Without a cached
+login they stop and print the command above.
+
+**When.** After every deploy, in this order, from the deployed commit:
+
+1. `npx wrangler deploy ...` (the deploy section below).
+2. `npm run cms:sync` (the Worker that renders the new seed is live, so the
+   CMS may now carry it).
+3. `npm run check:live` (the live pages equal the seed render).
+
+Never sync before the deploy: the live Worker would render new slugs with
+old components. `npm run cms:check` alone is safe at any time.
+
+If an editor holds an entry's edit lock in the admin, the sync refuses that
+page; close the editor or pass `npm run cms:sync -- --override-lock`.
+
+**Unattended runs (not built).** A sync from CI or a scheduler would need a
+non-browser identity: a Cloudflare Access service token admitted by a
+separate **Service Auth** policy on the `RepoGlance CMS` application, an
+EmDash API token (`ec_pat_`, scopes `content:read`, `content:write`,
+`schema:read`, `schema:write`, created by an Admin) sent as a Bearer token,
+and a change to `src/namespace-gate.ts`, because a service-token JWT carries
+no email (`sub` is empty, `common_name` is the client id) and the guard
+denies it. The scripts already accept such headers through `EMDASH_HEADERS`
+or `--header` and a token through `EMDASH_TOKEN`; the token, the policy and
+the secrets are maintainer hard gates and would live in ignored `.local/`
+files or repository secrets, never in source or chat.
 
 ## Deploying the public pages (maintainer, gated)
 
@@ -195,3 +252,5 @@ hard gate from `AGENTS.md`.
    `REPOGLANCE_WORKERS_DEV` unset) and deploy again. Wrangler creates the
    DNS records for the custom domains in the zone and turns workers.dev off.
 5. The CMS stays denied until the Access steps above are done.
+6. After every deploy with Access configured: `npm run cms:sync`, then
+   `npm run check:live` (the section above).

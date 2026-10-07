@@ -9,6 +9,11 @@ import emdash from 'emdash/astro';
 // in production; see docs/cms-access.md. Never commit a value.
 const teamDomain = process.env.EMDASH_ACCESS_TEAM_DOMAIN ?? '';
 
+// The build's own timestamp: the validator of a seed-rendered page, whose
+// content changes only with a deploy (src/page-cache.ts). EmDash folds its
+// build date into a page's validator only when the page already carries one.
+const buildTime = new Date().toISOString();
+
 export default defineConfig({
   site: 'https://repoglance.com',
   output: 'server',
@@ -36,6 +41,7 @@ export default defineConfig({
   vite: {
     define: {
       'import.meta.env.EMDASH_ACCESS_TEAM_DOMAIN': JSON.stringify(teamDomain),
+      'import.meta.env.REPOGLANCE_BUILD_TIME': JSON.stringify(buildTime),
     },
   },
   devToolbar: { enabled: false },
