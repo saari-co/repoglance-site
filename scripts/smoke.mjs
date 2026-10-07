@@ -146,6 +146,23 @@ try {
   record('GET / inlines the brand mark', /<svg class="brand-mark"/.test(homeBody), 'inline mark missing');
   record('GET / has the band hero, the feature row and the band call to action', /class="band band-hero"/.test(homeBody) && /class="showcase"/.test(homeBody) && /class="band band-cta"/.test(homeBody) && (homeBody.match(/class="feature"/g) ?? []).length === 4, 'structure');
   record('GET / card images are the cut-outs the cards are about', /data-shot="pinned-widget"/.test(homeBody) && /data-shot="catalog-rows"/.test(homeBody) && /data-shot="tile-row"/.test(homeBody), 'card images');
+  // Scheme-matched imagery (site-scheme-imagery-010): every image is a
+  // <picture> with one dark-scheme source. The home hero follows the band
+  // (dark cut by default, light cut on the dark scheme); every other image
+  // follows the page (light cut by default, dark cut on the dark scheme).
+  const picture = (body, slug) => body.match(new RegExp(`<figure class="shot" data-shot="${slug}" data-scheme="(page|band)"><picture><source media="\\(prefers-color-scheme: dark\\)" srcset="/screenshots/${slug}(-light)?-540\\.webp 540w, /screenshots/${slug}(-light)?-1080\\.webp 1080w" sizes="[^"]+"><img src="/screenshots/${slug}(-light)?-540\\.webp" srcset="/screenshots/${slug}(-light)?-540\\.webp 540w, /screenshots/${slug}(-light)?-1080\\.webp 1080w"`));
+  const follows = (body, slug, policy) => {
+    const m = picture(body, slug);
+    if (!m) return false;
+    const [, scheme, darkSource540, darkSource1080, img, imgSet540, imgSet1080] = m;
+    const light = '-light';
+    const expectDark = policy === 'band' ? light : undefined;
+    const expectImg = policy === 'band' ? undefined : light;
+    return scheme === policy && darkSource540 === expectDark && darkSource1080 === expectDark && img === expectImg && imgSet540 === expectImg && imgSet1080 === expectImg;
+  };
+  record('GET / hero phone follows the band (dark cut, light cut on the dark scheme)', follows(homeBody, 'home-widgets', 'band'), (picture(homeBody, 'home-widgets') ?? ['no picture'])[0]);
+  record('GET / card images follow the page (light cut, dark cut on the dark scheme)', ['pinned-widget', 'catalog-rows', 'tile-row', 'signin-code'].every((slug) => follows(homeBody, slug, 'page')), 'card pictures');
+  record('GET / has exactly five pictures, each with one source', (homeBody.match(/<picture>/g) ?? []).length === 5 && (homeBody.match(/<source /g) ?? []).length === 5, `${(homeBody.match(/<picture>/g) ?? []).length} pictures, ${(homeBody.match(/<source /g) ?? []).length} sources`);
   record('GET / canonical has no trailing slash', /<link rel="canonical" href="https:\/\/repoglance\.com\/"/.test(homeBody), '');
   record('GET / declares the Open Graph image, its size and a made-up-data alt', /property="og:image" content="https:\/\/repoglance\.com\/og-image\.png"/.test(homeBody) && /og:image:width" content="1200"/.test(homeBody) && /og:image:height" content="630"/.test(homeBody) && /og:image:alt" content="[^"]*made-up[^"]*"/.test(homeBody), '');
   expectCachedPage('GET /', home, 'astro-path:/');
@@ -157,6 +174,7 @@ try {
   record('GET /testers carries the Google Group link', testersBody.includes('https://groups.google.com/g/repoglance-testers'), '');
   record('GET /testers states the missing opt-in link', /opt-in link is not published yet/.test(testersBody), '');
   record('GET /testers has no Play URL', !/play\.google\.com/.test(testersBody), '');
+  record('GET /testers hero phone follows the page (light cut, dark cut on the dark scheme)', follows(testersBody, 'signin-code', 'page') && (testersBody.match(/<picture>/g) ?? []).length === 1, (picture(testersBody, 'signin-code') ?? ['no picture'])[0]);
   record('GET /testers has the band hero, the closing band and the page attribute', /class="band band-hero"/.test(testersBody) && /class="band band-tail"/.test(testersBody) && /<html lang="en" data-page="testers"/.test(testersBody), 'structure');
   record('GET /testers canonical is /testers', /<link rel="canonical" href="https:\/\/repoglance\.com\/testers"/.test(testersBody), '');
   expectCachedPage('GET /testers', testers, 'astro-path:/testers');
@@ -200,7 +218,7 @@ try {
   const withCookie = await hostRequest(port, '/', 'repoglance.com', { cookie: 'CF_Authorization=forged; emdash-edit-mode=true' });
   record('GET / with cookies is served with the same edge policy (the Cookie variant keeps editors on fresh renders)', withCookie.status === 200 && withCookie.headers['cloudflare-cdn-cache-control'] === EDGE_POLICY && /\bcookie\b/i.test(withCookie.headers.vary ?? ''), `status ${withCookie.status} cdn ${withCookie.headers['cloudflare-cdn-cache-control']} vary ${withCookie.headers.vary}`);
 
-  for (const [path, type] of [['/robots.txt', 'text/plain'], ['/sitemap.txt', 'text/plain'], ['/mark.svg', 'image/svg+xml'], ['/favicon.svg', 'image/svg+xml'], ['/screenshots/home-widgets-540.webp', 'image/webp'], ['/og-image.png', 'image/png']]) {
+  for (const [path, type] of [['/robots.txt', 'text/plain'], ['/sitemap.txt', 'text/plain'], ['/mark.svg', 'image/svg+xml'], ['/favicon.svg', 'image/svg+xml'], ['/screenshots/home-widgets-540.webp', 'image/webp'], ['/screenshots/home-widgets-light-540.webp', 'image/webp'], ['/screenshots/signin-code-light-1080.webp', 'image/webp'], ['/og-image.png', 'image/png']]) {
     const asset = await request(base, path);
     record(`GET ${path} is 200 ${type}`, asset.status === 200 && (asset.headers.get('content-type') ?? '').includes(type), `${asset.status} ${asset.headers.get('content-type')}`);
   }

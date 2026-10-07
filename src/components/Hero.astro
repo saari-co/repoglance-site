@@ -7,6 +7,9 @@ const { value } = Astro.props;
 const text = (field: string) => stringField(value, field);
 const primaryHref = safeHref(value.primary_href);
 const secondaryHref = safeHref(value.secondary_href);
+// The home hero's phone follows the band it sits on; every other image
+// follows the page (site-scheme-imagery-010, design.md v5).
+const isHome = (Astro.url.pathname.replace(/\/+$/, '') || '/') === '/';
 ---
 <div class="band band-hero">
 <section class="hero" data-block="hero">
@@ -23,6 +26,6 @@ const secondaryHref = safeHref(value.secondary_href);
       )}
     </div>
   </div>
-  <Screenshot slug={value.screenshot} priority />
+  <Screenshot slug={value.screenshot} priority scheme={isHome ? 'band' : 'page'} />
 </section>
 </div>

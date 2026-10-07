@@ -1,25 +1,42 @@
 ---
 import { isScreenshotSlug, screenshots } from '../content/screenshots';
 
+// Scheme-matched imagery (GrillTrack site-scheme-imagery-010, design.md v5):
+// a slug that ships a light cut renders as a <picture> whose image follows
+// the colour scheme. 'page' shows the light cut on the light scheme and the
+// dark cut on the dark scheme; 'band' is the inverse, for the home hero's
+// phone on the band that itself inverts (ink on the light scheme, near-white
+// on the dark one). A slug without a light cut renders the dark cut alone.
 interface Props {
   slug: unknown;
   priority?: boolean;
+  scheme?: 'page' | 'band';
 }
-const { slug, priority = false } = Astro.props;
+const { slug, priority = false, scheme = 'page' } = Astro.props;
 const shot = isScreenshotSlug(slug) ? { slug, ...screenshots[slug] } : null;
+const file = (variant: 'dark' | 'light', width: 540 | 1080) =>
+  `/screenshots/${shot?.slug}${variant === 'light' ? '-light' : ''}-${width}.webp`;
+const srcset = (variant: 'dark' | 'light') => `${file(variant, 540)} 540w, ${file(variant, 1080)} 1080w`;
+const sizes = '(min-width: 760px) 320px, 70vw';
+const policy = shot?.light ? scheme : 'dark';
+const onLight = policy === 'band' ? 'dark' : policy === 'page' ? 'light' : 'dark';
+const onDark = policy === 'band' ? 'light' : 'dark';
 ---
 {shot && (
-  <figure class="shot" data-shot={shot.slug}>
-    <img
-      src={`/screenshots/${shot.slug}-540.webp`}
-      srcset={`/screenshots/${shot.slug}-540.webp 540w, /screenshots/${shot.slug}-1080.webp 1080w`}
-      sizes="(min-width: 760px) 320px, 70vw"
-      width={shot.width}
-      height={shot.height}
-      alt={shot.alt}
-      loading={priority ? 'eager' : 'lazy'}
-      decoding="async"
-      fetchpriority={priority ? 'high' : 'auto'}
-    />
+  <figure class="shot" data-shot={shot.slug} data-scheme={policy}>
+    <picture>
+      {policy !== 'dark' && <source media="(prefers-color-scheme: dark)" srcset={srcset(onDark)} sizes={sizes} />}
+      <img
+        src={file(onLight, 540)}
+        srcset={srcset(onLight)}
+        sizes={sizes}
+        width={shot.width}
+        height={shot.height}
+        alt={shot.alt}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding="async"
+        fetchpriority={priority ? 'high' : 'auto'}
+      />
+    </picture>
   </figure>
 )}

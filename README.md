@@ -19,9 +19,11 @@ in EmDash behind Cloudflare Access (see below).
   [proof/hosting-20261001/](proof/hosting-20261001/PROOF.md),
   [proof/cms-access-20261001/](proof/cms-access-20261001/PROOF.md) and
   [proof/www-redirect-cache-20261001/](proof/www-redirect-cache-20261001/PROOF.md).
-- **Look:** decided on 2026-10-01 in four GrillTrack rounds and a confirmed
-  hybrid; [design.md](design.md) is the contract (v4: the look, the copy,
-  the showcase imagery and the link-preview image).
+- **Look:** decided in GrillTrack rounds on the real pages, each with
+  exactly five candidates and, where the maintainer asked, a confirmed
+  hybrid (the look in four rounds on 2026-10-01; the copy, the imagery,
+  the link-preview image and, on 2026-10-06, the scheme-matched imagery
+  in one round each); [design.md](design.md) is the contract (v5).
 - **Copy:** decided on 2026-10-01 in one GrillTrack round and a confirmed
   hybrid; every sentence is in `seed/seed.json` and traces to
   [docs/content.md](docs/content.md).

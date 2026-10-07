@@ -23,8 +23,11 @@ fetch", no watched-run notification or production-release claim,
 version named, the privacy, Google Group, repository and issues links
 present, no Play opt-in URL; and for the images, every screenshot option
 shipped at both widths with dimensions and an alt text that says the data
-is made up (or shows the sign-in screen), never "live", and the fixture
-code kept out of the copy and the alt text; and for the Open Graph image,
+is made up (or shows the sign-in screen), never "live", the fixture
+code kept out of the copy and the alt text, the light cut shipped at
+both widths exactly for the slugs `src/content/screenshots.ts` declares
+(every slug the pages use), and the hero asking for the band policy on
+the home page only; and for the Open Graph image,
 a 1200x630 PNG whose hash this file records, declared with its size and a
 made-up-data alt in `src/layouts/Site.astro`.
 
@@ -51,8 +54,9 @@ captures are in the private asset release
 proof is `.grilltrack/proof/showcase-048-verify-20261001.md` in
 `saari-co/RepoGlance` (the two `signin-code` files are recorded in this
 repository's `imagery-hybrid-1-captures-20261001.md`). Source SHA-256s:
-the dark files except the narrow tile captures are the ones cut; the
-light files and the narrow tile captures are kept for a later round:
+the dark files and the light files are cut (the dark ones since
+`site-imagery-007`, the light ones since `site-scheme-imagery-010` on
+2026-10-06); the two narrow tile captures are not used:
 
 | Source file | SHA-256 |
 | --- | --- |
@@ -79,8 +83,34 @@ stay in frame); cut-outs are the element's own box from the launcher and
 app dumps: `widgets-cutout` (30,436)-(796,1828), `pinned-widget`
 (30,436)-(796,1552), `repository-widget` (30,1540)-(541,1828),
 `catalog-rows` (0,840)-(1080,1920), `repository-rows` (0,600)-(1080,1680),
-`tile-row` (0,560)-(1080,1400). `src/content/screenshots.ts` carries each
-slug's alt text and the 540 px file's dimensions.
+`tile-row` (0,560)-(1080,1400). The same box cuts both themes, so a
+light cut has its dark cut's dimensions. Files: `<slug>-540.webp` and
+`<slug>-1080.webp` are the dark cuts, `<slug>-light-540.webp` and
+`<slug>-light-1080.webp` the light ones; `repository-prs` has no light
+capture in the release and ships dark only. `src/content/screenshots.ts`
+carries each slug's alt text, the 540 px file's dimensions and whether
+its light cut ships. The cutter is development tooling under ignored
+`.grilltrack/work/` (`scheme-round-1/build-assets.py` on 2026-10-06,
+which checks the fifteen hashes above before cutting and reproduced the
+shipped dark files byte for byte); the proof files under
+`.grilltrack/proof/` record the output hashes.
+
+### Colour scheme
+
+Decided in GrillTrack `site-scheme-imagery-010` (2026-10-06): one
+five-candidate round on the real pages and a confirmed hybrid
+(`.grilltrack/proof/scheme-round-1-captures-20261006.md`,
+`scheme-hybrid-1-captures-20261006.md`); `design.md` v5 records the
+rule. `src/components/Screenshot.astro` renders every image whose slug
+ships a light cut as a `<picture>`: a `(prefers-color-scheme: dark)`
+source and the `<img>` for the light scheme, both with the 540 and
+1080 px files. The default policy, `page`, shows the light cut on the
+light scheme and the dark cut on the dark scheme; `band`, which
+`Hero.astro` asks for on the home page only, is the inverse, because the
+hero band itself inverts (ink on the light scheme, near-white on the
+dark one) and the home-screen phone was chosen to match it. A slug
+without a light cut renders its dark cut alone. `scripts/smoke.mjs`
+checks the served pictures on both pages.
 
 `public/icon-512.png` is the Play icon from the same release. The marks in
 `public/mark.svg` and `public/favicon.svg` are hand conversions of the
