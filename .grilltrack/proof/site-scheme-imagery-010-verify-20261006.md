@@ -142,5 +142,77 @@ no capture here proves it.
 
 ## Review round 1
 
-Pending: the exact-source review of the implementation commit is
-recorded below and in the ledger once adjudicated.
+Exact-source review of the implementation commit
+`e1f0ebbe675d29dbf5e74a98c388b50417ba1b97` by a separate reviewer agent
+(read-only, this worktree only) against AGENTS.md, REPO_HYGIENE.md, the
+repo's conventions, design.md v5 and the lock. The reviewer ran the
+content tests (11 pass), `astro check` (0 errors) and the smoke on the
+verified build (124 checks) and confirmed: the three policies of
+`Screenshot.astro` (page, band, dark-only) render as the lock says with
+both widths, `sizes` and the unchanged attributes; `Hero.astro` asks for
+the band on `/` only (`/testers` and `/testers/` take the page policy;
+the 404 page and the null branch render no hero); the twelve `light`
+flags match the 24 files on disk; the seed, `site.css` and `Site.astro`
+are untouched and the dark cuts are not in the diff; the 24 files are
+WebP with the declared dimensions, showing the fictional owners, no
+sample marker and the fixture code only on the sign-in screen; every
+hash in this file and in the round-1 proof matches the committed files;
+the content test fails on a missing or undeclared light file, and the
+smoke's picture checks fail on six deliberate mutations of the served
+markup (inverted hero files, a label-only band, a wrong-width source, a
+light file in the dark srcset, a card with band markup, a card without a
+source).
+
+Findings and adjudication:
+
+1. `README.md` named v5 but kept "decided on 2026-10-01 in four
+   GrillTrack rounds and a confirmed hybrid", which reads as the whole
+   contract's provenance. **required_fix**: the Look line now says how
+   each decision was made (the look in four rounds on 2026-10-01; the
+   copy, the imagery, the link-preview image and the scheme-matched
+   imagery in one round each, the last on 2026-10-06).
+2. The light cut of `connect-or-explore-sample` shows the button text
+   "Explore with sample data", and that slug's alt says "Sign in with
+   GitHub" where the screen reads "Connect GitHub". **defer**: both are
+   pre-existing (the dark cut shipped with v3 and the alt with it), the
+   slug is a seed option used on no page, and AGENTS.md's rule targets
+   the sample-mode marker, which no image shows; retiring or re-wording
+   the option is a later grill's call, noted in the ledger's
+   recommendation.
+3. No check catches an orphan WebP under `public/screenshots/` whose
+   slug is not a seed option (pre-existing for the dark files).
+   **defer**: low risk; a tracked-file listing compared with
+   `screenshots.ts` would close it in a hygiene slice.
+4. `Hero.astro` reads the route instead of receiving a page slug.
+   **reject_false_positive**: EmDash's `Blocks` passes only `value`,
+   `index` and `blockKey`; the normalisation is `Site.astro`'s own, and
+   every served route behaves as locked.
+5. The ledger's earlier pause text says "cut the five light slugs"
+   where twelve were cut. **reject_false_positive**: append-only text
+   written before the lock; the confirmed summary ("every slug with a
+   light source; repository-prs stays dark-only") governs and the commit
+   follows it.
+6. The home-screen capture's launcher dock shows a Chrome icon.
+   **reject_false_positive**: identical in the shipped dark cut since
+   v3, incidental launcher content in a showcase capture, not a site
+   asset.
+7. The new component test pins source strings. **reject_false_positive**:
+   the repo's convention (the OG test pins `Site.astro` the same way).
+8. Merge and deploy stay the maintainer's. **human_gate**: nothing in
+   the commit touches wrangler config, workflows, secrets or
+   identifiers.
+
+The ledger's review entry for `e1f0ebb` carries the unique set of these
+classifications (the CLI rejects duplicates); the list above is the
+complete one.
+
+A note on the history: commit `4b2bee5b65fd62b4d25a974e17f581c2135c8bd7`
+was meant to carry the README fix and this section, but a failed ledger
+command earlier in the same shell sequence skipped the edits, so it holds
+only the ledger's implement and verify entries for `e1f0ebb` while its
+message overstates its content. The fix landed in the commit that
+follows it, which the re-verification and re-review below are bound to.
+`4b2bee5` was never pushed on its own; it stays in the branch because the
+ledger's events already name it.
+
+Re-verification and re-review of the fix commit follow below.
