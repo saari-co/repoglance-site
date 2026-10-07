@@ -76,3 +76,22 @@ Ledger: `emdash-upgrade-012` reviewed clean at that commit (findings 6 and
 7 concern it and were rejected); `cms-sync-011` reviewed with findings
 (required_fix, defer, reject_false_positive), returned to implementation
 for finding 1.
+
+## Review round 2
+
+Source identity: `git:54b213bef91986b09807aa177ea9f0da1c5a18ac` (the fix
+commit; parent `0890336`). A separate read-only agent verified: the two
+consts are byte-identical to the parent and only moved above the help
+check, so the run path is unchanged and the help path cannot throw;
+`node --check` exit 0; `node scripts/live-check.mjs --help` exit 0 with the
+defaults printed; `node scripts/cms-sync.mjs --help` exit 0; the round-1
+record names the exact source identity, classifies all seven findings and
+states both required fixes' resolutions truthfully; only the proof record,
+the script and the tool-owned ledger files changed; the commit message is
+accurate. The one claim it could not check offline, the live check after
+the fix, is recorded above (both `<main>` equal, `cf-cache-status
+EXPIRED`). Result: clean, no findings.
+
+Delivery: PR saari-co/repoglance-site#10 (`claude/cms-sync`), opened on
+the maintainer's instruction. Merge, deploy, the Access login, the sync and
+the live check are the maintainer's.

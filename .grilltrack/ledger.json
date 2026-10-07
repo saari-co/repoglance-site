@@ -7,7 +7,7 @@
     "confirmed_at": "2026-10-07T12:30:16+00:00",
     "domain": "cms-sync-011: how seed/seed.json (copy, imagery slots, block types) and the EmDash CMS on repoglance.com stay equal so the live site never silently diverges from the locked content again; the sync model, its identity and trigger, and the live-equals-seed check",
     "started_at": "2026-10-07T12:04:17+00:00",
-    "status": "confirmed",
+    "status": "inspected",
     "summary": "Maintainer 'go' on 2026-10-07 to: (1) emdash-upgrade-012: pin emdash and @emdash-cms/cloudflare to 1.2.0 exactly in package.json and scripts/audit-repo.mjs via npm, verify on it; (2) cms-sync-011 option D: scripts/cms-sync.mjs (--check default, read-only diff of block types and pages between seed/seed.json and the CMS, exit 1 on drift; --apply writes block types first, compatible in place and breaking as a new activated version, then pages as drafts with the revision token and block migration, then publish, then re-check; identity: cloudflared access token for the live site, EMDASH_TOKEN or EMDASH_HEADERS passthrough, dev bypass on localhost; never prints a header or token), scripts/live-check.mjs (npm run check:live: local workerd seed render of / and /testers compared with the live <main>, reports data-content-source, fails with a diff), a shared workerd helper for smoke and the live check, package scripts cms:check, cms:sync, check:live; docs: README status, docs/cms-access.md sync section plus the deploy runbook step (deploy, sync, live check) and the unattended service-token path as a documented unbuilt option, one AGENTS.md boundary line (the CMS is written only by the sync from the seed), docs/content.md pointer; proof under proof/cms-sync-20261007/PROOF.md and .grilltrack/proof/cms-sync-011-verify-20261007.md. Verification: unit checks of the diff logic; a dev-server round trip (CMS set up from the seed, driven to the 1 October state, synced back, check reports equal), the dev pages' data-content-source=cms render compared with the production build's seed render; npm run verify via mise; a read-only read of the live site. Then a separate read-only review on the exact commit, adjudication, ledger records, commit with the trailer, push, PR against main. The CMS/seed comparison is modulo block _version (seed stays at version 1; the CMS moves to version 2 because removing owner-filter is breaking). Maintainer gates after merge: deploy, cloudflared access login, npm run cms:sync, npm run check:live. No merge, deploy, Cloudflare, DNS, Access or secret action by the agent."
   },
   "decisions": [
@@ -128,14 +128,21 @@
           "result": "findings",
           "reviewed_at": "2026-10-07T13:00:21+00:00",
           "source_identity": "git:0890336b5343f136019d9dd387934dc95497cc96"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md#review-round-2",
+          "result": "clean",
+          "reviewed_at": "2026-10-07T13:02:20+00:00",
+          "source_identity": "git:54b213bef91986b09807aa177ea9f0da1c5a18ac"
         }
       ],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
+      "review_ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md#review-round-2",
+      "review_result": "clean",
+      "review_source_identity": "git:54b213bef91986b09807aa177ea9f0da1c5a18ac",
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-07T13:00:21+00:00",
+      "updated_at": "2026-10-07T13:02:20+00:00",
       "verification_ref": "proof/cms-sync-20261007/PROOF.md"
     },
     {
@@ -221,12 +228,29 @@
     "mechanism": "implicit"
   },
   "last_pause": null,
-  "pause": null,
+  "pause": {
+    "artifact_refs": [
+      "https://github.com/saari-co/repoglance-site/pull/10",
+      "proof/cms-sync-20261007/PROOF.md",
+      ".grilltrack/proof/cms-sync-011-verify-20261007.md"
+    ],
+    "next_safe_action": "After the maintainer's deploy, sync and live check: record the delivery and production results (the CMS equal to the seed, the live source cms, the live check equal) in proof/cms-sync-20261007/PROOF.md and the ledger, then open live-check-schedule-013 or the chosen alternative; if main moves before the merge, merge origin/main into claude/cms-sync with the ledger united and re-verify.",
+    "paused_at": "2026-10-07T13:02:36+00:00",
+    "reason": "cms-sync-011 and emdash-upgrade-012 implemented, verified and reviewed clean (cms-sync-011 at git:54b213bef91986b09807aa177ea9f0da1c5a18ac after round 1 at git:0890336b5343f136019d9dd387934dc95497cc96; emdash-upgrade-012 at git:0890336b5343f136019d9dd387934dc95497cc96); delivered as PR saari-co/repoglance-site#10 on the maintainer's instruction. Waiting on the maintainer's gates: merge after CI is green and a review is clean on the exact head, deploy, cloudflared access login, npm run cms:sync, npm run check:live."
+  },
   "predecessor_track_id": "gt-20261001102301-89ec89",
-  "recommendation": null,
+  "recommendation": {
+    "alternatives": [
+      "screenshot-options-011: the hygiene round on the seed's screenshot options the first track deferred (retire or re-word the unused connect-or-explore-sample option, catch orphan WebPs under public/screenshots/), which now also decides whether the sync should prune inactive block-type versions (review round 1, finding 3).",
+      "site-links-010 and the Play opt-in link: maintainer actions outside the repo (the Play listing's website field, the RepoGlance README pointing at repoglance.com, the opt-in link when Play Console shows it), each a seed change that reaches the live site through cms:sync and check:live."
+    ],
+    "reason": "The sync and the live check exist and are proven locally, but both run only when the maintainer runs them; the invariant the maintainer asked for ('never silently diverges') is strongest when the live check also runs on a schedule. The other candidates are hygiene or outside actions, not product decisions.",
+    "recommended": "live-check-schedule-013: run scripts/live-check.mjs unattended as a scheduled GitHub Actions workflow against https://repoglance.com (daily, plus workflow_dispatch), building main and failing loudly on any <main> difference or a non-seed, non-synced source; no secrets, no Cloudflare change, the pages are public. It closes the gap this cycle leaves between maintainer runs: drift is caught within a day instead of at the next deploy.",
+    "recorded_at": "2026-10-07T13:02:36+00:00"
+  },
   "schema_version": "grilltrack/v0.1",
-  "status": "active",
+  "status": "paused",
   "title": "repoglance.com website: CMS sync and maintenance",
   "track_id": "gt-20261007120417-1b0a54",
-  "updated_at": "2026-10-07T13:00:21+00:00"
+  "updated_at": "2026-10-07T13:02:36+00:00"
 }
