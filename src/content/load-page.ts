@@ -43,6 +43,14 @@ export async function loadPage(slug: string): Promise<LoadedPage> {
  */
 export async function preparePage(astro: PageResponseContext, slug: string): Promise<LoadedPage> {
   const loaded = await loadPage(slug);
-  applyPageResponse(astro, { found: loaded.page !== null, source: loaded.source, cacheHint: loaded.cacheHint });
+  applyPageResponse(astro, { found: loaded.page !== null, source: loaded.source, cacheHint: loaded.cacheHint, buildTime: buildTime() });
   return loaded;
+}
+
+/** The build's timestamp, defined in astro.config.mjs; undefined when it is not a date. */
+function buildTime(): Date | undefined {
+  const raw = import.meta.env.REPOGLANCE_BUILD_TIME;
+  if (typeof raw !== 'string') return undefined;
+  const date = new Date(raw);
+  return Number.isNaN(date.getTime()) ? undefined : date;
 }

@@ -40,11 +40,20 @@ export interface PageCacheOptions {
   lastModified?: Date;
 }
 
-/** The route-cache options for a rendered page: the collection tag plus EmDash's hint. */
-export function publicPageCacheOptions(hint: PageCacheHint | undefined): PageCacheOptions {
+function validDate(value: Date | undefined): Date | undefined {
+  return value instanceof Date && !Number.isNaN(value.getTime()) ? value : undefined;
+}
+
+/**
+ * The route-cache options for a rendered page: the collection tag plus
+ * EmDash's hint. `fallbackLastModified` (the build time) is the validator
+ * when the hint carries none.
+ */
+export function publicPageCacheOptions(hint: PageCacheHint | undefined, fallbackLastModified?: Date): PageCacheOptions {
   const tags = [...new Set([PAGES_COLLECTION, ...(hint?.tags ?? []).filter((tag) => typeof tag === 'string' && tag.trim())])];
   const options: PageCacheOptions = { maxAge: PUBLIC_PAGE_MAX_AGE, swr: PUBLIC_PAGE_SWR, tags };
-  if (hint?.lastModified instanceof Date && !Number.isNaN(hint.lastModified.getTime())) options.lastModified = hint.lastModified;
+  const lastModified = validDate(hint?.lastModified) ?? validDate(fallbackLastModified);
+  if (lastModified) options.lastModified = lastModified;
   return options;
 }
 
@@ -55,6 +64,12 @@ export interface PageResponseInput {
   found: boolean;
   source: PageContentSource;
   cacheHint?: PageCacheHint;
+  /**
+   * When the build ran: the validator of a seed render, whose content changes
+   * only with a deploy, and the fallback for a CMS render whose hint carries
+   * no last-modified time.
+   */
+  buildTime?: Date;
 }
 
 /** The slice of the Astro global a page needs here; structural, so it stays testable. */
@@ -72,9 +87,12 @@ export interface PageResponseContext {
  * EmDash's tags, so a publish purges it, and varies by Host and Cookie. The
  * entry's `lastModified` is folded in only for a CMS render: a seed fallback
  * must not inherit the validator of an entry it no longer shows, or a
- * browser's conditional request could keep a retired body. EmDash's
- * middleware still folds the build date in for every on-demand render, and
- * the Cloudflare provider scopes the ETag to the deployed Worker version.
+ * browser's conditional request could keep a retired body. A seed render
+ * carries the build time instead, since its content changes only with a
+ * deploy; since EmDash 1.1 the middleware folds its own build date in only
+ * when the page already carries a validator, so without this a seed render
+ * would send none. The Cloudflare provider scopes the ETag to the deployed
+ * Worker version.
  */
 export function applyPageResponse(astro: PageResponseContext, input: PageResponseInput): void {
   if (!input.found) {
@@ -82,6 +100,6 @@ export function applyPageResponse(astro: PageResponseContext, input: PageRespons
     return;
   }
   const hint = input.source === 'cms' ? input.cacheHint : { tags: input.cacheHint?.tags };
-  astro.cache.set(publicPageCacheOptions(hint));
+  astro.cache.set(publicPageCacheOptions(hint, input.buildTime));
   astro.response.headers.set('Vary', PUBLIC_PAGE_VARY);
 }

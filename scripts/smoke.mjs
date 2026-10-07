@@ -1,68 +1,16 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
-import { once } from 'node:events';
 import { request as httpRequest } from 'node:http';
 import { existsSync } from 'node:fs';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { createServer } from 'node:net';
-import { tmpdir } from 'node:os';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { setTimeout as sleep } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
+import { startLocalWorker } from './lib/workerd.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const config = join(root, 'dist/server/wrangler.json');
-assert.ok(existsSync(config), 'run npm run build first: dist/server/wrangler.json is missing');
+assert.ok(existsSync(join(root, 'dist/server/wrangler.json')), 'run npm run build first: dist/server/wrangler.json is missing');
 
-const persistTo = await mkdtemp(join(tmpdir(), 'repoglance-site-smoke-'));
 const checks = [];
 let worker;
-
-async function reservePort() {
-  const server = createServer();
-  server.listen(0, '127.0.0.1');
-  await once(server, 'listening');
-  const { port } = server.address();
-  await new Promise((resolve) => server.close(resolve));
-  return port;
-}
-
-function startWorker(port) {
-  const child = spawn(
-    join(root, 'node_modules/.bin/wrangler'),
-    ['dev', '--local', '--persist-to', persistTo, '--port', String(port), '--ip', '127.0.0.1', '--config', config],
-    { cwd: root, env: { ...process.env, CI: '1' }, stdio: ['ignore', 'pipe', 'pipe'] },
-  );
-  let logs = '';
-  const capture = (chunk) => {
-    logs = (logs + chunk.toString()).slice(-100_000);
-  };
-  child.stdout.on('data', capture);
-  child.stderr.on('data', capture);
-  let exited = false;
-  const exit = new Promise((resolve) => {
-    child.once('exit', () => {
-      exited = true;
-      resolve();
-    });
-    child.once('error', (error) => {
-      logs += String(error);
-      exited = true;
-      resolve();
-    });
-  });
-  return { child, logs: () => logs, exited: () => exited, exit };
-}
-
-async function stopWorker() {
-  if (!worker || worker.exited()) return;
-  worker.child.kill('SIGTERM');
-  await Promise.race([worker.exit, sleep(5000)]);
-  if (!worker.exited()) {
-    worker.child.kill('SIGKILL');
-    await worker.exit;
-  }
-}
 
 const request = (base, path, init = {}) =>
   fetch(base + path, { signal: AbortSignal.timeout(20000), redirect: 'manual', ...init });
@@ -101,18 +49,6 @@ function expectUncached(label, cdn) {
   record(`${label} is not edge-cached`, cdn === 'no-store', `cloudflare-cdn-cache-control ${cdn}`);
 }
 
-async function waitReady(base) {
-  for (let attempt = 0; attempt < 120 && !worker.exited(); attempt += 1) {
-    try {
-      await request(base, '/robots.txt');
-      return true;
-    } catch {
-      await sleep(500);
-    }
-  }
-  return false;
-}
-
 function record(name, ok, detail = '') {
   checks.push({ name, ok, detail });
   if (!ok) throw new Error(`${name}: ${detail}`);
@@ -129,10 +65,14 @@ async function expectDenied(base, path, init = {}) {
 }
 
 try {
-  const port = await reservePort();
-  const base = `http://127.0.0.1:${port}`;
-  worker = startWorker(port);
-  record('local workerd started', await waitReady(base), worker.logs().slice(-2000));
+  // A fresh throwaway state directory: the pages render from the seed on an empty D1.
+  try {
+    worker = await startLocalWorker({ root });
+  } catch (error) {
+    record('local workerd started', false, error instanceof Error ? error.message : String(error));
+  }
+  record('local workerd started', true);
+  const { base, port } = worker;
 
   const home = await request(base, '/');
   const homeBody = await home.text();
@@ -237,6 +177,5 @@ try {
   if (worker) console.error(worker.logs().slice(-4000));
   process.exitCode = 1;
 } finally {
-  await stopWorker();
-  await rm(persistTo, { recursive: true, force: true });
+  if (worker) await worker.stop();
 }

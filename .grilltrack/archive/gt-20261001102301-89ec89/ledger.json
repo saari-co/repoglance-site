@@ -1,0 +1,1698 @@
+{
+  "closeout": {
+    "closed_at": "2026-10-07T02:27:03+00:00",
+    "confirmed_by": "user",
+    "deferred_decisions": [],
+    "proof_refs": [
+      ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+    ],
+    "reason": "Maintainer, 2026-10-06: 'close the grill' (with 'merge #7' and 'merge #6 as well'). No meaningful grill remains in the track. The charter's two pages are built and hosted (site-home-001 to site-foundation-004, site-hosting-007, cms-access-008, www-redirect-and-cache-009) and every visible decision is locked, verified and reviewed on an exact commit: the look (site-look-005), the copy (site-copy-006), the imagery (site-imagery-007), the link-preview image (og-image-009) and the colour scheme of the imagery (site-scheme-imagery-010, reviewed clean at git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d). What remains is maintainer action or hygiene, each a new track if wanted: deploying PR #7, the Play opt-in link when Play Console shows it, the CMS sync model (cms-sync-011, queued by PR #6's drift proof: the live pages render from the seed since 2026-10-06 and the CMS entries are unpublished drafts), the outside links (site-links-010), and screenshot-options-011 (the unused connect-screen option's sample text and alt, the orphan-WebP gap).",
+    "reviews": [
+      {
+        "classifications": [],
+        "decision_id": "site-foundation-004",
+        "ref": "proof/site-foundation/PROOF.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:6e1dda367020821ced3879619c6e6fd19c691508"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-look-005",
+        "ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:2e8621d18ffcc577dc313ec172cab6c949542c8a"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-hosting-007",
+        "ref": "proof/hosting-20261001/PROOF.md",
+        "result": "clean",
+        "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+      },
+      {
+        "classifications": [],
+        "decision_id": "cms-access-008",
+        "ref": "proof/cms-access-20261001/PROOF.md",
+        "result": "clean",
+        "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-copy-006",
+        "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-imagery-007",
+        "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645"
+      },
+      {
+        "classifications": [],
+        "decision_id": "www-redirect-and-cache-009",
+        "ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 2: clean, three wording nits applied in 5943b0e)",
+        "result": "clean",
+        "source_identity": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0"
+      },
+      {
+        "classifications": [],
+        "decision_id": "og-image-009",
+        "ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+        "result": "clean",
+        "source_identity": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391"
+      },
+      {
+        "classifications": [],
+        "decision_id": "site-scheme-imagery-010",
+        "ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-3",
+        "result": "clean",
+        "source_identity": "git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d"
+      }
+    ],
+    "summary": "Verified results: eleven decisions verified; the five visual ones reviewed clean on exact commits (site-look-005 and site-copy-006 at their fix commits, site-imagery-007 at git:add4e6992eb859e22350069ecbadf145bb3a4645, og-image-009 at git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391, site-scheme-imagery-010 at git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d). Superseded choices: the foundation's Play-listing sample-mode captures (replaced by the showcase-048 cut-outs and phones), the Play feature graphic as og:image (replaced by the generated 1200x630 card), the Connect screen for the sign-in slots (replaced by the device-code screen), dark cuts on both schemes (replaced by the scheme-matched pictures with the home hero on its band). Deferrals and unresolved risk: the connect-or-explore-sample option shows 'Explore with sample data' and its alt names a button the screen does not show (pre-existing, unused on any page); no check catches an orphan WebP under public/screenshots/; the live site serves the dark cuts until PR #7 is deployed; the CMS entries are stale, unpublished drafts and the pages render from the seed (PR #6, cms-sync-011 queued as a new track); the Play opt-in link is not published; every capture is Chromium only. Proof: .grilltrack/proof/ (look rounds 1 to 4 and hybrid, copy round 1 and hybrid, imagery round 1 and hybrid, og round 1, scheme round 1 and hybrid, and the five *-verify-* files) and proof/ (site-foundation, hosting-20261001, cms-access-20261001, www-redirect-cache-20261001, og-image-deploy-20261006 and cms-drift-20261006 via PR #6). Delivery: PRs saari-co/repoglance-site#1 to #5 merged by the maintainer before this closeout; #7 (this cycle, branch claude/site-scheme-imagery) and #6 (the deploy and drift proof) merged on the maintainer's instruction of 2026-10-06 after this record.",
+    "superseded_decisions": [],
+    "verified_decisions": [
+      "site-home-001",
+      "site-pages-002",
+      "site-signup-link-003",
+      "site-foundation-004",
+      "site-look-005",
+      "site-hosting-007",
+      "cms-access-008",
+      "site-copy-006",
+      "site-imagery-007",
+      "www-redirect-and-cache-009",
+      "og-image-009",
+      "site-scheme-imagery-010"
+    ]
+  },
+  "created_at": "2026-10-01T10:23:01+00:00",
+  "current_focus": {
+    "cadence": "sequential",
+    "confirmed": true,
+    "confirmed_at": "2026-10-07T01:37:37+00:00",
+    "domain": "site-scheme-imagery-010: scheme-matched page imagery of repoglance.com; which showcase capture (dark or light) each of the six locked image slots shows per colour scheme, and any treatment the switch needs; subject, crop and slot assignments stay as locked in design.md v4 (site-imagery-007); judged on the real pages at 375 and 1280 px in both schemes",
+    "started_at": "2026-10-06T22:08:46+00:00",
+    "status": "closed",
+    "summary": "site-scheme-imagery-010 locked as the confirmed hybrid (E home, D join). Bounded implementation: cut the light showcase captures into public/screenshots/ as <slug>-light-{540,1080}.webp with the recipe and source hashes in docs/content.md (every slug with a light source; repository-prs stays dark-only); Screenshot.astro renders a <picture> with a prefers-color-scheme: dark source, following the page by default and the band for the home hero (Hero.astro passes the policy); src/content/screenshots.ts records which slugs ship light; tests/content.test.mjs requires the light files for those slugs and keeps the alt rules; scripts/smoke.mjs asserts the served pictures on both pages and the light assets; design.md v5 and docs/content.md record the lock, the policy and the rejected candidates; npm run verify; captures of the production build in both schemes compared with the hybrid preview; implement/verify/review in the ledger; commit with the trailer, push, PR against main. No merge, no deploy, no Cloudflare or DNS change, no secrets."
+  },
+  "decisions": [
+    {
+      "baseline_ref": "git:f8d3f6c",
+      "candidate_refs": [],
+      "choice": "This repository, saari-co/repoglance-site (public, MIT), main checkout ~/Developer/side-quests/repoglance-site, sibling worktrees repoglance-site-<slug>, laid out like dinkuskit/dinkuskit.",
+      "context_ref": "ledger:saari-co/RepoGlance#site-home-048",
+      "created_at": "2026-10-01T10:23:01+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [],
+      "domain": "site foundation: adopt the three RepoGlance-ledger decisions (repo, pages, signup link) and build the Astro + EmDash + Cloudflare foundation with seeded content, fail-closed CMS namespace, verify chain and proof; the look stays unresolved",
+      "history": [
+        {
+          "at": "2026-10-01T10:23:01+00:00",
+          "choice": "This repository, saari-co/repoglance-site (public, MIT), main checkout ~/Developer/side-quests/repoglance-site, sibling worktrees repoglance-site-<slug>, laid out like dinkuskit/dinkuskit.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:34:08+00:00",
+          "choice": "This repository, saari-co/repoglance-site (public, MIT), main checkout ~/Developer/side-quests/repoglance-site, sibling worktrees repoglance-site-<slug>, laid out like dinkuskit/dinkuskit.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:34:09+00:00",
+          "choice": "This repository, saari-co/repoglance-site (public, MIT), main checkout ~/Developer/side-quests/repoglance-site, sibling worktrees repoglance-site-<slug>, laid out like dinkuskit/dinkuskit.",
+          "from": "implemented",
+          "implementation_ref": "github:saari-co/repoglance-site (repository created 2026-10-01; AGENTS.md, REPO_HYGIENE.md, docs/, proof/, .grilltrack/)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        }
+      ],
+      "id": "site-home-001",
+      "implementation_ref": "github:saari-co/repoglance-site (repository created 2026-10-01; AGENTS.md, REPO_HYGIENE.md, docs/, proof/, .grilltrack/)",
+      "question": "Where does the site source live?",
+      "rationale": "Adopted from RepoGlance site-home-048; keeps the Node/wrangler toolchain out of the Android repo and matches the DinkusKit precedent.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [],
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T10:34:09+00:00",
+      "verification_ref": "file:proof/site-foundation/PROOF.md"
+    },
+    {
+      "baseline_ref": null,
+      "candidate_refs": [],
+      "choice": "Two: / (overview with sample-mode screenshots and a Join-the-test call to action) and /testers (Google Group step, Play opt-in slot, what the build does, feedback, privacy link). Privacy stays at https://saari-co.github.io/RepoGlance/privacy/.",
+      "context_ref": "ledger:saari-co/RepoGlance#site-pages-049",
+      "created_at": "2026-10-01T10:23:01+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-home-001"
+      ],
+      "domain": "site foundation: adopt the three RepoGlance-ledger decisions (repo, pages, signup link) and build the Astro + EmDash + Cloudflare foundation with seeded content, fail-closed CMS namespace, verify chain and proof; the look stays unresolved",
+      "history": [
+        {
+          "at": "2026-10-01T10:23:01+00:00",
+          "choice": "Two: / (overview with sample-mode screenshots and a Join-the-test call to action) and /testers (Google Group step, Play opt-in slot, what the build does, feedback, privacy link). Privacy stays at https://saari-co.github.io/RepoGlance/privacy/.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:34:08+00:00",
+          "choice": "Two: / (overview with sample-mode screenshots and a Join-the-test call to action) and /testers (Google Group step, Play opt-in slot, what the build does, feedback, privacy link). Privacy stays at https://saari-co.github.io/RepoGlance/privacy/.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:34:09+00:00",
+          "choice": "Two: / (overview with sample-mode screenshots and a Join-the-test call to action) and /testers (Google Group step, Play opt-in slot, what the build does, feedback, privacy link). Privacy stays at https://saari-co.github.io/RepoGlance/privacy/.",
+          "from": "implemented",
+          "implementation_ref": "file:seed/seed.json; file:src/pages/index.astro; file:src/pages/testers.astro",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        }
+      ],
+      "id": "site-pages-002",
+      "implementation_ref": "file:seed/seed.json; file:src/pages/index.astro; file:src/pages/testers.astro",
+      "question": "Which pages does the site have?",
+      "rationale": "Adopted from RepoGlance site-pages-049.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [],
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T10:34:09+00:00",
+      "verification_ref": "file:proof/site-foundation/PROOF.md (smoke: both routes 200 from the seed; captures)"
+    },
+    {
+      "baseline_ref": null,
+      "candidate_refs": [],
+      "choice": "https://groups.google.com/g/repoglance-testers; the Play opt-in link is added when Play Console shows it and is never guessed.",
+      "context_ref": "ledger:saari-co/RepoGlance#site-signup-link-050",
+      "created_at": "2026-10-01T10:23:01+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-pages-002"
+      ],
+      "domain": "site foundation: adopt the three RepoGlance-ledger decisions (repo, pages, signup link) and build the Astro + EmDash + Cloudflare foundation with seeded content, fail-closed CMS namespace, verify chain and proof; the look stays unresolved",
+      "history": [
+        {
+          "at": "2026-10-01T10:23:01+00:00",
+          "choice": "https://groups.google.com/g/repoglance-testers; the Play opt-in link is added when Play Console shows it and is never guessed.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:34:08+00:00",
+          "choice": "https://groups.google.com/g/repoglance-testers; the Play opt-in link is added when Play Console shows it and is never guessed.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:34:09+00:00",
+          "choice": "https://groups.google.com/g/repoglance-testers; the Play opt-in link is added when Play Console shows it and is never guessed.",
+          "from": "implemented",
+          "implementation_ref": "file:seed/seed.json (testers hero primary link and step 1)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        }
+      ],
+      "id": "site-signup-link-003",
+      "implementation_ref": "file:seed/seed.json (testers hero primary link and step 1)",
+      "question": "Which closed-test signup link does the site use today?",
+      "rationale": "Adopted from RepoGlance site-signup-link-050; the group page resolved publicly on 2026-10-01.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [],
+      "review_ref": null,
+      "review_result": null,
+      "review_source_identity": null,
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T10:34:09+00:00",
+      "verification_ref": "file:proof/site-foundation/PROOF.md (smoke: Group link present, no Play URL; content test)"
+    },
+    {
+      "baseline_ref": null,
+      "candidate_refs": [],
+      "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+      "context_ref": "github:dinkuskit/dinkuskit@e4d645e3c03d3044d304f1f33ff9526fb7098156",
+      "created_at": "2026-10-01T10:23:01+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-pages-002",
+        "site-signup-link-003"
+      ],
+      "domain": "site foundation: adopt the three RepoGlance-ledger decisions (repo, pages, signup link) and build the Astro + EmDash + Cloudflare foundation with seeded content, fail-closed CMS namespace, verify chain and proof; the look stays unresolved",
+      "history": [
+        {
+          "at": "2026-10-01T10:23:01+00:00",
+          "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:34:08+00:00",
+          "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:34:09+00:00",
+          "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+          "from": "implemented",
+          "implementation_ref": "file:astro.config.mjs; file:src/emdash-namespace-guard.ts; file:src/namespace-gate.ts; file:src/components/ContentPage.astro; file:scripts/smoke.mjs; file:tests/",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T10:44:42+00:00",
+          "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+          "from": "verified",
+          "implementation_ref": "file:astro.config.mjs; file:src/emdash-namespace-guard.ts; file:src/namespace-gate.ts; file:src/components/ContentPage.astro; file:scripts/smoke.mjs; file:tests/",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0: audit, types, typecheck, 8 content + 9 guard tests, build, 60 smoke checks; dev editor 302 to setup)"
+        },
+        {
+          "at": "2026-10-01T10:44:42+00:00",
+          "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+          "from": "needs_reverification",
+          "implementation_ref": "file:astro.config.mjs; file:src/emdash-namespace-guard.ts; file:src/namespace-gate.ts; file:src/components/ContentPage.astro; file:scripts/smoke.mjs; file:tests/",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive"
+          ],
+          "review_ref": "proof/site-foundation/PROOF.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:ffe343ebf85daee2d4c2d6df02a165ade9ea2bea",
+          "to": "implemented",
+          "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0: audit, types, typecheck, 8 content + 9 guard tests, build, 60 smoke checks; dev editor 302 to setup)"
+        },
+        {
+          "at": "2026-10-01T10:44:42+00:00",
+          "choice": "Astro 7 + EmDash 1.0.1 on the Cloudflare adapter (D1, R2, sandbox); seed/seed.json holds both pages as blocks (hero, feature, fact_list, steps, cta, text_section); ContentPage renders the CMS entry when present and the seed otherwise; src/emdash-namespace-guard.ts denies /_emdash in production unless Cloudflare Access is configured and verifies the identity; npm run verify = audit, wrangler types, astro check, content tests, guard tests, build, workerd smoke; provisional styling only; CI + ClawSweeper stub; docs and proof per dinkuskit's way of working.",
+          "from": "implemented",
+          "implementation_ref": "git:6e1dda367020821ced3879619c6e6fd19c691508 (review round 1 fixes: src/content/blocks.ts stringField and safeHref via EmDash isSafeHref, inline mark in src/layouts/Site.astro, canonical without trailing slash, team domain compiled into the guard, test and script cleanups, docs/cms-access.md)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0: audit, types, typecheck, 8 content + 9 guard tests, build, 60 smoke checks; dev editor 302 to setup)"
+        }
+      ],
+      "id": "site-foundation-004",
+      "implementation_ref": "git:6e1dda367020821ced3879619c6e6fd19c691508 (review round 1 fixes: src/content/blocks.ts stringField and safeHref via EmDash isSafeHref, inline mark in src/layouts/Site.astro, canonical without trailing slash, team domain compiled into the guard, test and script cleanups, docs/cms-access.md)",
+      "question": "What does the site foundation consist of?",
+      "rationale": "Maintainer's brief 2026-10-01: mirror dinkuskit's EmDash way of working, describe only proven behaviour, sample-mode imagery, hard gates on Cloudflare/DNS/deploy/publish.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive"
+          ],
+          "ref": "proof/site-foundation/PROOF.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T10:44:42+00:00",
+          "source_identity": "git:ffe343ebf85daee2d4c2d6df02a165ade9ea2bea"
+        },
+        {
+          "classifications": [],
+          "ref": "proof/site-foundation/PROOF.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T10:45:24+00:00",
+          "source_identity": "git:6e1dda367020821ced3879619c6e6fd19c691508"
+        }
+      ],
+      "review_ref": "proof/site-foundation/PROOF.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:6e1dda367020821ced3879619c6e6fd19c691508",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T10:45:24+00:00",
+      "verification_ref": "file:proof/site-foundation/PROOF.md (npm run verify exit 0 on 6e1dda3: audit 74 files, 0 type errors, 9 content + 9 guard tests, 64 smoke checks; dev editor 302; captures re-taken, mark visible in dark)"
+    },
+    {
+      "baseline_ref": "git:6e1dda367020821ced3879619c6e6fd19c691508",
+      "candidate_refs": [
+        ".grilltrack/work/look-round-1/candidates/a.css",
+        ".grilltrack/work/look-round-1/candidates/b.css",
+        ".grilltrack/work/look-round-1/candidates/c.css",
+        ".grilltrack/work/look-round-1/candidates/d.css",
+        ".grilltrack/work/look-round-1/candidates/e.css"
+      ],
+      "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+      "context_ref": ".grilltrack/work/look-round-1/picker.json",
+      "created_at": "2026-10-01T10:54:17+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-foundation-004"
+      ],
+      "domain": "site-look-005: layout and visual language of repoglance.com (the first visual round), judged on the real / and /testers pages with the seed copy, sample-mode imagery, the commit-eye mark and system fonts locked",
+      "history": [
+        {
+          "at": "2026-10-01T11:55:05+00:00",
+          "choice": "Unresolved: one of five candidates (A One column, B Tonal grid, C Phone showcase, D Dense glance, E Full-width bands) or a maintainer-described replacement; decided on the live picker.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:00:06+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:00:06+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "implemented",
+          "implementation_ref": "file:src/styles/site.css; file:src/components/ContentPage.astro; file:src/components/Hero.astro; file:src/components/Cta.astro; file:src/layouts/Site.astro; file:design.md (v1)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:02:08+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "verified",
+          "implementation_ref": "file:src/styles/site.css; file:src/components/ContentPage.astro; file:src/components/Hero.astro; file:src/components/Cta.astro; file:src/layouts/Site.astro; file:design.md (v1)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0, 66 smoke checks; production-build captures in swarm-pr-assets repoglance-site-look-005-verify-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:02:08+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "needs_reverification",
+          "implementation_ref": "file:src/styles/site.css; file:src/components/ContentPage.astro; file:src/components/Hero.astro; file:src/components/Cta.astro; file:src/layouts/Site.astro; file:design.md (v1)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix"
+          ],
+          "review_ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:b7c2ffe1584638f8db594043361a15a3ec6032e3",
+          "to": "implemented",
+          "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0, 66 smoke checks; production-build captures in swarm-pr-assets repoglance-site-look-005-verify-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:02:08+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after four five-candidate rounds: full-width ink bands (near-black #1b1d21 on the light scheme, near-white #e7e9ee on the dark scheme, buttons inverted) for the hero on both pages, the home call to action and the join page's closing feedback-and-privacy band, each carrying the commit-eye rings as a 5% motif at the right edge (round-4 A plus E's mark, fainter); mono navigation and footer, 6 px square buttons, hairline slider cards with mono heads for the home features (round-2 A), a centred hairline check list for the facts (round-2 C), the phone right of the text in both heroes (round-3 B); the join page an 800 px centred column with centred steps and a mono checklist. Rejected along the way: tile grids for lists, a narrow one-column join page, graphite gradients, tonal and accent bands, a hairline-only hero.",
+          "from": "implemented",
+          "implementation_ref": "file:src/styles/site.css (dark-scheme ring stroke corrected to the ink colour)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0, 66 smoke checks; production-build captures in swarm-pr-assets repoglance-site-look-005-verify-20261001)"
+        }
+      ],
+      "id": "site-look-005",
+      "implementation_ref": "file:src/styles/site.css (dark-scheme ring stroke corrected to the ink colour)",
+      "question": "Which layout and visual language should repoglance.com take?",
+      "rationale": "Maintainer feedback across rounds 1 to 4 and the hybrid preview (proof: .grilltrack/proof/look-round-*-captures-20261001.md and look-hybrid-1-captures-20261001.md).",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix"
+          ],
+          "ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T12:02:08+00:00",
+          "source_identity": "git:b7c2ffe1584638f8db594043361a15a3ec6032e3"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T12:02:45+00:00",
+          "source_identity": "git:2e8621d18ffcc577dc313ec172cab6c949542c8a"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/site-look-005-verify-20261001.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:2e8621d18ffcc577dc313ec172cab6c949542c8a",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T12:02:45+00:00",
+      "verification_ref": "file:.grilltrack/proof/site-look-005-verify-20261001.md (npm run verify exit 0 after the fix; captures re-taken)"
+    },
+    {
+      "baseline_ref": null,
+      "candidate_refs": [],
+      "choice": "In gated steps on the maintainer's signed-in Cloudflare account (Workers Paid): (1) D1 repoglance-site-cms, R2 repoglance-site-media (plus the adapter's auto-provisioned KV repoglance-site-session) and the Worker repoglance-site on workers.dev, /_emdash denied; (2) the custom domains repoglance.com and www.repoglance.com attached by Wrangler, workers.dev off; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers stay in ignored .local/deploy.env and dist/server/wrangler.production.json.",
+      "context_ref": "file:docs/cms-access.md",
+      "created_at": "2026-10-01T12:20:30+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-look-005"
+      ],
+      "domain": "site-hosting-007: standing repoglance.com up on Cloudflare in gated steps (resources and a workers.dev preview first, the custom domain second, Access and the CMS later)",
+      "history": [
+        {
+          "at": "2026-10-01T12:20:30+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:23:43+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:23:43+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "implemented",
+          "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T12:34:11+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "verified",
+          "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+          "note": "Gate 2 approved by the maintainer on 2026-10-01: attach repoglance.com and www.repoglance.com (the decision's step 2)",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "reopened",
+          "verification_ref": "file:proof/hosting-20261001/PROOF.md (live smoke: public pages 200 from the seed, /_emdash 404, captures in swarm-pr-assets repoglance-site-live-preview-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:34:35+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account: (1) D1 repoglance-site-cms, R2 repoglance-site-media and the Worker repoglance-site deployed to its workers.dev hostname only, /_emdash denied, public pages from the seed; (2) the custom domain repoglance.com attached by Wrangler (DNS) after the maintainer's second OK; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers live in ignored .local/deploy.env and dist/server/wrangler.production.json, never in source.",
+          "from": "reopened",
+          "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": "file:proof/hosting-20261001/PROOF.md (live smoke: public pages 200 from the seed, /_emdash 404, captures in swarm-pr-assets repoglance-site-live-preview-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:35:14+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account (Workers Paid): (1) D1 repoglance-site-cms, R2 repoglance-site-media (plus the adapter's auto-provisioned KV repoglance-site-session) and the Worker repoglance-site on workers.dev, /_emdash denied; (2) the custom domains repoglance.com and www.repoglance.com attached by Wrangler, workers.dev off; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers stay in ignored .local/deploy.env and dist/server/wrangler.production.json.",
+          "from": "locked",
+          "implementation_ref": "cloudflare:worker repoglance-site version dd515c0a-7638-440e-86ec-859fa5e5c04a (workers.dev preview); file:scripts/prepare-deploy.mjs; file:docs/cms-access.md",
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": "file:proof/hosting-20261001/PROOF.md (live smoke: public pages 200 from the seed, /_emdash 404, captures in swarm-pr-assets repoglance-site-live-preview-20261001)"
+        },
+        {
+          "at": "2026-10-01T12:35:14+00:00",
+          "choice": "In gated steps on the maintainer's signed-in Cloudflare account (Workers Paid): (1) D1 repoglance-site-cms, R2 repoglance-site-media (plus the adapter's auto-provisioned KV repoglance-site-session) and the Worker repoglance-site on workers.dev, /_emdash denied; (2) the custom domains repoglance.com and www.repoglance.com attached by Wrangler, workers.dev off; (3) Access, secrets and EmDash setup per docs/cms-access.md after further OKs. Production identifiers stay in ignored .local/deploy.env and dist/server/wrangler.production.json.",
+          "from": "implemented",
+          "implementation_ref": "cloudflare:worker repoglance-site version c92e410b-a11a-4ef6-91f0-04f55b267ade with custom domains repoglance.com and www.repoglance.com (gate 2); file:scripts/prepare-deploy.mjs",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:proof/hosting-20261001/PROOF.md (live smoke: public pages 200 from the seed, /_emdash 404, captures in swarm-pr-assets repoglance-site-live-preview-20261001)"
+        }
+      ],
+      "id": "site-hosting-007",
+      "implementation_ref": "cloudflare:worker repoglance-site version c92e410b-a11a-4ef6-91f0-04f55b267ade with custom domains repoglance.com and www.repoglance.com (gate 2); file:scripts/prepare-deploy.mjs",
+      "question": "How does repoglance.com go live?",
+      "rationale": "The public pages need no CMS, Access or secret to serve (smoke on a fresh D1); exposing them on workers.dev first lets the maintainer see the real thing before DNS changes.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [],
+          "ref": "proof/hosting-20261001/PROOF.md",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T13:36:59+00:00",
+          "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+        }
+      ],
+      "review_ref": "proof/hosting-20261001/PROOF.md",
+      "review_result": "clean",
+      "review_source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T13:36:59+00:00",
+      "verification_ref": "file:proof/hosting-20261001/PROOF.md#gate-2-custom-domains-2026-10-01 (public resolvers and --resolve: apex 200 from the seed, /_emdash 404; www 200; captures in swarm-pr-assets repoglance-site-live-20261001)"
+    },
+    {
+      "baseline_ref": null,
+      "candidate_refs": [],
+      "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+      "context_ref": "file:docs/cms-access.md",
+      "created_at": "2026-10-01T12:58:56+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-hosting-007"
+      ],
+      "domain": "cms-access-008: the Access-gated EmDash CMS on repoglance.com (Access application, secrets, a build with the team domain, EmDash setup through Access)",
+      "history": [
+        {
+          "at": "2026-10-01T12:58:56+00:00",
+          "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:30:07+00:00",
+          "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:30:07+00:00",
+          "choice": "Through Cloudflare Access only, in the order of docs/cms-access.md: the maintainer creates a self-hosted Access application for repoglance.com and www.repoglance.com on path _emdash with an Allow policy for their own email (one-time PIN), notes the Audience tag, sets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST (owner only) and EMDASH_ENCRYPTION_KEY as Worker secrets from their own terminal, and puts EMDASH_ACCESS_TEAM_DOMAIN in the ignored .local/deploy.env; the agent builds with the team domain (which wires EmDash's access() and the guard), redeploys, proves anonymous and forged requests still get 404, and the maintainer completes EmDash setup through Access as the first (Admin) login, including the seed content so the pages switch to the CMS.",
+          "from": "implemented",
+          "implementation_ref": "cloudflare:access application RepoGlance CMS (two destinations, the maintainer's reusable owner policy, Google); cloudflare:worker repoglance-site version d074759e-0e92-4db6-864f-d609af44a470 with secrets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST, EMDASH_ENCRYPTION_KEY; file:docs/cms-access.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        }
+      ],
+      "id": "cms-access-008",
+      "implementation_ref": "cloudflare:access application RepoGlance CMS (two destinations, the maintainer's reusable owner policy, Google); cloudflare:worker repoglance-site version d074759e-0e92-4db6-864f-d609af44a470 with secrets CF_ACCESS_AUDIENCE, EMDASH_OPERATOR_ALLOWLIST, EMDASH_ENCRYPTION_KEY; file:docs/cms-access.md",
+      "question": "How is the EmDash editor enabled on repoglance.com?",
+      "rationale": "AGENTS.md hard gates: Access configuration, secrets and setup are maintainer actions; the guard and access() are wired from one build input so they cannot diverge (review round 1 of the foundation).",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [],
+          "ref": "proof/cms-access-20261001/PROOF.md",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T13:36:59+00:00",
+          "source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73"
+        }
+      ],
+      "review_ref": "proof/cms-access-20261001/PROOF.md",
+      "review_result": "clean",
+      "review_source_identity": "git:c09c2bafa4d57bb7dfd760fd4acf09754b9f1e73",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T13:36:59+00:00",
+      "verification_ref": "file:proof/cms-access-20261001/PROOF.md (anonymous and forged requests 302 to Access; maintainer completed setup; both pages data-content-source=cms; captures in swarm-pr-assets repoglance-site-live-cms-20261001)"
+    },
+    {
+      "baseline_ref": "git:174064e (claude/site-foundation; seed/seed.json as shipped)",
+      "candidate_refs": [
+        ".grilltrack/work/copy-round-1/candidates/a.json",
+        ".grilltrack/work/copy-round-1/candidates/b.json",
+        ".grilltrack/work/copy-round-1/candidates/c.json",
+        ".grilltrack/work/copy-round-1/candidates/d.json",
+        ".grilltrack/work/copy-round-1/candidates/e.json"
+      ],
+      "choice": "The confirmed copy hybrid of 2026-10-01 (home in D's voice with A's call to action; join page in D's voice with C's steps and build list), amended on the maintainer's instruction with the imagery lock: the fourth home card now reads 'When you sign in' and describes GitHub's device flow (a short code, Copy code & open GitHub, authorize on GitHub, RepoGlance never sees your password), with Explore with sample data as the no-account alternative, so the card matches its sign-in code image.",
+      "context_ref": ".grilltrack/proof/copy-round-1-captures-20261001.md",
+      "created_at": "2026-10-01T12:37:59+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-look-005",
+        "site-signup-link-003"
+      ],
+      "domain": "site-copy-006: the copy of repoglance.com in the locked layout (design.md v1): voice, structure, specificity and information order of every seed block on / and /testers, judged on the real pages at 375 and 1280 px in both schemes with the layout, imagery, mark and fonts locked; every candidate keeps the honest-copy rules of tests/content.test.mjs",
+      "history": [
+        {
+          "at": "2026-10-01T12:58:49+00:00",
+          "choice": "Open: copy round 1 presents five seed variants on the real pages (A Plain, B Promise first, C Facts first, D Moments, E Trust first), all passing tests/content.test.mjs; the maintainer picks per candidate or per block, and the pick is written into seed/seed.json only after an explicit lock.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:01:36+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:01:36+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "implemented",
+          "implementation_ref": "git:dd526766bb6942c4a9de43f13b976296781e2708 (seed/seed.json from the confirmed hybrid; scripts/smoke.mjs hero heading; design.md v2; docs/content.md; README status)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T13:08:19+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "verified",
+          "implementation_ref": "git:dd526766bb6942c4a9de43f13b976296781e2708 (seed/seed.json from the confirmed hybrid; scripts/smoke.mjs hero heading; design.md v2; docs/content.md; README status)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on dd52676: audit 82 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; production captures, 7 of 8 byte-identical to the confirmed preview)"
+        },
+        {
+          "at": "2026-10-01T13:08:19+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:dd526766bb6942c4a9de43f13b976296781e2708 (seed/seed.json from the confirmed hybrid; scripts/smoke.mjs hero heading; design.md v2; docs/content.md; README status)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "reject_false_positive"
+          ],
+          "review_ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:dd526766bb6942c4a9de43f13b976296781e2708",
+          "to": "implemented",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on dd52676: audit 82 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; production captures, 7 of 8 byte-identical to the confirmed preview)"
+        },
+        {
+          "at": "2026-10-01T13:08:19+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "implemented",
+          "implementation_ref": "git:8b2381ee35db4938e70c0a2c728989547f14d258 (review round 1 fixes: design.md read-only rule, docs/content.md traceability claim and test-rule list; seed unchanged)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on dd52676: audit 82 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; production captures, 7 of 8 byte-identical to the confirmed preview)"
+        },
+        {
+          "at": "2026-10-01T16:28:51+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "verified",
+          "implementation_ref": "git:8b2381ee35db4938e70c0a2c728989547f14d258 (review round 1 fixes: design.md read-only rule, docs/content.md traceability claim and test-rule list; seed unchanged)",
+          "note": "Maintainer, 2026-10-01, with the imagery lock: 'lock it, fix the card text'; the fourth home card's copy must match its new sign-in code image.",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "review_result": "clean",
+          "review_source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258",
+          "to": "reopened",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
+        },
+        {
+          "at": "2026-10-01T16:28:51+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 ('lock it') after copy round 1: the home page in round-1 D's voice (Moments: hero 'Glance at the home screen. Know where your repos stand.', the features as moments on the home screen, in the app, in Quick Settings and before you sign in, facts 'What stays true all day') closing on A's call to action ('Help test RepoGlance'); the join page in D's voice (hero 'Get the test build on your Pixel.', feedback and privacy) with C's steps ('Three steps, in order') and build list ('In this build'). Page descriptions from D. Written into seed/seed.json.",
+          "from": "reopened",
+          "implementation_ref": "git:8b2381ee35db4938e70c0a2c728989547f14d258 (review round 1 fixes: design.md read-only rule, docs/content.md traceability claim and test-rule list; seed unchanged)",
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "review_result": "clean",
+          "review_source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258",
+          "to": "locked",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
+        },
+        {
+          "at": "2026-10-01T16:34:12+00:00",
+          "choice": "The confirmed copy hybrid of 2026-10-01 (home in D's voice with A's call to action; join page in D's voice with C's steps and build list), amended on the maintainer's instruction with the imagery lock: the fourth home card now reads 'When you sign in' and describes GitHub's device flow (a short code, Copy code & open GitHub, authorize on GitHub, RepoGlance never sees your password), with Explore with sample data as the no-account alternative, so the card matches its sign-in code image.",
+          "from": "locked",
+          "implementation_ref": "git:8b2381ee35db4938e70c0a2c728989547f14d258 (review round 1 fixes: design.md read-only rule, docs/content.md traceability claim and test-rule list; seed unchanged)",
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "review_result": "clean",
+          "review_source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258",
+          "to": "implemented",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
+        },
+        {
+          "at": "2026-10-01T16:34:12+00:00",
+          "choice": "The confirmed copy hybrid of 2026-10-01 (home in D's voice with A's call to action; join page in D's voice with C's steps and build list), amended on the maintainer's instruction with the imagery lock: the fourth home card now reads 'When you sign in' and describes GitHub's device flow (a short code, Copy code & open GitHub, authorize on GitHub, RepoGlance never sees your password), with Explore with sample data as the no-account alternative, so the card matches its sign-in code image.",
+          "from": "implemented",
+          "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (the home-sample block: 'When you sign in' and the device-flow copy; every other string unchanged)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:.grilltrack/proof/site-copy-006-verify-20261001.md (npm run verify exit 0 on 8b2381e: audit 83 files, 0 type errors, 9 content + 9 guard tests, 66 smoke checks; build inputs identical to dd52676, whose production captures stand)"
+        }
+      ],
+      "id": "site-copy-006",
+      "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (the home-sample block: 'When you sign in' and the device-flow copy; every other string unchanged)",
+      "question": "Which copy carries the locked layout on / and /testers: voice, structure, specificity and information order of the seed blocks?",
+      "rationale": "Maintainer, 2026-10-01: option 2 of the lock question, 'lock it, fix the card text'. Facts from the RepoGlance README's Auth section and the app's own device-code screen.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "reject_false_positive"
+          ],
+          "ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T13:08:19+00:00",
+          "source_identity": "git:dd526766bb6942c4a9de43f13b976296781e2708"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-copy-006-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T13:08:19+00:00",
+          "source_identity": "git:8b2381ee35db4938e70c0a2c728989547f14d258"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T16:47:13+00:00",
+          "source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T16:47:13+00:00",
+      "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d; production captures)"
+    },
+    {
+      "baseline_ref": "git:c0df035 (claude/site-copy; public/screenshots as shipped: sample-mode Play listing captures)",
+      "candidate_refs": [
+        ".grilltrack/work/imagery-round-1/candidates/a.json",
+        ".grilltrack/work/imagery-round-1/candidates/b.json",
+        ".grilltrack/work/imagery-round-1/candidates/c.json",
+        ".grilltrack/work/imagery-round-1/candidates/d.json",
+        ".grilltrack/work/imagery-round-1/candidates/e.json"
+      ],
+      "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+      "context_ref": ".grilltrack/proof/imagery-round-1-captures-20261001.md",
+      "created_at": "2026-10-01T15:33:39+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-look-005",
+        "site-copy-006"
+      ],
+      "domain": "site-imagery-007: the imagery of repoglance.com, reopened by the maintainer on 2026-10-01 ('the only thing I don't like is the imagery: all sample-data stuff; the slider images are cut off and don't correlate'), with the Open Graph image (og-image) to follow on the same imagery system; truth rule unchanged: only proven behaviour, never a live account's data",
+      "history": [
+        {
+          "at": "2026-10-01T16:28:51+00:00",
+          "choice": "Open: imagery round 1 presents five candidates built from the RepoGlance showcase-048 emulator captures (A Phones top crop, B Phones aimed crops, C Cut-outs, D Scheme-matched, E Widgets first); the maintainer picks per candidate or per block; the pick is written into seed/seed.json, public/screenshots/ and src/content/screenshots.ts only after an explicit lock.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T16:34:12+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T16:34:12+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "implemented",
+          "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (public/screenshots from the showcase captures; seed slugs; screenshots.ts; Screenshot.astro data-shot and sizes; site.css cut-out cards; AGENTS.md, CHARTER, design.md v3, docs/content.md; content test and smoke)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T16:47:13+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "verified",
+          "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (public/screenshots from the showcase captures; seed slugs; screenshots.ts; Screenshot.astro data-shot and sizes; site.css cut-out cards; AGENTS.md, CHARTER, design.md v3, docs/content.md; content test and smoke)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d: audit 100 files, 0 type errors, 9 content + 9 guard tests, 67 smoke checks; production captures, join page byte-identical to the confirmed preview)"
+        },
+        {
+          "at": "2026-10-01T16:47:13+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:53a2ede9950f6770b936bf274167496367326a4f (public/screenshots from the showcase captures; seed slugs; screenshots.ts; Screenshot.astro data-shot and sizes; site.css cut-out cards; AGENTS.md, CHARTER, design.md v3, docs/content.md; content test and smoke)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "reject_false_positive"
+          ],
+          "review_ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:53a2ede9950f6770b936bf274167496367326a4f",
+          "to": "implemented",
+          "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d: audit 100 files, 0 type errors, 9 content + 9 guard tests, 67 smoke checks; production captures, join page byte-identical to the confirmed preview)"
+        },
+        {
+          "at": "2026-10-01T16:47:13+00:00",
+          "choice": "Hybrid confirmed by the maintainer on 2026-10-01 after imagery round 1: candidate C (cut-outs) with the sign-in code screen on the 'Before you sign in' card and as the join-page hero phone. Images are the RepoGlance showcase-048 emulator captures (sample mode without the marker under fictional owners; the sign-in code is the fixture HK7N-4R2D), dark set, cut by build-assets.py: home hero = home screen phone (both widgets); cards = Pinned repos widget cut-out, catalog rows cut-out, Quick Settings row cut-out, sign-in code phone; join hero = sign-in code phone. Cards carry the element on the card with its own corners instead of a top-cropped phone.",
+          "from": "implemented",
+          "implementation_ref": "git:add4e6992eb859e22350069ecbadf145bb3a4645 (review round 1 fixes: REPO_HYGIENE.md, design.md counts and home-features bullet, seed screenshot labels, smoke and content alt checks, docs/content.md; images, slugs and copy unchanged)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of 0b48c9d: audit 100 files, 0 type errors, 9 content + 9 guard tests, 67 smoke checks; production captures, join page byte-identical to the confirmed preview)"
+        }
+      ],
+      "id": "site-imagery-007",
+      "implementation_ref": "git:add4e6992eb859e22350069ecbadf145bb3a4645 (review round 1 fixes: REPO_HYGIENE.md, design.md counts and home-features bullet, seed screenshot labels, smoke and content alt checks, docs/content.md; images, slugs and copy unchanged)",
+      "question": "Which imagery carries the locked layout and copy on / and /testers: which capture each slot shows, how it is framed and cropped, and whether it follows the colour scheme?",
+      "rationale": "Maintainer, 2026-10-01: 'I prefer C but the Before you sign in image sucks; the second screen where it shows the click to copy code and open GitHub page would look better and depict the sign-in flow better; that same image should also be updated on the Join page in the hero', then '2' (lock it, fix the card text) on the hybrid preview (proof: imagery-round-1-captures-20261001.md, imagery-hybrid-1-captures-20261001.md).",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "reject_false_positive"
+          ],
+          "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T16:47:13+00:00",
+          "source_identity": "git:53a2ede9950f6770b936bf274167496367326a4f"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T16:47:13+00:00",
+          "source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/site-imagery-007-verify-20261001.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:add4e6992eb859e22350069ecbadf145bb3a4645",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T16:47:13+00:00",
+      "verification_ref": "file:.grilltrack/proof/site-imagery-007-verify-20261001.md (npm run verify exit 0 in a fresh clone of add4e6992eb859e22350069ecbadf145bb3a4645; captures byte-identical to the merged head's)"
+    },
+    {
+      "baseline_ref": "git:257b4a108c5c040da956387ce012e71e56d792c5",
+      "candidate_refs": [],
+      "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+      "context_ref": "file:proof/hosting-20261001/PROOF.md#gate-2-custom-domains-2026-10-01; file:proof/cms-access-20261001/PROOF.md",
+      "created_at": "2026-10-01T23:20:11+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "cms-access-008"
+      ],
+      "domain": "www-redirect-and-cache-009: a permanent redirect from www.repoglance.com to the apex and edge caching for the anonymous public pages, both in the Worker, with the fail-closed /_emdash guard kept ahead of the cache",
+      "history": [
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "implemented",
+          "implementation_ref": "git:584726527a9c22d55fb7f1060f15106c8d8f2583 (first squashed slice; superseded by 885bc13 after review round 1)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "verified",
+          "implementation_ref": "git:584726527a9c22d55fb7f1060f15106c8d8f2583 (first squashed slice; superseded by 885bc13 after review round 1)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "file:proof/www-redirect-cache-20261001/PROOF.md (npm run verify exit 0 at 5847265 in a sibling worktree: 113 smoke checks)"
+        },
+        {
+          "at": "2026-10-01T23:20:11+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:584726527a9c22d55fb7f1060f15106c8d8f2583 (first squashed slice; superseded by 885bc13 after review round 1)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "human_gate"
+          ],
+          "review_ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 1: five findings, no blockers)",
+          "review_result": "findings",
+          "review_source_identity": "git:584726527a9c22d55fb7f1060f15106c8d8f2583",
+          "to": "implemented",
+          "verification_ref": "file:proof/www-redirect-cache-20261001/PROOF.md (npm run verify exit 0 at 5847265 in a sibling worktree: 113 smoke checks)"
+        },
+        {
+          "at": "2026-10-01T23:20:12+00:00",
+          "choice": "Proposed: (1) www redirect in the Worker: a new outer middleware entrypoint src/outer-middleware.ts composes sequence(wwwRedirect, namespaceGuard); every request whose Host is www.repoglance.com (any case, with or without port) answers 301 to https://repoglance.com plus the same path and query, including /_emdash (Access protects both hosts; the apex login continues), with no body; the adapter marks the 301 no-store at the edge. (2) Edge cache through Astro 7's route cache with the Cloudflare adapter's provider (cacheCloudflare()), which turns on Cloudflare's Workers Cache (cache.enabled in the generated deploy config; no new resource, no KV, no Cache API code); the page frontmatter calls Astro.cache.set with EmDash's cacheHint plus the collection tag pages, maxAge 300 and swr 60 for rendered 200 pages (CMS or seed) and sets Vary: Host, Cookie; everything else, including /_emdash (EmDash opts out), the 404 page and the 301, carries Cloudflare-CDN-Cache-Control: no-store by the adapter's default, so the fail-closed guard runs for every namespace request. Invalidation: EmDash purges the entry and collection tags through the Workers cache.purge binding on every write that changes live content; the cache is keyed by Worker version so a deploy starts cold; the 5-minute TTL is the backstop if a purge fails. (3) Proof: unit tests for the host logic and the cache policy; smoke checks for the www 301s, the apex and default host unaffected, the cache headers on / and /testers, no-store on the namespace, the 404 and the redirect; live after deploy: cf-cache-status MISS then HIT with TTFB before and after, www 301 after warming the apex (proves the Host variant), /_emdash still Access-gated.",
+          "from": "implemented",
+          "implementation_ref": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0 (round-1 fixes squashed with the slice: applyPageResponse with the seed-render validator rule, version_metadata binding CF_VERSION_METADATA for the version-scoped ETag and tag, three more unit tests, evidenced proof and docs; PR saari-co/repoglance-site#4)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "file:proof/www-redirect-cache-20261001/PROOF.md (npm run verify exit 0 at 5847265 in a sibling worktree: 113 smoke checks)"
+        }
+      ],
+      "id": "www-redirect-and-cache-009",
+      "implementation_ref": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0 (round-1 fixes squashed with the slice: applyPageResponse with the seed-render validator rule, version_metadata binding CF_VERSION_METADATA for the version-scoped ETag and tag, three more unit tests, evidenced proof and docs; PR saari-co/repoglance-site#4)",
+      "question": "How do www.repoglance.com requests reach the apex, and how are the public pages cached at the edge without caching the CMS namespace or serving stale content after a publish?",
+      "rationale": "Maintainer confirmed on 2026-10-01: lock it and go ahead.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "human_gate"
+          ],
+          "ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 1: five findings, no blockers)",
+          "result": "findings",
+          "reviewed_at": "2026-10-01T23:20:11+00:00",
+          "source_identity": "git:584726527a9c22d55fb7f1060f15106c8d8f2583"
+        },
+        {
+          "classifications": [],
+          "ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 2: clean, three wording nits applied in 5943b0e)",
+          "result": "clean",
+          "reviewed_at": "2026-10-01T23:20:12+00:00",
+          "source_identity": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0"
+        }
+      ],
+      "review_ref": "proof/www-redirect-cache-20261001/PROOF.md#review (round 2: clean, three wording nits applied in 5943b0e)",
+      "review_result": "clean",
+      "review_source_identity": "git:885bc13cca6de6f00fa17849ab7e1254ee0ff8d0",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-01T23:20:12+00:00",
+      "verification_ref": "file:proof/www-redirect-cache-20261001/PROOF.md (npm run verify exit 0 at 885bc13 in a sibling worktree: audit 91 files, astro check 0 errors, 9 content + 9 guard + 12 edge tests, build, 115 smoke checks; live HIT, Host and Cookie variants and purge pending the gated deploy)"
+    },
+    {
+      "baseline_ref": "git:b32f2ea341db0335bfe76ef95f77990823075671 (main; public/og-image.png sha256 68a0ffa50e5d48fb3bf792664746d1594e4063b477bcc98b962ee5314258b1b8, 1024x500)",
+      "candidate_refs": [],
+      "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+      "context_ref": ".grilltrack/work/og-round-1/picker.json",
+      "created_at": "2026-10-01T23:31:01+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-look-005",
+        "site-copy-006",
+        "site-imagery-007"
+      ],
+      "domain": "og-image-009: the Open Graph and link-preview image of repoglance.com in the decided look (design.md v3): one 1200x630 image served as og:image for both pages, built from the ink band, the faint commit-eye rings, the hero line, the commit-eye mark, system faces and optionally a showcase cut-out, judged in link-preview card mimics fed by the real meta tags; replaces the Play feature graphic (1024x500)",
+      "history": [
+        {
+          "at": "2026-10-02T02:16:21+00:00",
+          "choice": "Open: OG round 1 presents five 1200x630 candidates in the decided look (A text only, B site hero with the phone, C floating widget cut-out, D mark-led, E split panel), each rendered through the real og:title, og:description and og:site_name of the production build in Slack/Discord-, X- and messaging-style card mimics plus a square centre crop; the pick becomes public/og-image.png only after an explicit lock.",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-02T02:29:22+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-02T02:31:56+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "implemented",
+          "implementation_ref": "file:scripts/og-image.mjs; file:scripts/og-image/og-image.html; file:public/og-image.png (1200x630, sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1); file:src/layouts/Site.astro (og:image:type/width/height/alt); file:scripts/smoke.mjs; file:tests/content.test.mjs; file:docs/content.md; file:design.md (v4); branch claude/site-og-image",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-02T02:46:07+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "verified",
+          "implementation_ref": "file:scripts/og-image.mjs; file:scripts/og-image/og-image.html; file:public/og-image.png (1200x630, sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1); file:src/layouts/Site.astro (og:image:type/width/height/alt); file:scripts/smoke.mjs; file:tests/content.test.mjs; file:docs/content.md; file:design.md (v4); branch claude/site-og-image",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md"
+        },
+        {
+          "at": "2026-10-02T02:50:44+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "needs_reverification",
+          "implementation_ref": "file:scripts/og-image.mjs; file:scripts/og-image/og-image.html; file:public/og-image.png (1200x630, sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1); file:src/layouts/Site.astro (og:image:type/width/height/alt); file:scripts/smoke.mjs; file:tests/content.test.mjs; file:docs/content.md; file:design.md (v4); branch claude/site-og-image",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "review_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:adac3fb2f8e157ff8b20b813be7905da67fb9a30",
+          "to": "implemented",
+          "verification_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md"
+        },
+        {
+          "at": "2026-10-02T02:50:44+00:00",
+          "choice": "Candidate C, 'Widget cut-out', locked by the maintainer on 2026-10-01 ('C looks to be my favorite so far', then 'lock C'): a 1200x630 ink band (#1b1d21) with the commit-eye rings at 5% behind the right edge, the wordmark (mark and RepoGlance) top-left, the mono eyebrow 'Read-only GitHub widgets for Pixel' and the hero line 'Glance at the home screen. Know where your repos stand.' at the left in system faces, the Pinned repos widget cut-out (header and three rows of made-up repositories, from the showcase-048 home-screen capture) floating at the right with its own corners and a hairline, and repoglance.com in mono at the bottom left. Rejected: A words only, B hero with phone, D mark first, E split panel.",
+          "from": "implemented",
+          "implementation_ref": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391 (review round 1 fixes: scripts/og-image.mjs injection guard and Chrome spawn handling, tests/content.test.mjs alt tied to the seed heading, README.md v4 line, proof wording) on top of git:adac3fb2f8e157ff8b20b813be7905da67fb9a30 (the implementation: scripts/og-image.mjs, scripts/og-image/og-image.html, public/og-image.png sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1, src/layouts/Site.astro og:image:type/width/height/alt, scripts/smoke.mjs, tests/content.test.mjs, docs/content.md, design.md v4)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md"
+        }
+      ],
+      "id": "og-image-009",
+      "implementation_ref": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391 (review round 1 fixes: scripts/og-image.mjs injection guard and Chrome spawn handling, tests/content.test.mjs alt tied to the seed heading, README.md v4 line, proof wording) on top of git:adac3fb2f8e157ff8b20b813be7905da67fb9a30 (the implementation: scripts/og-image.mjs, scripts/og-image/og-image.html, public/og-image.png sha256 b607c73c7e31157dc157066e8db4d544958a005b950302e462ba8574912cced1, src/layouts/Site.astro og:image:type/width/height/alt, scripts/smoke.mjs, tests/content.test.mjs, docs/content.md, design.md v4)",
+      "question": "What does a shared link to repoglance.com show as its preview image?",
+      "rationale": "Maintainer's pick on the live picker; the widget shows what the app is in one glance and its rows stay readable in the Slack, Discord and X card sizes.",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-02T02:46:07+00:00",
+          "source_identity": "git:adac3fb2f8e157ff8b20b813be7905da67fb9a30"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-02T02:52:56+00:00",
+          "source_identity": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/site-og-image-009-verify-20261001.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-02T02:52:56+00:00",
+      "verification_ref": "npm run verify exit 0 on git:852e8e9302e7a8a5cf3cd332d9fbad9b58229391 (Node 22.23.2; audit 105 files, 71 scanned; 0 type errors; 10 content and 9 guard tests; Cloudflare build; 69 smoke checks incl. the served og-image.png byte-equal to the committed 1200x630 file); scripts/og-image.mjs --check identical; .grilltrack/proof/site-og-image-009-verify-20261001.md"
+    },
+    {
+      "baseline_ref": "git:21cc5e8143ff0acbb730f0fb4b9737a999e84778 (origin/main after PR #5; branch claude/site-scheme-imagery)",
+      "candidate_refs": [
+        ".grilltrack/work/scheme-round-1/picker.json (ignored; validated)",
+        ".grilltrack/proof/scheme-round-1-captures-20261006.md"
+      ],
+      "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+      "context_ref": "design.md v4 (unresolved: scheme-matched page imagery); docs/content.md (source hashes, crop boxes, cutting recipe)",
+      "created_at": "2026-10-06T22:08:46+00:00",
+      "deferred_reason": null,
+      "delivery_ref": null,
+      "dependencies": [
+        "site-imagery-007",
+        "site-look-005"
+      ],
+      "domain": "site-scheme-imagery-010: scheme-matched page imagery of repoglance.com; which showcase capture (dark or light) each of the six locked image slots shows per colour scheme, and any treatment the switch needs; subject, crop and slot assignments stay as locked in design.md v4 (site-imagery-007); judged on the real pages at 375 and 1280 px in both schemes",
+      "history": [
+        {
+          "at": "2026-10-07T01:37:37+00:00",
+          "choice": "pending: round 1 of five candidates on the live picker",
+          "from": "proposed",
+          "implementation_ref": null,
+          "note": "user accepted the scoped decision",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "locked",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T01:43:14+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T01:43:14+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "implemented",
+          "implementation_ref": "git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md, README.md)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T01:50:49+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "verified",
+          "implementation_ref": "git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md, README.md)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "npm run verify exit 0 on the tree of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (Node 22.23.2; audit 139 files, 81 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); production captures in both schemes byte-identical to the confirmed hybrid preview; .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:50:49+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md, README.md)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive",
+            "human_gate"
+          ],
+          "review_ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97",
+          "to": "implemented",
+          "verification_ref": "npm run verify exit 0 on the tree of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (Node 22.23.2; audit 139 files, 81 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); production captures in both schemes byte-identical to the confirmed hybrid preview; .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:51:37+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "implemented",
+          "implementation_ref": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (review round 1 fix: README.md Look line; proof section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "npm run verify exit 0 on the tree of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (Node 22.23.2; audit 139 files, 81 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); production captures in both schemes byte-identical to the confirmed hybrid preview; .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:53:14+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "verified",
+          "implementation_ref": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (review round 1 fix: README.md Look line; proof section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md)",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "npm run verify exit 0 on the tree of git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:53:14+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (review round 1 fix: README.md Look line; proof section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md)",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix"
+          ],
+          "review_ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-1 (the note on the history: 4b2bee5 holds only the ledger entries, not the README fix its message claims)",
+          "review_result": "findings",
+          "review_source_identity": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7",
+          "to": "implemented",
+          "verification_ref": "npm run verify exit 0 on the tree of git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:53:47+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "implemented",
+          "implementation_ref": "git:41c283e829498c49c2247a66b78cf6cc53318843 (review round 1 fix: README.md Look line; the proof's review section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md); 4b2bee5 between them carries only ledger entries",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "npm run verify exit 0 on the tree of git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:57:10+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "verified",
+          "implementation_ref": "git:41c283e829498c49c2247a66b78cf6cc53318843 (review round 1 fix: README.md Look line; the proof's review section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md); 4b2bee5 between them carries only ledger entries",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "npm run verify exit 0 on the tree of git:41c283e829498c49c2247a66b78cf6cc53318843 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:57:10+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "needs_reverification",
+          "implementation_ref": "git:41c283e829498c49c2247a66b78cf6cc53318843 (review round 1 fix: README.md Look line; the proof's review section) on top of git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation: public/screenshots/*-light-*.webp, src/components/Screenshot.astro, src/components/Hero.astro, src/content/screenshots.ts, tests/content.test.mjs, scripts/smoke.mjs, design.md v5, docs/content.md); 4b2bee5 between them carries only ledger entries",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "review_ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-2",
+          "review_result": "findings",
+          "review_source_identity": "git:41c283e829498c49c2247a66b78cf6cc53318843",
+          "to": "implemented",
+          "verification_ref": "npm run verify exit 0 on the tree of git:41c283e829498c49c2247a66b78cf6cc53318843 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        },
+        {
+          "at": "2026-10-07T01:57:56+00:00",
+          "choice": "The confirmed hybrid: E on the home page and D on the join page. The home hero follows the band (the dark home-screen capture on the ink band of the light scheme, the light capture on the near-white band of the dark scheme); the four home cards follow the page (light cut-outs on the light scheme, dark on the dark); the join hero follows the page (the light sign-in phone on the ink band of the light scheme, the dark one on the near-white band of the dark scheme). Subjects, crops and slot assignments stay as locked in site-imagery-007; no treatment change.",
+          "from": "implemented",
+          "implementation_ref": "git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d (review round 2 fix: the proof's recommendation reference and round-2 section; the ledger's recommendation) on top of git:41c283e829498c49c2247a66b78cf6cc53318843 (the README fix) and git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation)",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "npm run verify exit 0 on the tree of git:41c283e829498c49c2247a66b78cf6cc53318843 (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (the fix touched README.md, the proof and the ledger only); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+        }
+      ],
+      "id": "site-scheme-imagery-010",
+      "implementation_ref": "git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d (review round 2 fix: the proof's recommendation reference and round-2 section; the ledger's recommendation) on top of git:41c283e829498c49c2247a66b78cf6cc53318843 (the README fix) and git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97 (the implementation)",
+      "question": "When the page is on the light scheme, should the images be the light showcase captures (and the dark ones on the dark scheme), and how: a plain picture swap on every slot, the swap with the cut-outs ringed per scheme, light throughout, the phones following with the cut-outs kept dark, or each image following the surface it sits on?",
+      "rationale": "Maintainer, 2026-10-06: 'E for homepage D for join page' on the round-1 picker, then 'lock it' on the hybrid previewed alone (proof: scheme-round-1-captures-20261006.md, scheme-hybrid-1-captures-20261006.md).",
+      "repair_required": false,
+      "review_classifications": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive",
+            "human_gate"
+          ],
+          "ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T01:50:49+00:00",
+          "source_identity": "git:e1f0ebbe675d29dbf5e74a98c388b50417ba1b97"
+        },
+        {
+          "classifications": [
+            "required_fix"
+          ],
+          "ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-1 (the note on the history: 4b2bee5 holds only the ledger entries, not the README fix its message claims)",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T01:53:14+00:00",
+          "source_identity": "git:4b2bee5b65fd62b4d25a974e17f581c2135c8bd7"
+        },
+        {
+          "classifications": [
+            "required_fix",
+            "defer"
+          ],
+          "ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-2",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T01:57:10+00:00",
+          "source_identity": "git:41c283e829498c49c2247a66b78cf6cc53318843"
+        },
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-3",
+          "result": "clean",
+          "reviewed_at": "2026-10-07T01:58:50+00:00",
+          "source_identity": "git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md#review-round-3",
+      "review_result": "clean",
+      "review_source_identity": "git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d",
+      "status": "verified",
+      "superseded_by": null,
+      "updated_at": "2026-10-07T01:58:50+00:00",
+      "verification_ref": "npm run verify exit 0 on the tree of git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d (Node 22.23.2; audit 140 files, 82 scanned; 0 type errors; 11 content, 9 guard and 12 edge tests; Cloudflare build; 124 smoke checks); the production captures of e1f0ebb's tree stand (since then only README.md, the proof and the ledger changed); .grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+    }
+  ],
+  "last_activation": {
+    "at": "2026-10-07T02:26:34+00:00",
+    "mechanism": "implicit"
+  },
+  "last_pause": {
+    "artifact_refs": [
+      "https://github.com/saari-co/repoglance-site/pull/7",
+      ".grilltrack/proof/site-scheme-imagery-010-verify-20261006.md"
+    ],
+    "next_safe_action": "On the maintainer's word: close the track (closeout facts: verified results, superseded choices, the deferrals of review round 1, the proof and delivery references) or open the next grill (screenshot-options-011 or typography-010); if main moves before the merge, merge origin/main into claude/site-scheme-imagery with the ledger united and re-verify.",
+    "paused_at": "2026-10-07T01:59:25+00:00",
+    "reason": "site-scheme-imagery-010 implemented, verified and reviewed clean at git:2d14557eda13acd04802f6c5ba0b53b3cfd1a05d; delivered as PR saari-co/repoglance-site#7 (branch claude/site-scheme-imagery, head 7bc66d2 the ledger commit) on the maintainer's separate request. Waiting on the maintainer's gates: merge after CI is green and a review is clean on the exact head, then deploy. The recommendation is closeout, which the maintainer confirms.",
+    "resumed_at": "2026-10-07T02:26:34+00:00"
+  },
+  "pause": null,
+  "recommendation": {
+    "alternatives": [
+      "screenshot-options-011: a small hygiene round on the thirteen seed options the CMS can pick: retire or re-word the unused connect-or-explore-sample option (its light cut shows the button text 'Explore with sample data' and its alt says 'Sign in with GitHub' where the screen reads 'Connect GitHub'; both pre-existing, deferred in review round 1 of site-scheme-imagery-010), and close the gap that no check catches an orphan WebP under public/screenshots/ whose slug is not a seed option.",
+      "typography-010: a font-role round within system faces (the no-bundled-fonts constraint stands), judged on the real pages; or site-links-010 (a maintainer action: the Play listing's website field and the RepoGlance README pointing at https://repoglance.com)."
+    ],
+    "reason": "Every slot the design contract names is now decided and shipped from one source of truth; the deferred findings of this cycle are hygiene, not product decisions, and the outside links need the maintainer's accounts.",
+    "recommended": "closeout: the charter's two pages are built, hosted behind the www redirect and the edge cache, and every visible decision (the look, the copy, the imagery, the link-preview image, the colour scheme of the imagery) is locked, verified and reviewed on an exact commit; what remains is the maintainer's (merge and deploy this cycle, the Play opt-in link when Play Console shows it, the CMS entry's pre-copy-lock description, the outside links of site-links-010), so no meaningful grill is left in the track.",
+    "recorded_at": "2026-10-07T01:57:10+00:00"
+  },
+  "schema_version": "grilltrack/v0.1",
+  "status": "closed",
+  "title": "repoglance.com website",
+  "track_id": "gt-20261001102301-89ec89",
+  "updated_at": "2026-10-07T02:27:03+00:00"
+}

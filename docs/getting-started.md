@@ -4,6 +4,13 @@
 
 - Node 22.23.2 (`.nvmrc`; `mise` and `nvm` both read it)
 - npm (ships with Node)
+- For the CMS sync and check against repoglance.com: `cloudflared`
+  (Homebrew `cloudflared`), used only to cache your own Access login
+
+`package.json` pins `@codemirror/language` to 6.12.4 through `overrides`:
+6.13.0 (published 2026-10-07) imports `@codemirror/streamparser` without
+declaring it and breaks `astro build` through EmDash's admin bundle. Drop
+the override once an upstream release declares the dependency.
 
 ## Develop
 
@@ -39,6 +46,15 @@ npm run verify
 ```
 
 See the README for what it covers. `npm run test:smoke` alone needs a build.
+
+## The CMS and the live site
+
+`npm run cms:check` reports every difference between `seed/seed.json` and
+the CMS, `npm run cms:sync` writes the seed into the CMS and publishes it,
+and `npm run check:live` (after a build) compares the live pages with a seed
+render. The runbook, the identity each needs and when to run them are in
+[cms-access.md](cms-access.md#keeping-the-cms-equal-to-the-seed). Against
+the local dev server pass `-- --url http://127.0.0.1:<port>`.
 
 ## Captures
 

@@ -29,6 +29,11 @@ closed test. Assume every committed byte is public.
 
 ## Boundaries
 
+- The seed is the only source of the CMS: `scripts/cms-sync.mjs` is the only
+  writer of block types and pages on repoglance.com, run by the maintainer
+  after a deploy from their own Access login; `npm run check:live` is the
+  proof that the live pages equal the seed (`docs/cms-access.md`). Nothing
+  else, and no agent through a browser session, edits the CMS.
 - Native upstream EmDash blocks only: block types are declared in
   `seed/seed.json` and rendered with `Blocks` from `emdash/ui`. No
   `@dinkuskit/*` package may be added; the DinkusKit blocks package is being

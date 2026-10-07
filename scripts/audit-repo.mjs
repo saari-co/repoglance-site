@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
 assert.equal(manifest.name, '@saari-co/repoglance-site');
 assert.equal(manifest.private, true);
-assert.equal(manifest.dependencies.emdash, '1.0.1');
+assert.equal(manifest.dependencies.emdash, '1.2.0');
 assert.equal(manifest.emdash?.seed, 'seed/seed.json');
 // Native upstream EmDash blocks only: the DinkusKit blocks package is being
 // archived for proof purposes and must never become a dependency here.
