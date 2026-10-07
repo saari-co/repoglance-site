@@ -500,21 +500,10 @@
     }
   ],
   "last_activation": {
-    "at": "2026-10-07T19:17:45+00:00",
+    "at": "2026-10-07T21:21:13+00:00",
     "mechanism": "implicit"
   },
   "last_pause": {
-    "artifact_refs": [
-      "https://github.com/saari-co/repoglance-site/pull/10",
-      "https://github.com/saari-co/repoglance-site/pull/11",
-      "proof/cms-sync-20261007/PROOF.md#production-sync-2026-10-07-1426-utc-maintainer"
-    ],
-    "next_safe_action": "On the maintainer's word: open the recommended live-check-schedule-013 (or screenshot-options-011, or the outside links) as the next grill in this track, or close the track if no meaningful grill remains. PR #11 is the maintainer's to merge.",
-    "paused_at": "2026-10-07T14:28:34+00:00",
-    "reason": "cms-sync-011 complete in production (2026-10-07 14:26 UTC): the maintainer ran cloudflared access login, npm run cms:sync (hero and feature version 2 created and activated, both pages written from the seed and published, result equal) and npm run check:live (both pages equal, live source cms). The live source is the CMS, equal to the seed. Both decisions verified and reviewed clean; delivery PR #10 merged as 5d02a73 and deployed as Worker version afc3e3fb; proof PR #11 (proof and ledger only) open.",
-    "resumed_at": "2026-10-07T19:17:45+00:00"
-  },
-  "pause": {
     "artifact_refs": [
       "https://github.com/saari-co/repoglance-site/pull/13",
       "proof/cms-first-20261007/PROOF.md",
@@ -522,7 +511,18 @@
     ],
     "next_safe_action": "After the merge and the maintainer's slice-2 gates: run one real admin edit and one forced failure in production, record the results (the cms-edit PR, its auto-merge, the failure email) in proof/cms-first-20261007/PROOF.md and the ledger, then open slice 3 (the agent draft lane) or the chosen alternative. If main moves before the merge, merge origin/main into claude/cms-authoring with the ledger united and re-verify.",
     "paused_at": "2026-10-07T21:15:10+00:00",
-    "reason": "cms-first-013 slice 1 implemented, verified and reviewed clean at git:9a7fbb4b5e2abc44bc181b0e521723a5dbcc4109 after four rounds (round 1 at git:b8b37900fa89726571bc51ebbe092aeda8fa416b with 14 findings, round 2 at git:b98a7c019aa8571aa5e8f30add43d9d30e6bc06e with 7, round 3 at git:46af3218beb0d14ce09ed80209f54d093a588caa with 2, round 4 clean); delivered as PR saari-co/repoglance-site#13 on the maintainer's instruction, CI green. Waiting on the maintainer's gates: merge, then slice 2 (token secret, auto-merge and ruleset, Email Routing and the recipient var, deploy, one real edit, one forced failure). Open human-gate items from the reviews: the ruleset must require pull requests on main (the token has Contents write); the maintainer's role mailbox is quoted in the committed ledger text of the public repository (removed from the docs); scheduled publishes and metadata-only saves are recorded limits of the mirror."
+    "reason": "cms-first-013 slice 1 implemented, verified and reviewed clean at git:9a7fbb4b5e2abc44bc181b0e521723a5dbcc4109 after four rounds (round 1 at git:b8b37900fa89726571bc51ebbe092aeda8fa416b with 14 findings, round 2 at git:b98a7c019aa8571aa5e8f30add43d9d30e6bc06e with 7, round 3 at git:46af3218beb0d14ce09ed80209f54d093a588caa with 2, round 4 clean); delivered as PR saari-co/repoglance-site#13 on the maintainer's instruction, CI green. Waiting on the maintainer's gates: merge, then slice 2 (token secret, auto-merge and ruleset, Email Routing and the recipient var, deploy, one real edit, one forced failure). Open human-gate items from the reviews: the ruleset must require pull requests on main (the token has Contents write); the maintainer's role mailbox is quoted in the committed ledger text of the public repository (removed from the docs); scheduled publishes and metadata-only saves are recorded limits of the mirror.",
+    "resumed_at": "2026-10-07T21:21:13+00:00"
+  },
+  "pause": {
+    "artifact_refs": [
+      "https://github.com/saari-co/repoglance-site/pull/13",
+      "proof/cms-first-20261007/PROOF.md#deploy-2026-10-07-2119-utc",
+      ".grilltrack/proof/cms-first-013-verify-20261007.md"
+    ],
+    "next_safe_action": "The maintainer's slice-2 gates: the GITHUB_MIRROR_TOKEN secret, auto-merge on and a ruleset on main requiring a pull request and the site checks, Email Routing on repoglance.com with the mailbox verified, REPOGLANCE_MIRROR_EMAIL_TO in the deploy env, a redeploy, one real admin edit (expect a cms-edit PR that auto-merges) and one forced failure (expect the email). Then record the production results in proof/cms-first-20261007/PROOF.md and the ledger and open slice 3 or the chosen alternative.",
+    "paused_at": "2026-10-07T21:21:13+00:00",
+    "reason": "cms-first-013 slice 1 delivered and deployed on the maintainer's instruction (2026-10-07): PR #13 merged as d9b05f55fee42d280de68bcd0f5acbf3f24a000b; main built with the Access team domain and deployed as Worker version 27e90382-0642-4786-bf8c-2a979748120e with both custom domains, the cron and the send_email binding; live: both pages 200 from the CMS with this build's validator, the editor and a token-only API call answer the Access login, www redirects, check:live equal. The mirror and the email are dormant until slice 2 (no token secret, no recipient var). Open human-gate items: the ruleset must require pull requests on main; the role mailbox is quoted in the committed ledger text."
   },
   "predecessor_track_id": "gt-20261001102301-89ec89",
   "recommendation": {
@@ -538,5 +538,5 @@
   "status": "paused",
   "title": "repoglance.com website: CMS sync and maintenance",
   "track_id": "gt-20261007120417-1b0a54",
-  "updated_at": "2026-10-07T21:15:10+00:00"
+  "updated_at": "2026-10-07T21:21:13+00:00"
 }

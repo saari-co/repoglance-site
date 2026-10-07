@@ -125,3 +125,36 @@ admission and its forbidden routes.
 In `docs/cms-access.md`, "Gates for the mirror": the token secret, the
 repository settings, Email Routing and the recipient, the deploy, one real
 edit and one forced failure.
+
+## Deploy (2026-10-07 21:19 UTC)
+
+On the maintainer's instruction ("merge #13 and deploy for me"):
+
+- PR saari-co/repoglance-site#13 merged with a merge commit,
+  `d9b05f55fee42d280de68bcd0f5acbf3f24a000b`, after CI (three checks, the
+  auto-merge workflow skipping itself) was green and ClawSweeper's review
+  of the first head reported no findings.
+- `main` at that commit built in this worktree with the Access team domain
+  from the ignored deploy config (copied for the build and removed
+  afterwards; nine server files reference the team domain),
+  `prepare:deploy` with both custom domains, the production D1 and R2
+  names, worker loaders, cache, version metadata, the cron, the vars
+  `GITHUB_MIRROR_REPO` and `MIRROR_EMAIL_FROM`, and the `send_email`
+  binding `MIRROR_EMAIL` (no recipient var yet, so the mirror is dormant);
+  then `wrangler deploy`: Worker version
+  `27e90382-0642-4786-bf8c-2a979748120e`. Wrangler accepted the binding as
+  "unrestricted", which is why the recipient is a deploy-time var.
+
+Live after the deploy (curl from this Mac, fresh cache keys):
+
+| Request | Result |
+| --- | --- |
+| `GET /`, `GET /testers` | 200, `data-content-source="cms"`, the locked headings, `cache-control: no-cache`, `last-modified: Wed, 07 Oct 2026 21:19:42 GMT` (this build) |
+| anonymous `GET /_emdash/admin` | 302 to the team's Access login |
+| `GET /_emdash/api/content/pages` with a Bearer header and no Access JWT | 302 to the Access login (the edge; the gate's machine path is never reached without a verified JWT) |
+| `GET https://www.repoglance.com/` | 301 to `https://repoglance.com/` |
+| `npm run check:live` from the deployed build | both `<main>` equal, live source `cms` |
+
+The mirror and the failure email are dormant in production until the
+slice-2 gates: a publish logs `mirror not configured (GITHUB_MIRROR_TOKEN,
+the send_email binding's recipient … missing)` and nothing else.
