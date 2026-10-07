@@ -154,6 +154,7 @@ const at = new Date();
 const branch = `${BRANCH_PREFIX}${at.toISOString().replace(/\.\d{3}Z$/, 'Z').replace(/[:]/g, '').replace('T', '-').replace('Z', 'z')}`;
 const worktree = await mkdtemp(join(tmpdir(), 'repoglance-cms-mirror-'));
 let prUrl;
+let failure;
 try {
   await git(root, 'fetch', 'origin', 'main');
   await git(root, 'worktree', 'add', '--detach', worktree, 'origin/main');
@@ -174,12 +175,19 @@ try {
     say(`Result: ${prUrl} opened from ${branch}; auto-merge is armed by the cms-edit workflow when the checks are green.`);
   }
 } catch (error) {
-  fail(1, `could not open the mirror PR: ${error instanceof Error ? error.message : String(error)}\nThe live CMS is unchanged; retry, or run with --no-pr and open the PR yourself.`);
+  failure = `could not open the mirror PR: ${error instanceof Error ? error.message : String(error)}\nThe live CMS is unchanged; retry, or run with --no-pr and open the PR yourself.`;
 } finally {
+  // Always drop the throwaway worktree, also when the push or gh failed.
   try {
     await git(root, 'worktree', 'remove', '--force', worktree);
   } catch {
     await rm(worktree, { recursive: true, force: true });
+    try {
+      await git(root, 'worktree', 'prune');
+    } catch {
+      // nothing more to clean
+    }
   }
 }
+if (failure) fail(1, failure);
 if (args.json) console.log(JSON.stringify({ ...result, action: prUrl ? 'pr' : 'none', prUrl: prUrl ?? null, branch: prUrl ? branch : null }, null, 2));

@@ -172,26 +172,38 @@ live at once and persists; nothing ever writes copy from `seed/seed.json`
 into the CMS after the one-time bootstrap (EmDash setup imports the seed
 when a brand-new site is first set up, and never again).
 
-**The mirror.** After every publish or unpublish of a page, the Worker
+**The mirror.** After every request that changes what is live on a page
+(publish, unpublish, restore from the trash, trash or permanent delete, and
+the on-page visual-editing toolbar's publish), the Worker
 (`src/cms/mirror.ts`, triggered by `src/cms/mirror-trigger.ts` after the
 response is sent) reads the live pages from D1, rebuilds `seed/seed.json`
 on top of `main`, and through a GitHub fine-grained token scoped to this
 repository pushes a `cms-edit/<timestamp>` branch and opens a PR titled
-"CMS edit: …" with the `cms-edit` label, or adds a commit to the open one.
-The token may push a branch and open or update a PR; it never merges. The
-`CMS edit auto-merge` workflow arms auto-merge (merge commit) for such a PR
-and GitHub merges it when the required checks are green, so the repository
-lags the live site by minutes. A published edit that fails a truth test in
+"CMS edit: …" with the `cms-edit` label, or adds a commit to the open one;
+when live comes back to what `main` already holds, it closes the open
+mirror PR instead. The token may push a branch and open, update or close a
+PR; it never merges. The `CMS edit auto-merge` workflow arms auto-merge
+(merge commit) for a PR that changes only `seed/seed.json`, and GitHub
+merges it when the required checks are green, so the repository lags the
+live site by minutes. A published edit that fails a truth test in
 `tests/content.test.mjs` leaves its PR open and red: fix the wording in the
-admin (the next publish updates the PR) or change the rule in that PR.
+admin (the next publish updates the PR, or closes it when the fix restores
+what `main` holds) or change the rule in that PR.
+
+Two recorded limits: a scheduled publish fires from the cron, not from a
+request, and is mirrored at the next admin action or by `npm run
+cms:mirror`; a save that changes a published page's metadata without a
+publish is not mirrored either, since the rendered pages use none of it.
 
 **Never silent.** If the mirror fails for any reason (GitHub unreachable, a
 token error, a database error), the Worker emails the maintainer through
 Cloudflare Email Routing (`send_email` binding `MIRROR_EMAIL`, sender
 `MIRROR_EMAIL_FROM`, recipient `MIRROR_EMAIL_TO`) with the page, the error
-and the manual re-run below. Until the token and the email channel exist
-(the gates below) the mirror logs that it is unconfigured and does nothing
-else; the manual mirror is the safety net.
+and the manual re-run below. The mirror runs only when both the GitHub
+token and the email channel are configured, so a failure can always reach
+you; until then (the gates below) it logs that it is unconfigured, names
+what is missing, and does nothing else. The manual mirror is the safety
+net in every case.
 
 **Commands**, all read-only against the CMS except `cms:sync`:
 
@@ -240,15 +252,17 @@ for block types. Never sync before the deploy.
    npx wrangler secret put GITHUB_MIRROR_TOKEN --name repoglance-site
    ```
 
-2. Repository settings: **Allow auto-merge** on; a ruleset on `main`
-   requiring the `Site checks` status (and, if you want, the workflow
-   validation) before merging, so auto-merge waits for green.
-3. Email: **Email Routing** enabled on the `repoglance.com` zone and
-   `agent@smokyproduct.co` verified as a destination address of the
-   account. The `send_email` binding is declared in `wrangler.jsonc`; the
-   recipient is a deploy-time var (`REPOGLANCE_MIRROR_EMAIL_TO` in the
-   ignored `.local/deploy.env`, written into the config by
-   `prepare:deploy`), never in source.
+2. Repository settings: **Allow auto-merge** on; a ruleset on `main` that
+   **requires a pull request** before merging (the token has Contents write,
+   so this is what keeps it from pushing to `main` directly) and requires the
+   `Site checks` status (and, if you want, the workflow validation), so
+   auto-merge waits for green.
+3. Email: **Email Routing** enabled on the `repoglance.com` zone and the
+   maintainer's mailbox verified as a destination address of the account.
+   The `send_email` binding is declared in `wrangler.jsonc`; the recipient
+   is a deploy-time var (`REPOGLANCE_MIRROR_EMAIL_TO` in the ignored
+   `.local/deploy.env`, written into the config by `prepare:deploy`), never
+   in source.
 4. Deploy (below), then one real edit in the admin to prove publish, PR and
    auto-merge, and one forced failure (a wrong token) to prove the email.
 

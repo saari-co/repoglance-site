@@ -6,8 +6,10 @@ name: CMS edit auto-merge
 # GitHub's auto-merge (merge commit) for such a PR; GitHub merges it only
 # when the branch's required checks are green, which is what keeps a
 # published edit that breaks a truth test open and red. The mirror's own
-# token never merges anything. Needs the repository setting "Allow
-# auto-merge" and a ruleset on main requiring the site checks (maintainer).
+# token never merges anything. A PR that touches anything but seed/seed.json
+# is not a mirror and is left for a human. Needs the repository setting
+# "Allow auto-merge" and a ruleset on main requiring the site checks
+# (maintainer).
 on:
   pull_request:
     types: [opened, reopened, labeled, synchronize]
@@ -27,7 +29,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Arm auto-merge (merge commit)
+      - name: Arm auto-merge (merge commit) for a PR that changes only the seed
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -35,9 +37,28 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if gh pr merge "$PR_NUMBER" --repo "$REPO" --auto --merge; then
-            echo "Auto-merge armed for #$PR_NUMBER; GitHub merges it when the required checks pass."
-          else
-            echo "::error::Could not arm auto-merge for #$PR_NUMBER. The repository needs 'Allow auto-merge' on and a ruleset on main requiring the site checks (docs/cms-access.md). The PR stays open for a manual merge."
+          files="$(gh pr diff "$PR_NUMBER" --repo "$REPO" --name-only)"
+          if [ "$files" != "seed/seed.json" ]; then
+            echo "::error::#$PR_NUMBER changes more than seed/seed.json; a CMS mirror never does. Left for a human:"
+            echo "$files"
             exit 1
           fi
+          if gh pr merge "$PR_NUMBER" --repo "$REPO" --auto --merge 2>"$RUNNER_TEMP/arm.err"; then
+            echo "Auto-merge armed for #$PR_NUMBER; GitHub merges it when the required checks pass."
+            exit 0
+          fi
+          cat "$RUNNER_TEMP/arm.err"
+          # GitHub refuses to arm a PR it could merge right now. Merge only when
+          # every check on the head has already concluded successfully.
+          if grep -qi "clean status" "$RUNNER_TEMP/arm.err"; then
+            pending="$(gh pr view "$PR_NUMBER" --repo "$REPO" --json statusCheckRollup --jq '[.statusCheckRollup[] | select((.conclusion // .state) as $c | ($c | ascii_upcase) | IN("SUCCESS","NEUTRAL","SKIPPED") | not)] | length')"
+            if [ "$pending" = "0" ]; then
+              gh pr merge "$PR_NUMBER" --repo "$REPO" --merge
+              echo "Checks had already passed; #$PR_NUMBER merged."
+              exit 0
+            fi
+            echo "::error::Could not arm auto-merge for #$PR_NUMBER and $pending check(s) have not passed. The PR stays open."
+            exit 1
+          fi
+          echo "::error::Could not arm auto-merge for #$PR_NUMBER. The repository needs 'Allow auto-merge' on and a ruleset on main requiring the site checks (docs/cms-access.md). The PR stays open for a manual merge."
+          exit 1

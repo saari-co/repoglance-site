@@ -31,6 +31,7 @@ function fakeGitHub({ mainSeedText = seedText, openPulls = [], failOn } = {}) {
     if (method === 'PATCH' && pathname.startsWith(`/repos/${REPO}/git/refs/heads/`)) return json({ object: { sha: body.sha } });
     if (method === 'POST' && pathname === `/repos/${REPO}/pulls`) return json({ number: 42, html_url: 'https://github.com/saari-co/repoglance-site/pull/42', head: { ref: body.head, sha: 'commit333' } }, 201);
     if (method === 'PATCH' && pathname.startsWith(`/repos/${REPO}/pulls/`)) return json({});
+    if (method === 'DELETE' && pathname.startsWith(`/repos/${REPO}/git/refs/heads/`)) return new Response(null, { status: 204 });
     if (method === 'POST' && pathname.startsWith(`/repos/${REPO}/issues/`)) return json([{ name: LABEL }]);
     return new Response('not found', { status: 404 });
   };
@@ -40,29 +41,51 @@ function fakeGitHub({ mainSeedText = seedText, openPulls = [], failOn } = {}) {
 const env = { GITHUB_MIRROR_TOKEN: 'ghp_test', GITHUB_MIRROR_REPO: REPO, GITHUB_API_BASE: 'https://api.example.invalid', MIRROR_EMAIL_TO: 'agent@example.invalid' };
 const at = new Date('2026-10-07T15:00:00Z');
 const quiet = () => {};
+const channel = async () => {};
 
-test('unconfigured: no token means no calls, a clear log line and an unconfigured outcome', async () => {
+test('unconfigured: a missing token, repo or email channel means no calls, a log line naming what is missing, nothing else', async () => {
   const github = fakeGitHub();
   const lines = [];
   const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { GITHUB_MIRROR_REPO: REPO }, fetch: github.fetch, readLivePages: async () => live(), log: (line) => lines.push(line) });
   assert.equal(outcome.status, 'unconfigured');
   assert.equal(github.calls.length, 0);
-  assert.match(lines[0], /GITHUB_MIRROR_TOKEN missing/);
+  assert.match(lines[0], /GITHUB_MIRROR_TOKEN, the send_email binding, MIRROR_EMAIL_TO missing/);
   assert.match(lines[0], /npm run cms:mirror/);
+  const noChannel = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { ...env, MIRROR_EMAIL_TO: undefined }, fetch: github.fetch, readLivePages: async () => live(), sendEmail: channel, log: quiet });
+  assert.equal(noChannel.status, 'unconfigured');
+  assert.match(noChannel.detail, /MIRROR_EMAIL_TO missing/);
+  const noBinding = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), log: quiet });
+  assert.equal(noBinding.status, 'unconfigured');
+  assert.match(noBinding.detail, /the send_email binding missing/);
+  assert.equal(github.calls.length, 0, 'never silent: without a channel the mirror does not run at all');
 });
 
-test('equal: when main already equals the live CMS nothing is pushed', async () => {
+test('equal: when main already equals the live CMS and no mirror PR is open, nothing is pushed', async () => {
   const github = fakeGitHub();
-  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), log: quiet, now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), sendEmail: channel, log: quiet, now: () => at });
   assert.equal(outcome.status, 'equal');
-  assert.deepEqual(github.calls.map((call) => call.method), ['GET', 'GET'], 'only the ref and the file were read');
+  assert.deepEqual(github.calls.map((call) => call.method), ['GET', 'GET', 'GET'], 'only the ref, the file and the open PRs were read');
+});
+
+test('closed: when live comes back to what main holds, the open mirror PR is closed and its branch deleted', async () => {
+  const open = [{ number: 7, html_url: 'https://github.com/saari-co/repoglance-site/pull/7', head: { ref: `${BRANCH_PREFIX}20261007-140000z`, sha: 'head777', repo: { full_name: REPO } } }];
+  const github = fakeGitHub({ openPulls: open });
+  const outcome = await runMirror({ collection: 'pages', id: '01ABC', slug: 'home', action: 'publish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => live(), sendEmail: channel, log: quiet, now: () => at });
+  assert.equal(outcome.status, 'closed');
+  assert.equal(outcome.prUrl, open[0].html_url);
+  const methods = github.calls.map((call) => `${call.method} ${call.path.split('?')[0]}`);
+  assert.deepEqual(methods.slice(3), [`PATCH /repos/${REPO}/pulls/7`, `DELETE /repos/${REPO}/git/refs/heads/${open[0].head.ref}`]);
+  const patch = github.calls.find((call) => call.method === 'PATCH').body;
+  assert.equal(patch.state, 'closed');
+  assert.match(patch.body, /`main` already equals the live CMS/);
+  assert.ok(!methods.some((call) => /merge|blobs|commits$/.test(call)), 'nothing committed, nothing merged');
 });
 
 test('opened: an admin edit becomes a branch, a commit of the mirrored seed, a labelled PR; the token never merges', async () => {
   const github = fakeGitHub();
   const pages = live();
   pages[0].data.layout[0].heading = 'Edited in the admin';
-  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => pages, log: quiet, now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => pages, sendEmail: channel, log: quiet, now: () => at });
   assert.equal(outcome.status, 'opened');
   assert.equal(outcome.prUrl, 'https://github.com/saari-co/repoglance-site/pull/42');
   assert.ok(outcome.branch.startsWith(BRANCH_PREFIX));
@@ -103,7 +126,7 @@ test('updated: an open cms-edit PR receives the new commit instead of a second P
   const github = fakeGitHub({ openPulls: open });
   const pages = live();
   pages[1].data.description = 'Changed again';
-  const outcome = await runMirror({ collection: 'pages', id: 'testers', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => pages, log: quiet, now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: 'testers', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => pages, sendEmail: channel, log: quiet, now: () => at });
   assert.equal(outcome.status, 'updated');
   assert.equal(outcome.branch, open[0].head.ref);
   const methods = github.calls.map((call) => `${call.method} ${call.path.split('?')[0]}`);
@@ -132,13 +155,13 @@ test('failed: a GitHub error sends the failure email with the page, the error an
   assert.ok(sent[0].text.includes(RERUN_INSTRUCTIONS));
 });
 
-test('failed without an email channel: the failure is logged, the outcome says it was not emailed', async () => {
+test('failed when the email itself cannot be sent: the failure and the email error are logged, the outcome says it was not emailed', async () => {
   const github = fakeGitHub({ failOn: (method) => method === 'GET' });
   const lines = [];
-  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { ...env, MIRROR_EMAIL_TO: undefined }, fetch: github.fetch, readLivePages: async () => live(), sendEmail: async () => {}, log: (line) => lines.push(line), now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), sendEmail: async () => { throw new Error('Email Routing refused the destination'); }, log: (line) => lines.push(line), now: () => at });
   assert.equal(outcome.status, 'failed');
   assert.equal(outcome.emailed, false);
-  assert.ok(lines.some((line) => /no email channel is configured \(MIRROR_EMAIL_TO missing\)/.test(line)));
+  assert.ok(lines.some((line) => /the failure email could not be sent: Email Routing refused the destination/.test(line)));
 });
 
 test('failed: a page reader error is reported the same way', async () => {
@@ -155,6 +178,9 @@ test('describeChange names the pages and the manual run; decodeContent handles G
   const change = describeChange(seed, pages, { collection: 'pages', id: 'home', action: 'manual' }, at);
   assert.equal(change.title, 'CMS edit: home (mirrored by hand, 2026-10-07)');
   assert.match(change.body, /Mirrored by `npm run cms:mirror`/);
+  const trashed = describeChange(seed, pages.slice(0, 1), { collection: 'pages', id: '01ABC', slug: 'testers', action: 'delete', editor: 'Bobby' }, at);
+  assert.match(trashed.body, /A page was deleted in the EmDash admin by Bobby/);
+  assert.match(trashed.title, /^CMS edit: home, testers \(delete by Bobby, 2026-10-07\)/);
   assert.deepEqual(change.slugs, ['home']);
   assert.equal(decodeContent(encode('héllo\n{"a":1}')), 'héllo\n{"a":1}');
 });

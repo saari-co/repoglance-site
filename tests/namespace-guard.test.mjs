@@ -128,6 +128,25 @@ test('a machine may stage a draft only against the revision it read, and only as
   assert.deepEqual(await evaluateMachineRequest(json('/_emdash/api/content/pages', 'POST', { slug: 'about', data: {} }), '/_emdash/api/content/pages'), { allow: false, reason: 'machine-draft-rules' }, 'create without draft status');
 });
 
+test("a machine's draft write may carry only the content and the revision: live metadata, lock overrides and slug changes are a human's call", async () => {
+  const entry = '/_emdash/api/content/pages/01ABC';
+  for (const extra of [{ overrideLock: true }, { publishedAt: '2026-10-07T00:00:00Z' }, { authorId: 'someone' }, { bylines: [] }, { seo: { title: 'x' } }, { taxonomies: {} }, { references: {} }, { skipRevision: true }, { slug: 'renamed' }]) {
+    const decision = await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3', ...extra }), entry);
+    assert.deepEqual(decision, { allow: false, reason: 'machine-draft-rules' }, Object.keys(extra)[0]);
+  }
+  assert.deepEqual(await evaluateMachineRequest(json(entry, 'PUT', { data: { title: 'x' }, _rev: 'v3', migrateBlocks: true, replaceBlocks: false }), entry), { allow: true, reason: 'machine-draft' });
+  assert.deepEqual(await evaluateMachineRequest(json('/_emdash/api/content/pages', 'POST', { slug: 'about', data: {}, status: 'draft', publishedAt: '2026-10-07T00:00:00Z' }), '/_emdash/api/content/pages'), { allow: false, reason: 'machine-draft-rules' }, 'create with live metadata');
+});
+
+test('a machine cannot send an oversized body or read the operator list', async () => {
+  const entry = '/_emdash/api/content/pages/01ABC';
+  const declared = request(entry, { method: 'PUT', headers: { ...bearer, 'content-type': 'application/json', 'content-length': '5000000' }, body: JSON.stringify({ data: {}, _rev: 'v3' }) });
+  assert.deepEqual(await evaluateMachineRequest(declared, entry), { allow: false, reason: 'machine-draft-rules' }, 'declared oversize');
+  const huge = json(entry, 'PUT', { data: { title: 'x'.repeat(1_100_000) }, _rev: 'v3' });
+  assert.deepEqual(await evaluateMachineRequest(huge, entry), { allow: false, reason: 'machine-draft-rules' }, 'actual oversize');
+  assert.deepEqual(await evaluateMachineRequest(request('/_emdash/api/content/pages/authors', { headers: bearer }), '/_emdash/api/content/pages/authors'), { allow: false, reason: 'machine-forbidden' });
+});
+
 test('a machine can never publish, unpublish, schedule, delete, or write schema', async () => {
   for (const [path, method, body] of [
     ['/_emdash/api/content/pages/01ABC/publish', 'POST', { _rev: 'v3' }],

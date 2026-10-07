@@ -97,13 +97,20 @@ function parseAllowlist(value: string | undefined): string[] {
 }
 
 const MACHINE_READ = /^\/_emdash\/api\/(content|schema)(\/|$)/;
+/** Reads of user data a machine has no business with: a collection's authors list carries operator addresses. */
+const MACHINE_READ_DENIED = /\/authors$/;
 const MACHINE_ENTRY = /^\/_emdash\/api\/content\/[a-z0-9_-]+\/[^/]+$/;
 const MACHINE_COLLECTION = /^\/_emdash\/api\/content\/[a-z0-9_-]+$/;
 const MACHINE_PREVIEW = /^\/_emdash\/api\/content\/[a-z0-9_-]+\/[^/]+\/preview-url$/;
 const MAX_BODY_BYTES = 1_000_000;
+/** What a draft write may carry: the content and the revision it builds on. Everything else (overrideLock, publishedAt, authorId, bylines, seo, taxonomies, references, skipRevision, slug) is a human's call. */
+const MACHINE_PUT_KEYS = new Set(['data', '_rev', 'status', 'migrateBlocks', 'replaceBlocks']);
+const MACHINE_POST_KEYS = new Set(['data', 'slug', 'status', 'locale']);
 
 async function readJsonBody(request: Request): Promise<Record<string, unknown> | null> {
   try {
+    const declared = Number(request.headers.get('content-length') ?? '0');
+    if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) return null;
     const text = await request.clone().text();
     if (text.length > MAX_BODY_BYTES) return null;
     const parsed: unknown = JSON.parse(text);
@@ -111,6 +118,10 @@ async function readJsonBody(request: Request): Promise<Record<string, unknown> |
   } catch {
     return null;
   }
+}
+
+function onlyKeys(body: Record<string, unknown>, allowed: Set<string>): boolean {
+  return Object.keys(body).every((key) => allowed.has(key));
 }
 
 /**
@@ -126,18 +137,18 @@ export async function evaluateMachineRequest(request: Request, pathname: string)
   const path = canonicalPathname(pathname);
   const method = request.method.toUpperCase();
   if (!/^bearer\s+\S+/i.test(request.headers.get('authorization') ?? '')) return { allow: false, reason: 'machine-no-bearer' };
-  if ((method === 'GET' || method === 'HEAD') && MACHINE_READ.test(path)) return { allow: true, reason: 'machine-read' };
+  if ((method === 'GET' || method === 'HEAD') && MACHINE_READ.test(path) && !MACHINE_READ_DENIED.test(path)) return { allow: true, reason: 'machine-read' };
   if (method === 'POST' && MACHINE_PREVIEW.test(path)) return { allow: true, reason: 'machine-preview' };
   if (method === 'PUT' && MACHINE_ENTRY.test(path)) {
     const body = await readJsonBody(request);
     const rev = body?._rev;
     const status = body?.status;
-    if (typeof rev === 'string' && rev.trim() && (status === undefined || status === 'draft')) return { allow: true, reason: 'machine-draft' };
+    if (body && onlyKeys(body, MACHINE_PUT_KEYS) && typeof rev === 'string' && rev.trim() && (status === undefined || status === 'draft')) return { allow: true, reason: 'machine-draft' };
     return { allow: false, reason: 'machine-draft-rules' };
   }
   if (method === 'POST' && MACHINE_COLLECTION.test(path)) {
     const body = await readJsonBody(request);
-    if (body?.status === 'draft') return { allow: true, reason: 'machine-create-draft' };
+    if (body && onlyKeys(body, MACHINE_POST_KEYS) && body.status === 'draft') return { allow: true, reason: 'machine-create-draft' };
     return { allow: false, reason: 'machine-draft-rules' };
   }
   return { allow: false, reason: 'machine-forbidden' };

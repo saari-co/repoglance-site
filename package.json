@@ -29,7 +29,7 @@
     "verify": "npm run audit:repo && npm run types:wrangler && npm run typecheck && npm run test:content && npm run test:guard && npm run test:edge && npm run test:cms && npm run build && npm run test:smoke",
     "prepare:deploy": "node scripts/prepare-deploy.mjs",
     "test:edge": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test tests/host-canonical.test.mjs tests/page-cache.test.mjs",
-    "test:cms": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test tests/cms-shape.test.mjs tests/cms-mirror.test.mjs"
+    "test:cms": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test tests/cms-shape.test.mjs tests/cms-mirror.test.mjs tests/cms-trigger.test.mjs"
   },
   "dependencies": {
     "@astrojs/react": "6.0.5",

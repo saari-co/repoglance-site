@@ -31,7 +31,7 @@ export interface MirrorTrigger {
   id: string;
   /** The entry's slug when the trigger could read it from the response; the id otherwise. */
   slug?: string;
-  action: 'publish' | 'unpublish' | 'manual';
+  action: 'publish' | 'unpublish' | 'restore' | 'delete' | 'manual';
   /** The editor's display name, never an address. */
   editor?: string;
 }
@@ -57,7 +57,7 @@ export interface MirrorDeps {
 export type MirrorOutcome =
   | { status: 'unconfigured'; detail: string }
   | { status: 'equal'; detail: string }
-  | { status: 'opened' | 'updated'; detail: string; prUrl: string; branch: string }
+  | { status: 'opened' | 'updated' | 'closed'; detail: string; prUrl: string; branch: string }
   | { status: 'failed'; detail: string; emailed: boolean };
 
 export const SEED_PATH = 'seed/seed.json';
@@ -142,11 +142,12 @@ export function describeChange(baseSeed: SeedFile, live: LivePage[], trigger: Mi
   const subject = slugs.length ? slugs.join(', ') : (trigger.slug ?? trigger.id);
   const day = at.toISOString().slice(0, 10);
   const who = trigger.editor ? ` by ${trigger.editor}` : '';
+  const verbs: Record<MirrorTrigger['action'], string> = { publish: 'published', unpublish: 'unpublished', restore: 'restored', delete: 'deleted', manual: 'mirrored by hand' };
   const title = `CMS edit: ${subject} (${trigger.action === 'manual' ? 'mirrored by hand' : trigger.action}${who}, ${day})`;
   const lines = [
     trigger.action === 'manual'
       ? `Mirrored by \`npm run cms:mirror\`${who} on ${at.toISOString()}.`
-      : `An edit was ${trigger.action === 'publish' ? 'published' : 'unpublished'} in the EmDash admin${who} on ${at.toISOString()} (page \`${trigger.slug ?? trigger.id}\`).`,
+      : `A page was ${verbs[trigger.action]} in the EmDash admin${who} on ${at.toISOString()} (page \`${trigger.slug ?? trigger.id}\`).`,
     '',
     'This PR mirrors the live CMS pages into `seed/seed.json`, opened by the site itself (decision `cms-first-013`, `src/cms/mirror.ts`). The CMS owns content; the repository keeps this record and the fallback.',
     '',
@@ -172,15 +173,27 @@ async function commitSeed(gh: GitHubClient, repo: string, parentSha: string, tex
   return commit.sha;
 }
 
-/** Run the mirror once for a publish or unpublish. Never throws: every failure becomes an outcome and an email. */
+/**
+ * Run the mirror once after a live-content change. Never throws: every
+ * failure becomes an outcome and an email. The mirror runs only when both the
+ * GitHub token and the email channel are configured (cms-first-013: never
+ * silent), so a failure can always reach the maintainer; otherwise it logs
+ * that it is unconfigured and does nothing else.
+ */
 export async function runMirror(trigger: MirrorTrigger, deps: MirrorDeps): Promise<MirrorOutcome> {
   const log = deps.log ?? ((line: string) => console.log(line));
   const now = deps.now ?? (() => new Date());
   const { env } = deps;
   const token = env.GITHUB_MIRROR_TOKEN?.trim();
   const repo = env.GITHUB_MIRROR_REPO?.trim();
-  if (!token || !repo) {
-    const detail = `mirror not configured (${!token ? 'GITHUB_MIRROR_TOKEN' : 'GITHUB_MIRROR_REPO'} missing): ${trigger.action} of ${trigger.collection}/${trigger.slug ?? trigger.id} was not mirrored; run npm run cms:mirror by hand`;
+  const missing = [
+    ...(token ? [] : ['GITHUB_MIRROR_TOKEN']),
+    ...(repo ? [] : ['GITHUB_MIRROR_REPO']),
+    ...(deps.sendEmail ? [] : ['the send_email binding']),
+    ...(env.MIRROR_EMAIL_TO?.trim() ? [] : ['MIRROR_EMAIL_TO']),
+  ];
+  if (!token || !repo || missing.length) {
+    const detail = `mirror not configured (${missing.join(', ')} missing): ${trigger.action} of ${trigger.collection}/${trigger.slug ?? trigger.id} was not mirrored; run npm run cms:mirror by hand`;
     log(`[cms-mirror] ${detail}`);
     return { status: 'unconfigured', detail };
   }
@@ -195,15 +208,28 @@ export async function runMirror(trigger: MirrorTrigger, deps: MirrorDeps): Promi
     const baseText = decodeContent(file.content);
     const baseSeed = JSON.parse(baseText) as SeedFile;
     const mirrored = serializeSeed(mirrorPages(baseSeed, live));
+    const open = await gh.request<PullRequest[]>('GET', `/repos/${repo}/pulls?state=open&base=${encodeURIComponent(baseBranch)}&per_page=50`);
+    const existing = open.find((pr) => pr.head.ref.startsWith(BRANCH_PREFIX) && (pr.head.repo?.full_name ?? repo) === repo);
     if (mirrored === baseText) {
+      if (existing) {
+        // The live CMS came back to what main holds (an edit was reverted or
+        // fixed in the admin): the open mirror PR would merge content the
+        // site no longer shows, so it is closed and its branch removed.
+        await gh.request('PATCH', `/repos/${repo}/pulls/${existing.number}`, {
+          state: 'closed',
+          body: `Closed by the site's CMS mirror on ${now().toISOString()}: after ${trigger.action} of \`${trigger.slug ?? trigger.id}\`, \`${baseBranch}\` already equals the live CMS, so this mirror is no longer needed.`,
+        });
+        await gh.request('DELETE', `/repos/${repo}/git/refs/heads/${existing.head.ref}`);
+        const detail = `${baseBranch} equals the live CMS after ${trigger.action} of ${trigger.slug ?? trigger.id}; closed the stale ${existing.html_url} (${existing.head.ref})`;
+        log(`[cms-mirror] ${detail}`);
+        return { status: 'closed', detail, prUrl: existing.html_url, branch: existing.head.ref };
+      }
       const detail = `${baseBranch} already equals the live CMS after ${trigger.action} of ${trigger.slug ?? trigger.id}`;
       log(`[cms-mirror] ${detail}`);
       return { status: 'equal', detail };
     }
     const at = now();
     const change = describeChange(baseSeed, live, trigger, at);
-    const open = await gh.request<PullRequest[]>('GET', `/repos/${repo}/pulls?state=open&base=${encodeURIComponent(baseBranch)}&per_page=50`);
-    const existing = open.find((pr) => pr.head.ref.startsWith(BRANCH_PREFIX) && (pr.head.repo?.full_name ?? repo) === repo);
     if (existing) {
       const sha = await commitSeed(gh, repo, existing.head.sha, mirrored, change.message);
       await gh.request('PATCH', `/repos/${repo}/git/refs/heads/${existing.head.ref}`, { sha, force: false });

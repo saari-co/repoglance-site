@@ -54,24 +54,25 @@ the namespace gate; `PUT /_emdash/api/content/{collection}/{id}` accepts
 | Area | Change |
 | --- | --- |
 | `src/content/cms-shape.ts` | Pure shaping shared by the Worker and the scripts: canonical page and field forms, `mirrorPages` (the seed with `content.pages` replaced by what is live, repository order kept, entry ids kept, blocks at version 1, a retired page kept as a draft), `pageDifferences`, `serializeSeed`. |
-| `src/cms/mirror.ts` | The Worker-side mirror, pure: GitHub ref, contents, open PRs, blob, tree, commit, ref, PR, label through an injected `fetch`; updates the open `cms-edit` PR instead of opening a second; never calls merge; dormant with a clear log when the token or repo var is missing; every failure becomes an outcome and, when a channel exists, an email with the page (slug and id), the action, the editor's display name, the error and the re-run; never throws. |
-| `src/cms/mirror-trigger.ts`, `src/outer-middleware.ts` | Outer middleware after the guard: a successful `POST /_emdash/api/content/pages/{id}/publish` or `unpublish` schedules the mirror with `waitUntil` (inline when unavailable); reads the live pages from D1 (`ec_pages`, the fields the repository declares), the slug from the response, the editor's name from `locals.user`; sends email through the `MIRROR_EMAIL` binding as a plain-text RFC 5322 message. |
-| `src/namespace-gate.ts`, `src/emdash-namespace-guard.ts` | Machine identities: when the official Access authentication yields no email, the guard verifies the JWT itself with `jose` against the team's JWKS and audience; a JWT with `common_name` and no email is admitted only to GET on content and schema routes, `POST …/preview-url`, `PUT` on an entry whose JSON body carries a non-empty `_rev` and no status other than `draft`, and `POST` create with `status: "draft"`; it must carry an EmDash Bearer token; publish, unpublish, schedule, discard, restore, delete, schema writes and every admin route answer 404. `jose` 6.2.12 pinned as a direct dependency. |
+| `src/cms/mirror.ts` | The Worker-side mirror, pure: GitHub ref, contents, open PRs, blob, tree, commit, ref, PR, label through an injected `fetch`; updates the open `cms-edit` PR instead of opening a second, and closes it (deleting its branch) when live comes back to what `main` holds; never calls merge; runs only when the token, the repository var, the `send_email` binding and the recipient are all configured, otherwise logs what is missing and does nothing else; every failure becomes an outcome and an email with the page (slug and id), the action, the editor's display name, the error and the re-run; never throws. |
+| `src/cms/mirror-trigger.ts`, `src/cms/trigger-helpers.ts`, `src/outer-middleware.ts` | Outer middleware after the guard: a successful publish, unpublish, restore, trash or permanent delete of a page, or the visual-editing toolbar's publish, schedules the mirror with `waitUntil` (inline when unavailable); the pure helpers read the live pages from D1 (`ec_pages`, the fields the repository declares, JSON parsed by declared type), the slug from the response, the editor's name from `locals.user`, and build the email as a plain-text RFC 5322 message with header injection folded out. |
+| `src/namespace-gate.ts`, `src/emdash-namespace-guard.ts` | Machine identities: when the official Access authentication yields no email, the guard verifies the JWT itself with `jose` against the team's JWKS and audience; a JWT with `common_name` and no email is admitted only to GET on content and schema routes (not a collection's authors list), `POST …/preview-url`, `PUT` on an entry whose JSON body carries only `data`, `_rev`, `status`, `migrateBlocks`, `replaceBlocks`, with a non-empty `_rev` and no status other than `draft`, and `POST` create carrying only `data`, `slug`, `status`, `locale` with `status: "draft"`; the body is refused above one megabyte, declared or actual; it must carry an EmDash Bearer token; publish, unpublish, schedule, discard, restore, delete, schema writes, lock overrides, live metadata and every admin route answer 404. `jose` 6.2.12 pinned as a direct dependency. |
 | `scripts/cms-mirror.mjs`, `scripts/lib/cms-client.mjs` | `npm run cms:mirror` (writes the live pages into the seed on a throwaway worktree of `origin/main`, pushes `cms-edit/<timestamp>`, ensures the label, opens the PR with `gh`), `--no-pr` (rewrite the file here), `cms:mirror:check` (report, exit 1 when behind; schema drift reported with the fixing command). The identity ladder and the reads moved to the shared client module. |
 | `scripts/cms-sync.mjs` | Schema only: block types create, update, breaking version and activation; pages reported, never written. |
 | `scripts/live-check.mjs` | A difference now means the repository is behind the CMS (run the mirror or check the failure email); the live source is expected to be `cms`. |
-| `.github/workflows/cms-edit-automerge.yml` | Arms auto-merge (merge commit) for `cms-edit` PRs on `cms-edit/*` branches from this repository with the repository token; fails visibly until the repository allows auto-merge. |
+| `.github/workflows/cms-edit-automerge.yml` | Arms auto-merge (merge commit) for `cms-edit` PRs on `cms-edit/*` branches from this repository with the repository token, only when the PR changes nothing but `seed/seed.json`; when GitHub refuses to arm a PR whose checks already all passed, merges it directly; fails visibly otherwise (until the repository allows auto-merge). |
 | `wrangler.jsonc`, `scripts/prepare-deploy.mjs`, `worker-configuration.d.ts` | The `send_email` binding `MIRROR_EMAIL`; vars `GITHUB_MIRROR_REPO` and `MIRROR_EMAIL_FROM`; the recipient from `REPOGLANCE_MIRROR_EMAIL_TO` at deploy time; the token as the secret `GITHUB_MIRROR_TOKEN`. |
-| `tests/cms-shape.test.mjs`, `tests/cms-mirror.test.mjs`, `tests/namespace-guard.test.mjs`, `package.json` | 13 CMS tests (shaping, mirror with a fake GitHub: unconfigured, equal, opened, updated, failed with and without a channel, reader failure, descriptions) and 4 new guard tests (machine admission, reads and preview, draft rules, the forbidden routes); `test:cms` in `verify`; scripts `cms:mirror`, `cms:mirror:check`. |
+| `tests/cms-shape.test.mjs`, `tests/cms-mirror.test.mjs`, `tests/cms-trigger.test.mjs`, `tests/namespace-guard.test.mjs`, `package.json` | CMS tests (shaping; the mirror with a fake GitHub: unconfigured for each missing piece, equal, closed, opened, updated, failed, an email that cannot be sent, a reader failure, descriptions; the trigger's route matching, slug extraction, D1 reader and email) and 6 new guard tests (machine admission, reads and preview, draft rules, the body allow-list, oversize and the operator list, the forbidden routes); `test:cms` in `verify`; scripts `cms:mirror`, `cms:mirror:check`. |
 | `AGENTS.md`, `README.md`, `docs/cms-access.md`, `docs/content.md`, `docs/getting-started.md` | The CMS-first model, the section "Content, structure and the mirror" with the commands, the identity, the agent rule and the gates for the mirror; the setup step says the bootstrap is the only time the seed enters the CMS. |
 
 ## Verification (this Mac, Node 22.23.2 through mise)
 
-`npm run verify` on the final tree: repository audit (162 files, 103
-scanned), Wrangler types, `astro check` (0 errors, 0 warnings), content
-11/11, guard 13/13 (4 new for machine identities), edge 14/14, CMS 13/13,
-the Cloudflare build, smoke 124/124 on local workerd, which now carries the
-`send_email` binding.
+`npm run verify` on the final tree (after review round 1): repository
+audit (165 files, 106 scanned), Wrangler types, `astro check` (0 errors, 0
+warnings), content 11/11, guard 15/15 (6 new for machine identities), edge
+14/14, CMS 18/18 (shaping, the mirror, the trigger), the Cloudflare build,
+smoke 124/124 on local workerd, which now carries the `send_email`
+binding.
 
 Round trip on the development server (`npm run dev`, EmDash 1.2.0, the
 local D1 that held the seed's content, EmDash's development bypass as the
@@ -105,7 +106,16 @@ admission and its forbidden routes.
   token, a draft-scoped API token and the agent tooling.
 - The dev round trip used EmDash's development bypass and a GitHub stub;
   `waitUntil` was exercised through the dev server's platform proxy, and
-  the mirror's log lines appeared after the publish response.
+  the mirror's log lines appeared after the publish response. The run
+  predates review round 1, so the trigger routes added there (restore,
+  delete, the visual-editing publish), the close-when-equal path and the
+  slug from the response are proven by unit tests, not by the dev run.
+- A scheduled publish (cron) and a metadata-only save on a published page
+  are not triggers; the first is mirrored at the next admin action or by
+  `npm run cms:mirror`, the second changes nothing the pages render. Two
+  publishes within seconds can race into two PRs or a non-fast-forward
+  update, which the failure email reports; `npm run cms:mirror` resolves
+  it.
 - `cms:mirror` in PR mode uses `gh` and `git` on the maintainer's machine;
   it was exercised in `--check` and `--no-pr` modes here and its PR path is
   the same sequence the unit-tested Worker path performs through the API.
