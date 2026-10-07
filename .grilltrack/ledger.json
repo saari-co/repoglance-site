@@ -63,22 +63,80 @@
           "review_source_identity": null,
           "to": "verified",
           "verification_ref": null
+        },
+        {
+          "at": "2026-10-07T13:00:21+00:00",
+          "choice": "D (maintainer, 2026-10-07): the seed stays the only source of truth; scripts/cms-sync.mjs upserts the seed's block types and pages into the CMS through EmDash's API and publishes them, so the CMS is the live source again and equal to the seed (fields and data equal; the CMS's block-type version numbers follow its own history, so the comparison is modulo _version); identity: the maintainer's own Cloudflare Access login cached by cloudflared (cf-access-token), no service token, no Access policy change, no API token, no guard change; trigger: a maintainer step right after every deploy (deploy, sync, live check), never on merge; scripts/live-check.mjs compares the live <main> of both pages with a seed render of the local build and reports data-content-source, failing on any difference.",
+          "from": "verified",
+          "implementation_ref": "proof/cms-sync-20261007/PROOF.md",
+          "note": "adjudicated review requires a fix",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "needs_reverification",
+          "verification_ref": "run:dev-server round trip (setup, reverse sync to the 1 October seed, drift, forward sync, equal, CMS render equal to the seed render)"
+        },
+        {
+          "at": "2026-10-07T13:00:21+00:00",
+          "choice": "D (maintainer, 2026-10-07): the seed stays the only source of truth; scripts/cms-sync.mjs upserts the seed's block types and pages into the CMS through EmDash's API and publishes them, so the CMS is the live source again and equal to the seed (fields and data equal; the CMS's block-type version numbers follow its own history, so the comparison is modulo _version); identity: the maintainer's own Cloudflare Access login cached by cloudflared (cf-access-token), no service token, no Access policy change, no API token, no guard change; trigger: a maintainer step right after every deploy (deploy, sync, live check), never on merge; scripts/live-check.mjs compares the live <main> of both pages with a seed render of the local build and reports data-content-source, failing on any difference.",
+          "from": "needs_reverification",
+          "implementation_ref": "proof/cms-sync-20261007/PROOF.md",
+          "note": "bounded implementation recorded",
+          "repair_required": true,
+          "review_classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive"
+          ],
+          "review_ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md#review-round-1",
+          "review_result": "findings",
+          "review_source_identity": "git:0890336b5343f136019d9dd387934dc95497cc96",
+          "to": "implemented",
+          "verification_ref": "run:dev-server round trip (setup, reverse sync to the 1 October seed, drift, forward sync, equal, CMS render equal to the seed render)"
+        },
+        {
+          "at": "2026-10-07T13:00:21+00:00",
+          "choice": "D (maintainer, 2026-10-07): the seed stays the only source of truth; scripts/cms-sync.mjs upserts the seed's block types and pages into the CMS through EmDash's API and publishes them, so the CMS is the live source again and equal to the seed (fields and data equal; the CMS's block-type version numbers follow its own history, so the comparison is modulo _version); identity: the maintainer's own Cloudflare Access login cached by cloudflared (cf-access-token), no service token, no Access policy change, no API token, no guard change; trigger: a maintainer step right after every deploy (deploy, sync, live check), never on merge; scripts/live-check.mjs compares the live <main> of both pages with a seed render of the local build and reports data-content-source, failing on any difference.",
+          "from": "implemented",
+          "implementation_ref": "file:.grilltrack/proof/cms-sync-011-verify-20261007.md",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": "run:dev-server round trip (setup, reverse sync to the 1 October seed, drift, forward sync, equal, CMS render equal to the seed render)"
         }
       ],
       "id": "cms-sync-011",
-      "implementation_ref": "proof/cms-sync-20261007/PROOF.md",
+      "implementation_ref": "file:.grilltrack/proof/cms-sync-011-verify-20261007.md",
       "question": "How do seed/seed.json (copy, imagery slots, block types) and the EmDash CMS on repoglance.com stay equal, so the live site never silently diverges from the locked content again: which is the source, how does it reach the other, with which identity and trigger, and what proves the live site equals the seed?",
       "rationale": "Maintainer's answer 'D' to the four options presented with their gates and costs. Facts behind the shape: EmDash 1.0.1's client and CLI accept a cloudflared-cached Access JWT (cf-access-token), so the maintainer's own identity drives the API with no new Cloudflare resource; a service-token JWT carries no email and would need a Service Auth policy, a service token, an EmDash API token and a guard change (documented as the unattended option, not built); removing a select option is a breaking block-type change in EmDash 1.0.1, so the sync creates and activates a new version and migrates the blocks; the CMS must be written only after the Worker that renders the new seed is deployed, so the trigger is the deploy runbook, never the merge. Options A (seed only), B (sync without the live check) and C (CMS as source, seed exported) were not chosen. Builds on the closed track's site-copy-006, site-imagery-007 and cms-access-008 (.grilltrack/archive/gt-20261001102301-89ec89/).",
       "repair_required": false,
       "review_classifications": [],
-      "review_history": [],
+      "review_history": [
+        {
+          "classifications": [
+            "required_fix",
+            "defer",
+            "reject_false_positive"
+          ],
+          "ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md#review-round-1",
+          "result": "findings",
+          "reviewed_at": "2026-10-07T13:00:21+00:00",
+          "source_identity": "git:0890336b5343f136019d9dd387934dc95497cc96"
+        }
+      ],
       "review_ref": null,
       "review_result": null,
       "review_source_identity": null,
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-07T12:48:14+00:00",
-      "verification_ref": "run:dev-server round trip (setup, reverse sync to the 1 October seed, drift, forward sync, equal, CMS render equal to the seed render)"
+      "updated_at": "2026-10-07T13:00:21+00:00",
+      "verification_ref": "proof/cms-sync-20261007/PROOF.md"
     },
     {
       "baseline_ref": "git:e4e7be1",
@@ -140,13 +198,21 @@
       "rationale": "Maintainer, 2026-10-07: 'actually, we need to be on emdash 1.2 that just released this morning'. Done inside cms-sync-011's cycle so the sync script is written and verified on the release the site will run.",
       "repair_required": false,
       "review_classifications": [],
-      "review_history": [],
-      "review_ref": null,
-      "review_result": null,
-      "review_source_identity": null,
+      "review_history": [
+        {
+          "classifications": [],
+          "ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md#review-round-1",
+          "result": "clean",
+          "reviewed_at": "2026-10-07T13:00:21+00:00",
+          "source_identity": "git:0890336b5343f136019d9dd387934dc95497cc96"
+        }
+      ],
+      "review_ref": ".grilltrack/proof/cms-sync-011-verify-20261007.md#review-round-1",
+      "review_result": "clean",
+      "review_source_identity": "git:0890336b5343f136019d9dd387934dc95497cc96",
       "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-10-07T12:48:14+00:00",
+      "updated_at": "2026-10-07T13:00:21+00:00",
       "verification_ref": "run:npm run verify (audit 151 files, astro check 0/0, content 9/9, guard 11/11, edge 14/14, build, smoke 124/124)"
     }
   ],
@@ -162,5 +228,5 @@
   "status": "active",
   "title": "repoglance.com website: CMS sync and maintenance",
   "track_id": "gt-20261007120417-1b0a54",
-  "updated_at": "2026-10-07T12:48:14+00:00"
+  "updated_at": "2026-10-07T13:00:21+00:00"
 }

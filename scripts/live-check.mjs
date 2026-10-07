@@ -30,15 +30,11 @@ const { values: args } = parseArgs({
   },
   strict: true,
 });
-if (args.help) {
-  console.log(readHelp());
-  process.exit(0);
-}
 const live = args.live.replace(/\/+$/, '');
 const paths = args.path.length ? args.path : ['/', '/testers'];
-
-function readHelp() {
-  return `live-check: compare the live <main> of ${paths.join(' and ')} with a seed render of the local build.\n  --live <origin>   the site to check (default ${live})\n  --path <path>     a path to compare (repeatable; default / and /testers)`;
+if (args.help) {
+  console.log(`live-check: compare the live <main> of ${paths.join(' and ')} with a seed render of the local build.\n  --live <origin>   the site to check (default ${live})\n  --path <path>     a path to compare (repeatable; default / and /testers)`);
+  process.exit(0);
 }
 
 function mainOf(html) {

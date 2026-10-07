@@ -40,6 +40,39 @@ page without one); `cms-access-008`'s Access-only editor is unchanged.
   reported, forward sync, equal, CMS render equal to the production seed
   render in `<main>`): the table in the packet.
 
-## Review
+## Review round 1
 
-Recorded below after the separate read-only review of the exact commit.
+Source identity: `git:0890336b5343f136019d9dd387934dc95497cc96` (the
+implementation commit; parent `e4e7be1`, main). A separate read-only agent
+reviewed the diff and the full new files against AGENTS.md,
+REPO_HYGIENE.md, EmDash 1.2.0's handlers in `node_modules/emdash/dist` and
+the confirmed summary. Adjudication by the implementer:
+
+| # | Finding | Classification | Resolution |
+| --- | --- | --- | --- |
+| 1 | `scripts/live-check.mjs`: `--help` called `readHelp()` before the `const`s it reads existed, so `node scripts/live-check.mjs --help` threw `ReferenceError: Cannot access 'paths' before initialization` (exit 1). The real run was unaffected. | required_fix | Fixed in the next commit: the defaults are computed first and the help text is printed inline; `--help` exits 0 for both scripts. |
+| 2 | The review section of this note was a placeholder, so the proof did not yet name the exact source identity. | required_fix | This section; both decisions' ledger reviews carry the commit SHA. |
+| 3 | `cms-sync.mjs` picks the first inactive version whose fields are canonically equal to the seed's after a breaking `PUT`; EmDash's own reuse test compares exact JSON, so two canonically equal inactive versions would resolve to the older one. | defer | Harmless: the re-check is canonical too and rendering ignores `_version`; noted for a later hygiene round. |
+| 4 | `--header` values are visible in `ps` while the script runs, as with EmDash's own CLI. | defer | `EMDASH_HEADERS` is the documented alternative; the maintainer path uses neither. |
+| 5 | Suspected `liveData` to be an MCP-only shape. | reject_false_positive | The REST route hydrates the draft for a reader with `content:read_drafts` (`data` = draft, `liveData` = live) and strips both otherwise, so the draft check is right for the maintainer and inert for others. |
+| 6 | Suspected a CMS render could wrongly lose or gain a validator with the build-time fallback. | reject_false_positive | A CMS render keeps the entry date; Astro keeps the later of two dates so EmDash's build date still folds in; the fallback fires only when the entry has no `updated_at`; a seed render after an unpublish gets a different ETag (build time), so no conditional request can keep a retired body; in dev the value is the dev-server start time, acceptable without an edge cache. |
+| 7 | Suspected the `@codemirror/language` override to be unjustified. | reject_false_positive | All six nested copies resolve to 6.12.4, the lock has no 6.13 or streamparser entry, the override is one exact package documented with its removal condition. |
+
+Checked and found clean by the reviewer: the EmDash API usage
+(fingerprints, `BLOCK_TYPE_BREAKING_CHANGE`, version reuse and activation,
+`migrateBlocks` and `_version` rules, `_rev` on update and publish, the
+list without a status filter, the CSRF header and Bearer handling of the
+client), secrets (labels only, cloudflared's output never echoed, no
+identifiers added), exit codes, the `<main>` extraction and refetch, the
+workerd helper's shutdown and temp-dir cleanup, the smoke refactor
+touching only start and stop with all 47 `record` sites intact, the
+standards (one AGENTS.md line, seed untouched, proof layout, package
+scripts, `verify` unchanged) and the source intent (every element of
+option D; the `--json`, `--seed` and `--override-lock` options and the
+CMS-render fallback as bounded additions; no guard change; no delivery or
+Cloudflare action).
+
+Ledger: `emdash-upgrade-012` reviewed clean at that commit (findings 6 and
+7 concern it and were rejected); `cms-sync-011` reviewed with findings
+(required_fix, defer, reject_false_positive), returned to implementation
+for finding 1.
