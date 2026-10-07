@@ -6,9 +6,11 @@
  *
  * Renders each page from the seed on local workerd (the production build on
  * an empty D1, as the smoke test does) and fetches the same path from the
- * live site, then compares the two <main> elements byte for byte. The CMS
- * owns content (cms-first-013), so the live source is expected to be cms and
- * a difference means the repository is behind the CMS: the mirror the site
+ * live site, then compares the two <main> elements byte for byte, after
+ * resolving every Media Library file the live page renders to the capture
+ * seed/media.json records for it (media-library-014). The CMS owns content
+ * (cms-first-013), so the live source is expected to be cms and a
+ * difference means the repository is behind the CMS: the mirror the site
  * runs after each publish has not landed, or failed (check the failure
  * email) and `npm run cms:mirror` brings the repository up to date. The
  * live body's data-content-source and the edge-cache status are reported;
@@ -19,6 +21,7 @@
  * purge fails, so a difference on a cache HIT may be stale: the check then
  * refetches once with a cache-busting query and compares again.
  */
+import { readFileSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,9 +44,21 @@ if (args.help) {
   process.exit(0);
 }
 
+const manifest = JSON.parse(readFileSync(join(root, 'seed/media.json'), 'utf8'));
+const fileByKey = new Map((manifest.library ?? []).map((item) => [item.storageKey, item.filename]));
+
+/**
+ * The <main> with every Media Library file resolved to the capture it holds
+ * (media-library-014): the live site renders `/_emdash/api/media/file/<key>`
+ * through the image endpoint, the seed render the repository's own
+ * `/screenshots/<file>`; seed/media.json says which key is which file, so a
+ * key the manifest does not know stays as it is and shows as a difference
+ * (the mirror has not recorded it yet).
+ */
 function mainOf(html) {
   const match = html.match(/<main\b[^>]*>[\s\S]*?<\/main>/);
-  return match ? match[0] : null;
+  if (!match) return null;
+  return match[0].replace(/href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2F([A-Za-z0-9._-]+)/g, (whole, key) => (fileByKey.has(key) ? `href=${encodeURIComponent(`/screenshots/${fileByKey.get(key)}`)}` : whole));
 }
 
 function sourceOf(html) {

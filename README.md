@@ -19,9 +19,16 @@ equal by a mirror the site runs after every publish (see below).
   the site mirrors every publish into `seed/seed.json` as a `cms-edit` PR
   that auto-merges when the checks are green, emailing the maintainer if
   the mirror fails. The repository owns structure (block types, components,
-  image slugs), which ships by deploy and `npm run cms:sync`; `npm run
-  check:live` proves the repository equals the live site
+  the approved captures), which ships by deploy, `npm run cms:sync` and
+  `npm run cms:media -- --apply`; `npm run check:live` proves the
+  repository equals the live site
   ([docs/cms-access.md](docs/cms-access.md#content-structure-and-the-mirror)).
+  **Images** (decision `media-library-014`, 2026-10-07): the pages' pictures
+  are EmDash Media Library items picked in the admin, served through
+  Astro's image endpoint from one source per capture; the repository keeps
+  the approved captures and their hashes in `seed/media.json`, the mirror
+  records the live library beside them, and the content tests judge it
+  ([docs/content.md](docs/content.md#screenshots)).
   History: the 1 October CMS entries predated the copy and imagery locks and
   were unpublished on 2026-10-06; the first sync from the seed ran on
   2026-10-07 ([proof/cms-drift-20261006/](proof/cms-drift-20261006/PROOF.md),
@@ -37,7 +44,8 @@ equal by a mirror the site runs after every publish (see below).
   exactly five candidates and, where the maintainer asked, a confirmed
   hybrid (the look in four rounds on 2026-10-01; the copy, the imagery,
   the link-preview image and, on 2026-10-06, the scheme-matched imagery
-  in one round each); [design.md](design.md) is the contract (v5).
+  in one round each); [design.md](design.md) is the contract (v5, with the
+  media-library note of 2026-10-07).
 - **Copy:** decided on 2026-10-01 in one GrillTrack round and a confirmed
   hybrid; every sentence is in `seed/seed.json` and traces to
   [docs/content.md](docs/content.md).
@@ -69,18 +77,23 @@ npm run verify
 ```
 
 This runs the repository path audit, Wrangler type generation, Astro type
-checking, the seed content checks, the namespace-guard, host and cache-policy
-unit tests, a Cloudflare build, and an HTTP smoke test against local workerd:
-both pages answer 200 with their seeded content and the edge-cache headers,
-the `/_emdash` namespace answers 404 with no redirect and no caching, a
-missing route answers 404, and the `www` host answers a permanent redirect to
-the apex.
+checking, the approved-captures record check, the seed content and media
+checks, the namespace-guard, host and cache-policy unit tests, the CMS
+mirror tests, a Cloudflare build, and an HTTP smoke test against local
+workerd: both pages answer 200 with their seeded content, their images as
+renditions of the approved captures through the image endpoint, and the
+edge-cache headers; the `/_emdash` namespace answers 404 with no redirect
+and no caching except an anonymous read of the public media-file route;
+a missing route answers 404; and the `www` host answers a permanent
+redirect to the apex.
 
-Three checks need the network and run on demand, not in `verify`:
-`npm run cms:mirror:check` compares the repository's pages with the live
-CMS and `npm run cms:check` its block types (both read only; they need your
-own Access login, see the runbook), and `npm run check:live` compares the
-live pages with a seed render of the local build.
+Four checks need the network and run on demand, not in `verify`:
+`npm run cms:mirror:check` compares the repository's pages and media
+manifest with the live CMS, `npm run cms:check` its block types and
+`npm run cms:media` its Media Library against the approved captures (all
+read only; they need your own Access login, see the runbook), and
+`npm run check:live` compares the live pages with a seed render of the
+local build.
 
 ## Scope and decisions
 

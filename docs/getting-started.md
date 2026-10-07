@@ -21,10 +21,15 @@ npm run dev
 
 Astro 7 runs the dev server as a background process and prints its address;
 it takes `127.0.0.1:4321` or the next free port (`npx astro dev stop` ends
-it). Both pages render from `seed/seed.json` until a CMS entry exists. In development the EmDash editor is at
+it). Both pages render from `seed/seed.json` until a CMS entry exists, their
+images from the repository's captures under `public/screenshots/`; a CMS
+page renders its Media Library files instead, both through the image
+endpoint (`/_image`). In development the EmDash editor is at
 `/_emdash/admin`; its setup wizard creates a local admin with a passkey and
-applies the seed. The local database and uploads live in ignored `.wrangler/`
-and `.emdash/` directories.
+applies the seed, downloading the captures the seed names from the
+repository's `main` on GitHub (a `$media` reference cannot point at the dev
+server itself: EmDash refuses loopback hosts). The local database and
+uploads live in ignored `.wrangler/` directories.
 
 ## Production build on local workerd
 
@@ -54,8 +59,10 @@ The CMS owns content and the repository owns structure
 `npm run cms:mirror` writes the live CMS pages into `seed/seed.json` and
 opens the `cms-edit` PR (`npm run cms:mirror:check` only reports);
 `npm run cms:check` and `npm run cms:sync` compare and write the block
-types; `npm run check:live` (after a build) compares the live pages with a
-seed render. Against the local dev server pass
+types; `npm run cms:media` and `npm run cms:media -- --apply` compare and
+import the approved captures into the Media Library and connect the pages'
+image slots; `npm run check:live` (after a build) compares the live pages
+with a seed render. Against the local dev server pass
 `-- --url http://127.0.0.1:<port>`. The mirror the site runs itself after a
 publish can be exercised locally by pointing `GITHUB_API_BASE` in an
 ignored `.dev.vars` at a stub.

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { PAGES_COLLECTION, PUBLIC_PAGE_MAX_AGE, PUBLIC_PAGE_SWR, PUBLIC_PAGE_VARY, applyPageResponse, publicPageCacheOptions } from '../src/page-cache.ts';
+import { MEDIA_TAG, MEDIA_VARY, PAGES_COLLECTION, PUBLIC_PAGE_MAX_AGE, PUBLIC_PAGE_SWR, PUBLIC_PAGE_VARY, applyMediaResponse, applyPageResponse, mediaCacheOptions, publicPageCacheOptions } from '../src/page-cache.ts';
 
 function fakeContext() {
   const calls = [];
@@ -76,4 +76,27 @@ test('a missing page answers 404 with no cache opt-in and no Vary', () => {
   assert.deepEqual(context.calls, []);
   assert.equal(context.response.status, 404);
   assert.equal(context.response.headers.get('vary'), null);
+});
+
+test('a served media response is cached like the pages, tagged media, varied by host only; errors and partial content stay as they are', () => {
+  assert.deepEqual(mediaCacheOptions(), { maxAge: 300, swr: 60, tags: ['media'] });
+  assert.equal(MEDIA_TAG, 'media');
+  assert.equal(MEDIA_VARY, 'Host');
+  for (const status of [200, 304]) {
+    const calls = [];
+    const response = new Response(status === 304 ? null : 'bytes', { status, headers: { etag: 'W/"1-2"', 'last-modified': 'Wed, 07 Oct 2026 12:00:00 GMT', 'cache-control': 'public, max-age=0, must-revalidate' } });
+    assert.equal(applyMediaResponse({ cache: { set: (options) => calls.push(options) } }, response), true, String(status));
+    assert.deepEqual(calls, [{ maxAge: 300, swr: 60, tags: ['media'] }]);
+    assert.equal(response.headers.get('vary'), 'Host');
+    assert.equal(response.headers.get('etag'), 'W/"1-2"', "the route's own validators stay");
+    assert.equal(response.headers.get('cache-control'), 'public, max-age=0, must-revalidate');
+  }
+  for (const status of [206, 404, 416, 500]) {
+    const calls = [];
+    const response = new Response(null, { status });
+    assert.equal(applyMediaResponse({ cache: { set: (options) => calls.push(options) } }, response), false, String(status));
+    assert.deepEqual(calls, []);
+    assert.equal(response.headers.get('vary'), null);
+  }
+  assert.equal(applyMediaResponse({}, new Response('x')), false, 'no cache provider, nothing to set');
 });

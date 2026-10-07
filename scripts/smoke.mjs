@@ -34,6 +34,11 @@ function hostRequest(port, path, host, extraHeaders = {}) {
 
 // Edge cache policy for a rendered public page (src/page-cache.ts).
 const EDGE_POLICY = 'public, max-age=300, stale-while-revalidate=60';
+// A rendition of a repository capture through the image endpoint, as the
+// seed render writes it into the HTML (src/content/media.ts; & escaped).
+const renditionUrl = (file, width) => `/_image?href=${encodeURIComponent(`/screenshots/${file}`)}&amp;w=${width}&amp;f=webp`;
+const srcsetOf = (file) => `${renditionUrl(file, 540)} 540w, ${renditionUrl(file, 1080)} 1080w`;
+const rendition = (body, file, width) => body.includes(renditionUrl(file, width));
 function expectCachedPage(label, response, pathTag) {
   const cdn = response.headers.get('cloudflare-cdn-cache-control');
   record(`${label} asks the edge to cache for five minutes with a one-minute stale window`, cdn === EDGE_POLICY, `cloudflare-cdn-cache-control ${cdn}`);
@@ -81,28 +86,31 @@ try {
   record('GET / renders from the seed on a fresh database', /data-content-source="seed"/.test(homeBody), homeBody.slice(0, 300));
   record('GET / carries the hero heading', homeBody.includes('Glance at the home screen. Know where your repos stand.'), '');
   record('GET / links to the testers page and the privacy policy', homeBody.includes('href="/testers"') && homeBody.includes('https://saari-co.github.io/RepoGlance/privacy/'), '');
-  record('GET / shows the showcase captures with made-up data', /\/screenshots\/home-widgets-540\.webp/.test(homeBody) && /\/screenshots\/signin-code-540\.webp/.test(homeBody) && (homeBody.match(/alt="[^"]*"/g) ?? []).every((alt) => /made.up|fixture|Sign in with GitHub/i.test(alt) && !/\blive\b/i.test(alt)), '');
+  record('GET / shows the showcase captures with made-up data, through the image endpoint', rendition(homeBody, 'home-widgets-dark.webp', 540) && rendition(homeBody, 'signin-code-light.webp', 540) && (homeBody.match(/alt="[^"]*"/g) ?? []).every((alt) => /made.up|fixture|Sign in with GitHub/i.test(alt) && !/\blive\b/i.test(alt)), '');
   record('GET / has no scripts', !/<script/i.test(homeBody), 'script tag found');
   record('GET / inlines the brand mark', /<svg class="brand-mark"/.test(homeBody), 'inline mark missing');
   record('GET / has the band hero, the feature row and the band call to action', /class="band band-hero"/.test(homeBody) && /class="showcase"/.test(homeBody) && /class="band band-cta"/.test(homeBody) && (homeBody.match(/class="feature"/g) ?? []).length === 4, 'structure');
   record('GET / card images are the cut-outs the cards are about', /data-shot="pinned-widget"/.test(homeBody) && /data-shot="catalog-rows"/.test(homeBody) && /data-shot="tile-row"/.test(homeBody), 'card images');
-  // Scheme-matched imagery (site-scheme-imagery-010): every image is a
-  // <picture> with one dark-scheme source. The home hero follows the band
-  // (dark cut by default, light cut on the dark scheme); every other image
-  // follows the page (light cut by default, dark cut on the dark scheme).
-  const picture = (body, slug) => body.match(new RegExp(`<figure class="shot" data-shot="${slug}" data-scheme="(page|band)"><picture><source media="\\(prefers-color-scheme: dark\\)" srcset="/screenshots/${slug}(-light)?-540\\.webp 540w, /screenshots/${slug}(-light)?-1080\\.webp 1080w" sizes="[^"]+"><img src="/screenshots/${slug}(-light)?-540\\.webp" srcset="/screenshots/${slug}(-light)?-540\\.webp 540w, /screenshots/${slug}(-light)?-1080\\.webp 1080w"`));
-  const follows = (body, slug, policy) => {
-    const m = picture(body, slug);
+  // Scheme-matched imagery (site-scheme-imagery-010) from media references
+  // (media-library-014): every image is a <picture> with one dark-scheme
+  // source, each candidate a rendition of the capture's light or dark cut
+  // through the image endpoint. The home hero follows the band (dark cut by
+  // default, light cut on the dark scheme); every other image follows the
+  // page (light cut by default, dark cut on the dark scheme).
+  const picture = (body, name) => body.match(new RegExp(`<figure class="shot" data-shot="${name}" data-scheme="(page|band|single)"><picture>(?:<source media="\\(prefers-color-scheme: dark\\)" srcset="([^"]+)" sizes="[^"]+">)?<img src="([^"]+)" srcset="([^"]+)" sizes="[^"]+" width="(\\d+)" height="(\\d+)"`));
+  const follows = (body, name, policy) => {
+    const m = picture(body, name);
     if (!m) return false;
-    const [, scheme, darkSource540, darkSource1080, img, imgSet540, imgSet1080] = m;
-    const light = '-light';
-    const expectDark = policy === 'band' ? light : undefined;
-    const expectImg = policy === 'band' ? undefined : light;
-    return scheme === policy && darkSource540 === expectDark && darkSource1080 === expectDark && img === expectImg && imgSet540 === expectImg && imgSet1080 === expectImg;
+    const [, scheme, darkSrcset, imgSrc, imgSrcset] = m;
+    const onDark = policy === 'band' ? `${name}-light.webp` : `${name}-dark.webp`;
+    const onLight = policy === 'band' ? `${name}-dark.webp` : `${name}-light.webp`;
+    return scheme === policy && darkSrcset === srcsetOf(onDark) && imgSrc === renditionUrl(onLight, 540) && imgSrcset === srcsetOf(onLight);
   };
   record('GET / hero phone follows the band (dark cut, light cut on the dark scheme)', follows(homeBody, 'home-widgets', 'band'), (picture(homeBody, 'home-widgets') ?? ['no picture'])[0]);
-  record('GET / card images follow the page (light cut, dark cut on the dark scheme)', ['pinned-widget', 'catalog-rows', 'tile-row', 'signin-code'].every((slug) => follows(homeBody, slug, 'page')), 'card pictures');
+  record('GET / card images follow the page (light cut, dark cut on the dark scheme)', ['pinned-widget', 'catalog-rows', 'tile-row', 'signin-code'].every((name) => follows(homeBody, name, 'page')), 'card pictures');
+  record('GET / images carry the dimensions of their source and the media alt text', (picture(homeBody, 'home-widgets') ?? [])[5] === '1080' && (picture(homeBody, 'home-widgets') ?? [])[6] === '1920' && (picture(homeBody, 'pinned-widget') ?? [])[6] === '1573', 'dimensions');
   record('GET / has exactly five pictures, each with one source', (homeBody.match(/<picture>/g) ?? []).length === 5 && (homeBody.match(/<source /g) ?? []).length === 5, `${(homeBody.match(/<picture>/g) ?? []).length} pictures, ${(homeBody.match(/<source /g) ?? []).length} sources`);
+  record('GET / serves no retired hand-cut width and no media-file route from the seed', !/screenshots\/[a-z-]+-(540|1080)\.webp/.test(homeBody) && !/_emdash\/api\/media/.test(homeBody), '');
   record('GET / canonical has no trailing slash', /<link rel="canonical" href="https:\/\/repoglance\.com\/"/.test(homeBody), '');
   record('GET / declares the Open Graph image, its size and a made-up-data alt', /property="og:image" content="https:\/\/repoglance\.com\/og-image\.png"/.test(homeBody) && /og:image:width" content="1200"/.test(homeBody) && /og:image:height" content="630"/.test(homeBody) && /og:image:alt" content="[^"]*made-up[^"]*"/.test(homeBody), '');
   expectCachedPage('GET /', home, 'astro-path:/');
@@ -121,9 +129,37 @@ try {
   const slashed = await request(base, '/testers/');
   record('GET /testers/ canonicalises to /testers', slashed.status === 200 && /<link rel="canonical" href="https:\/\/repoglance\.com\/testers"/.test(await slashed.text()), `status ${slashed.status}`);
 
-  for (const path of ['/_emdash', '/_emdash/', '/_emdash/admin', '/_emdash/admin/', '/_emdash/setup', '/_emdash/api/setup', '/_EMDASH/admin', '/_emdash//admin', '/%5Femdash/admin', '/_emdash/api/media/file/anything', '/_emdash/api/content']) {
+  for (const path of ['/_emdash', '/_emdash/', '/_emdash/admin', '/_emdash/admin/', '/_emdash/setup', '/_emdash/api/setup', '/_EMDASH/admin', '/_emdash//admin', '/%5Femdash/admin', '/_emdash/api/content']) {
     await expectDenied(base, path);
   }
+  // The public media-file route (media-library-014): an anonymous GET or HEAD
+  // of a flat storage key reaches EmDash (404 for a key the library does not
+  // have, uncached); the media list, uploads, writes and every other form of
+  // the path stay denied by the guard before EmDash sees them.
+  for (const path of ['/_emdash/api/media', '/_emdash/api/media/file', '/_emdash/api/media/file/', '/_emdash/api/media/file/../x', '/_emdash/api/media/file/a%2Fb.webp', '/_emdash/api/media/file/a/b.webp', '/_EMDASH/api/media/file/01ABC.webp', '/_emdash/api/media/01ABC', '/_emdash/api/media/upload-url']) {
+    await expectDenied(base, path);
+  }
+  await expectDenied(base, '/_emdash/api/media/file/01ABC.webp', { method: 'POST', headers: { 'content-type': 'application/json', 'x-emdash-request': '1' }, body: '{}' });
+  for (const method of ['GET', 'HEAD']) {
+    const missingFile = await request(base, '/_emdash/api/media/file/01ARZ3NDEKTSV4RRFFQ69G5FAV.webp', { method });
+    const missingBody = await missingFile.text();
+    record(`${method} /_emdash/api/media/file/<key> reaches EmDash anonymously`, missingFile.status === 404 && (missingFile.headers.get('content-type') ?? '').includes('application/json') && (method === 'HEAD' || /"NOT_FOUND"/.test(missingBody)), `status ${missingFile.status} ${missingFile.headers.get('content-type')} ${missingBody.slice(0, 80)}`);
+    expectUncached(`${method} /_emdash/api/media/file/<key> (missing)`, missingFile.headers.get('cloudflare-cdn-cache-control'));
+  }
+
+  // The image endpoint serves every width from one source per capture and is
+  // edge-cached like the pages (media-library-014); a foreign source is refused.
+  const heroRendition = await request(base, renditionUrl('home-widgets-dark.webp', 540).replace(/&amp;/g, '&'));
+  const heroBytes = Buffer.from(await heroRendition.arrayBuffer());
+  record('GET /_image rendition of the hero is a WebP', heroRendition.status === 200 && (heroRendition.headers.get('content-type') ?? '').includes('image/webp') && heroBytes.toString('latin1', 0, 4) === 'RIFF' && heroBytes.toString('latin1', 8, 12) === 'WEBP', `${heroRendition.status} ${heroRendition.headers.get('content-type')} ${heroBytes.length} bytes`);
+  const source = Buffer.from(await (await request(base, '/screenshots/home-widgets-dark.webp')).arrayBuffer());
+  record('GET /_image rendition at 540 px is a resized copy, not the source', heroBytes.length > 0 && heroBytes.length < source.length && !heroBytes.equals(source), `${heroBytes.length} vs ${source.length} bytes`);
+  record('GET /_image rendition is edge-cached like the pages and tagged media', heroRendition.headers.get('cloudflare-cdn-cache-control') === EDGE_POLICY && (heroRendition.headers.get('cache-tag') ?? '').split(',').map((tag) => tag.trim()).includes('media') && /^host$/i.test(heroRendition.headers.get('vary') ?? ''), `cdn ${heroRendition.headers.get('cloudflare-cdn-cache-control')} tags ${heroRendition.headers.get('cache-tag')} vary ${heroRendition.headers.get('vary')}`);
+  const wide = await request(base, renditionUrl('home-widgets-dark.webp', 1080).replace(/&amp;/g, '&'));
+  record('GET /_image rendition at 1080 px is served', wide.status === 200 && (wide.headers.get('content-type') ?? '').includes('image/webp'), `${wide.status}`);
+  const foreign = await request(base, '/_image?href=https%3A%2F%2Fexample.com%2Fx.webp&w=540&f=webp');
+  record('GET /_image refuses a foreign source', foreign.status === 403, `status ${foreign.status}`);
+  expectUncached('GET /_image (foreign)', foreign.headers.get('cloudflare-cdn-cache-control'));
   await expectDenied(base, '/_emdash/api/setup', { method: 'POST', headers: { 'content-type': 'application/json', origin: base, host: 'repoglance.com', 'x-forwarded-host': 'repoglance.com', cookie: 'CF_Authorization=forged' }, body: '{}' });
   await expectDenied(base, '/_emdash/admin', { headers: { 'cf-access-jwt-assertion': 'forged', cookie: 'CF_Authorization=forged' } });
 
@@ -158,7 +194,7 @@ try {
   const withCookie = await hostRequest(port, '/', 'repoglance.com', { cookie: 'CF_Authorization=forged; emdash-edit-mode=true' });
   record('GET / with cookies is served with the same edge policy (the Cookie variant keeps editors on fresh renders)', withCookie.status === 200 && withCookie.headers['cloudflare-cdn-cache-control'] === EDGE_POLICY && /\bcookie\b/i.test(withCookie.headers.vary ?? ''), `status ${withCookie.status} cdn ${withCookie.headers['cloudflare-cdn-cache-control']} vary ${withCookie.headers.vary}`);
 
-  for (const [path, type] of [['/robots.txt', 'text/plain'], ['/sitemap.txt', 'text/plain'], ['/mark.svg', 'image/svg+xml'], ['/favicon.svg', 'image/svg+xml'], ['/screenshots/home-widgets-540.webp', 'image/webp'], ['/screenshots/home-widgets-light-540.webp', 'image/webp'], ['/screenshots/signin-code-light-1080.webp', 'image/webp'], ['/og-image.png', 'image/png']]) {
+  for (const [path, type] of [['/robots.txt', 'text/plain'], ['/sitemap.txt', 'text/plain'], ['/mark.svg', 'image/svg+xml'], ['/favicon.svg', 'image/svg+xml'], ['/screenshots/home-widgets-dark.webp', 'image/webp'], ['/screenshots/home-widgets-light.webp', 'image/webp'], ['/screenshots/signin-code-light.webp', 'image/webp'], ['/og-image.png', 'image/png']]) {
     const asset = await request(base, path);
     record(`GET ${path} is 200 ${type}`, asset.status === 200 && (asset.headers.get('content-type') ?? '').includes(type), `${asset.status} ${asset.headers.get('content-type')}`);
   }

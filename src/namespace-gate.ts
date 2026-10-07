@@ -2,6 +2,8 @@
  * Pure decision logic for the /_emdash namespace. No Astro imports, so the
  * unit tests run it directly.
  */
+import { publicMediaKey } from './content/media.ts';
+
 export const NAMESPACE = '/_emdash';
 export const TEAM_DOMAIN_ENV = 'EMDASH_ACCESS_TEAM_DOMAIN';
 export const AUDIENCE_ENV = 'CF_ACCESS_AUDIENCE';
@@ -41,6 +43,7 @@ export interface GateInput {
 
 export type GateReason =
   | 'public'
+  | 'public-media'
   | 'dev'
   | 'access-not-configured'
   | 'no-identity'
@@ -87,6 +90,32 @@ export function requestPathname(request: Request): string {
   } catch {
     return '/';
   }
+}
+
+/**
+ * The one anonymous read inside the namespace (decision media-library-014):
+ * a GET or HEAD of the public media-file route, `/_emdash/api/media/file/
+ * <key>`, where the key is the flat `{ulid}{ext}` shape EmDash's upload
+ * pipeline produces. Every candidate pathname (Astro's parsed one and the
+ * request's own) must already be that path in its canonical form, so an
+ * encoded, doubled-slash or traversal spelling is never admitted even when
+ * Astro's routing would collapse it onto the route. Returns the key, or
+ * null when the request is not such a read. The media list, uploads,
+ * folders and every other media route stay behind Access.
+ */
+export function publicMediaRead(method: string, pathnames: string[]): string | null {
+  const upper = method.toUpperCase();
+  if (upper !== 'GET' && upper !== 'HEAD') return null;
+  const keys = pathnames.map((pathname) => (canonicalPathname(pathname) === pathname ? publicMediaKey(pathname) : null));
+  const key = keys[0];
+  if (!key || keys.some((candidate) => candidate !== key)) return null;
+  return key;
+}
+
+/** Whether a pathname is Astro's image endpoint (`/_image` unless the site configures another route). */
+export function isImageEndpoint(pathname: string, route = '/_image'): boolean {
+  const wanted = `/${route.replace(/^\/+|\/+$/g, '')}`;
+  return canonicalPathname(pathname).replace(/\/+$/, '') === wanted;
 }
 
 function parseAllowlist(value: string | undefined): string[] {
@@ -164,6 +193,7 @@ export async function evaluateMachineRequest(request: Request, pathname: string)
 export async function evaluateGate(input: GateInput): Promise<GateDecision> {
   const candidates = [input.pathname, requestPathname(input.request)];
   if (!candidates.some(isEmdashNamespace)) return { allow: true, reason: 'public' };
+  if (publicMediaRead(input.request.method, candidates)) return { allow: true, reason: 'public-media' };
   if (input.dev) return { allow: true, reason: 'dev' };
 
   const teamDomain = input.env[TEAM_DOMAIN_ENV]?.trim();

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { canonicalPathname, deniedResponse, evaluateGate, evaluateMachineRequest, isEmdashNamespace } from '../src/namespace-gate.ts';
+import { canonicalPathname, deniedResponse, evaluateGate, evaluateMachineRequest, isEmdashNamespace, isImageEndpoint, publicMediaRead } from '../src/namespace-gate.ts';
 
 const configured = {
   EMDASH_ACCESS_TEAM_DOMAIN: 'example-team.cloudflareaccess.invalid',
@@ -167,6 +167,59 @@ test('a machine can never publish, unpublish, schedule, delete, or write schema'
     assert.equal(decision.allow, false, `${method} ${path}`);
     assert.equal(decision.reason, 'machine-forbidden', `${method} ${path}`);
   }
+});
+
+test('an anonymous GET or HEAD of the public media-file route is admitted whatever Access says, and nothing else about media is', async () => {
+  const key = '01ARZ3NDEKTSV4RRFFQ69G5FAV.webp';
+  const path = `/_emdash/api/media/file/${key}`;
+  for (const env of [{}, configured]) {
+    for (const method of ['GET', 'HEAD']) {
+      const decision = await evaluateGate({ pathname: path, request: request(path, { method }), env, authenticate: neverCalled });
+      assert.deepEqual(decision, { allow: true, reason: 'public-media' }, `${method} ${JSON.stringify(env)}`);
+    }
+  }
+  assert.equal(publicMediaRead('get', [path, path]), key);
+  assert.equal(publicMediaRead('GET', [path, '/_emdash/api/media/file/other.webp']), null, 'every candidate must name the same file');
+  assert.equal(publicMediaRead('GET', ['/', path]), null, 'a parsed pathname that is not the media route is not admitted on the raw one alone');
+  assert.deepEqual(await evaluateGate({ pathname: path, request: request(`${path}?download=1`), env: {}, authenticate: neverCalled }), { allow: true, reason: 'public-media' }, 'a query string changes nothing: the route ignores it');
+  for (const [method, candidate] of [
+    ['POST', path],
+    ['PUT', path],
+    ['DELETE', path],
+    ['GET', '/_emdash/api/media'],
+    ['GET', '/_emdash/api/media/'],
+    ['GET', '/_emdash/api/media/file'],
+    ['GET', '/_emdash/api/media/file/'],
+    ['GET', '/_emdash/api/media/file/.'],
+    ['GET', '/_emdash/api/media/file/..'],
+    ['GET', '/_emdash/api/media/file/../x.webp'],
+    ['GET', '/_emdash/api/media/file/a/b.webp'],
+    ['GET', '/_emdash/api/media/file/a%2Fb.webp'],
+    ['GET', '/_emdash/api/media/file/a%252Fb.webp'],
+    ['GET', '/_emdash/api/media/file/transfers%2Fexports%2Fx'],
+    ['GET', '/_emdash/api/media/01ABC'],
+    ['GET', '/_emdash/api/media/upload-url'],
+    ['GET', '/_emdash/api/media/asset/01ABC/x.webp'],
+    ['GET', '/_EMDASH/api/media/file/x.webp'],
+    ['GET', '/_emdash//api/media/file/x.webp'],
+  ]) {
+    const pathname = new URL(`https://repoglance.com${candidate}`).pathname;
+    assert.equal(publicMediaRead(method, [pathname, pathname]), null, `${method} ${candidate}`);
+    const decision = await evaluateGate({ pathname, request: request(candidate, { method }), env: {}, authenticate: neverCalled });
+    assert.equal(decision.reason, 'access-not-configured', `${method} ${candidate} is denied before Access is consulted`);
+  }
+  const machine = await evaluateMachineRequest(request(path, { headers: bearer }), path);
+  assert.deepEqual(machine, { allow: false, reason: 'machine-forbidden' }, 'the machine path never admits media; the public path already did');
+});
+
+test("Astro's image endpoint is recognised by its route, in canonical form only", () => {
+  assert.equal(isImageEndpoint('/_image'), true);
+  assert.equal(isImageEndpoint('/_image/'), true);
+  assert.equal(isImageEndpoint('/%5Fimage'), true);
+  assert.equal(isImageEndpoint('/_images'), false);
+  assert.equal(isImageEndpoint('/x/_image'), false);
+  assert.equal(isImageEndpoint('/_image', '/pictures'), false);
+  assert.equal(isImageEndpoint('/pictures', 'pictures/'), true);
 });
 
 test('the denied response is a small, uncached 404 without a redirect', async () => {

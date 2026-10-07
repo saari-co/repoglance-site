@@ -13,7 +13,11 @@ action.
   the namespace guard below. Nothing is ever served from the www host.
 - `src/emdash-namespace-guard.ts` runs before EmDash. In production builds it
   answers 404 for every path under `/_emdash`, including setup and login,
-  unless **all** of these hold:
+  with one anonymous exception, a `GET` or `HEAD` of the public media-file
+  route `/_emdash/api/media/file/<key>` for a flat storage key (decision
+  `media-library-014`: the pages' images are Media Library files; the
+  media list, uploads, folders and every other media route stay behind
+  Access), unless **all** of these hold:
   - the build set `EMDASH_ACCESS_TEAM_DOMAIN`, which wires EmDash's official
     `access()` auth in `astro.config.mjs` and is compiled into the guard (the
     one input configures both; it is not read at runtime),
@@ -43,10 +47,24 @@ action.
   (`astro.config.mjs`). A rendered public page opts in from
   `src/page-cache.ts` (five minutes fresh, one minute stale-while-revalidate,
   tagged with the `pages` collection and EmDash's entry tags, varied by
-  `Host` and `Cookie`); every other response, including the whole `/_emdash`
-  namespace (EmDash opts out), the 404 page and the redirect, carries
-  `Cloudflare-CDN-Cache-Control: no-store`, so the guard runs for every
-  namespace request. The adapter writes `cache.enabled` into the generated
+  `Host` and `Cookie`); a served media file or image rendition (the public
+  media-file route, Astro's image endpoint `/_image`) opts in the same way,
+  tagged `media` and varied by `Host`, keeping the route's own validators
+  (EmDash sends a weak ETag and Last-Modified for a stored file and its
+  renditions, so a browser revalidates and a replaced original is stale at
+  the edge for at most the fresh window); every other response, including
+  the rest of the `/_emdash` namespace (EmDash opts out), a media 404, the
+  404 page and the redirect, carries `Cloudflare-CDN-Cache-Control:
+  no-store`, so the guard runs for every namespace request.
+- Images: the Cloudflare adapter's `cloudflare-binding` image service with
+  the `IMAGES` binding (`wrangler.jsonc`). `src/components/Screenshot.astro`
+  asks the image endpoint for each width (`/_image?href=…&w=540&f=webp`,
+  `w=1080`); EmDash's endpoint wrapper reads a Media Library file straight
+  from R2 and resizes it with the binding, and the repository's own
+  captures (the seed fallback, `/screenshots/<file>`) go through the
+  adapter's endpoint and the `ASSETS` binding. Nothing is transformed at
+  build time. Local workerd and `astro dev` resize through Miniflare's
+  local Images binding, so the smoke proves the renditions. The adapter writes `cache.enabled` into the generated
   deploy config (`wrangler.jsonc` declares it too), which turns on Cloudflare's
   Workers Cache: no KV namespace, API token or dashboard rule is involved.
   EmDash's admin routes call Astro's `cache.invalidate` with the entry and
@@ -150,7 +168,11 @@ printed. This was done for repoglance.com on 2026-10-01
 
    **Setup copies the seed once, and that is the only time.** EmDash setup
    imports `seed/seed.json` (pages and block types) as it is in the deployed
-   build; from then on the CMS owns the content and
+   build, downloading each `$media` reference (the approved captures from
+   the repository's `main`) into the Media Library; EmDash 1.2.0 stores the
+   primary of each reference and drops the nested dark variant, so
+   `npm run cms:media -- --apply` (below) completes the pairing and imports
+   the captures the pages do not use. From then on the CMS owns the content and
    `src/content/load-page.ts` renders the CMS entry whenever one exists.
    History: the 1 October entries were unpublished on 2026-10-06 because
    they predated the copy and imagery locks
@@ -172,12 +194,28 @@ live at once and persists; nothing ever writes copy from `seed/seed.json`
 into the CMS after the one-time bootstrap (EmDash setup imports the seed
 when a brand-new site is first set up, and never again).
 
+**Images (decision `media-library-014`).** The pages' images are Media
+Library items: a hero or feature block has an `image` field (with a
+dark-scheme variant) you fill from Content > Media in the admin; alt
+text lives on the media item, and a block whose image is gone renders no
+figure. The repository owns which images may appear: the approved
+captures under `public/screenshots/`, recorded with their hashes and alt
+text in `seed/media.json` (`docs/content.md`). The mirror writes the live
+library and which block uses which item into that file beside the seed,
+and `tests/media.test.mjs` judges it on the mirror PR: approved captures
+only on the pages, honest alt text, the light cut as the primary with the
+dark cut as its variant, every slot filled. To put a new picture on the
+site, add the capture to the repository first (PR, merge, `npm run
+cms:media -- --apply` uploads it), then pick it in the admin.
+
 **The mirror.** After every request that changes what is live on a page
 (publish, unpublish, restore from the trash, trash or permanent delete, and
 the on-page visual-editing toolbar's publish), the Worker
 (`src/cms/mirror.ts`, triggered by `src/cms/mirror-trigger.ts` after the
-response is sent) reads the live pages from D1, rebuilds `seed/seed.json`
-on top of `main`, and through a GitHub fine-grained token scoped to this
+response is sent) reads the live pages and the Media Library from D1,
+rebuilds `seed/seed.json` (every image as the `$media` reference a fresh
+site sideloads) and the media manifest `seed/media.json` on top of
+`main`, and through a GitHub fine-grained token scoped to this
 repository pushes a `cms-edit/<timestamp>` branch and opens a PR titled
 "CMS edit: …" with the `cms-edit` label, or adds a commit to the open one;
 when live comes back to what `main` already holds, it closes the open
@@ -186,9 +224,10 @@ PR; it never merges. The `CMS edit auto-merge` workflow arms auto-merge
 (merge commit) for a PR that changes only `seed/seed.json`, and GitHub
 merges it when the required checks are green, so the repository lags the
 live site by minutes. A published edit that fails a truth test in
-`tests/content.test.mjs` leaves its PR open and red: fix the wording in the
-admin (the next publish updates the PR, or closes it when the fix restores
-what `main` holds) or change the rule in that PR.
+`tests/content.test.mjs` or `tests/media.test.mjs` leaves its PR open and
+red: fix the wording or the picture in the admin (the next publish updates
+the PR, or closes it when the fix restores what `main` holds) or change
+the rule in that PR.
 
 Two recorded limits: a scheduled publish fires from the cron, not from a
 request, and is mirrored at the next admin action or by `npm run
@@ -209,8 +248,9 @@ net in every case.
 
 | Command | What it does | Identity |
 | --- | --- | --- |
-| `npm run cms:mirror` | Writes the live CMS pages into `seed/seed.json` on a throwaway worktree of `origin/main`, pushes `cms-edit/<timestamp>` and opens the labelled PR; `-- --no-pr` only rewrites the file here; `npm run cms:mirror:check` only reports (exit 1 when the repository is behind). Block types, collections and everything else stay as the repository says; a CMS schema that differs is reported. Every agent session starts with the check. | your Access login (below) |
-| `npm run cms:check` / `npm run cms:sync` | Compares, or writes, the repository's block types into the CMS (a compatible change in place; a breaking one, such as a removed select option, as a new or reused activated version). Never writes page content. Run after a deploy that changes block types. | your Access login (below) |
+| `npm run cms:mirror` | Writes the live CMS pages into `seed/seed.json` and the Media Library into `seed/media.json` on a throwaway worktree of `origin/main`, pushes `cms-edit/<timestamp>` and opens the labelled PR; `-- --no-pr` only rewrites the files here; `npm run cms:mirror:check` only reports (exit 1 when the repository is behind). Block types, collections, the approved captures and everything else stay as the repository says; a CMS schema that differs is reported. Every agent session starts with the check. | your Access login (below) |
+| `npm run cms:check` / `npm run cms:sync` | Compares, or writes, the repository's block types into the CMS (a compatible change in place; a breaking one, such as a removed select option or the `screenshot` select replaced by the `image` field, as a new or reused activated version). Never writes page content. Run after a deploy that changes block types. | your Access login (below) |
+| `npm run cms:media` / `npm run cms:media -- --apply` | Compares the Media Library with the approved captures of `seed/media.json` (matched by content hash: present or missing, alt text, dimensions) and each hero or feature slot of the live pages (a legacy `screenshot` slug awaiting its reference, an image that is not an approved capture, a reference the library no longer has, the dark pairing); `--apply` uploads the missing captures once with their alt text and dimensions (deduplicated, so a second run uploads nothing), writes the alt of an item that has none (never overwriting yours), connects the slots from the library (a legacy slug becomes the capture's light cut with its dark cut as the variant; an approved primary without its dark cut gets it) and publishes the page as you; a page with a pending draft is left alone and reported. Never deletes anything. | your Access login (below) |
 | `npm run check:live` | After `npm run build`: renders both pages from the seed on local workerd, fetches them from the live site, reports the live `data-content-source` (expected `cms`) and edge-cache status, and fails unless the two `<main>` elements are identical, which means the repository is behind the CMS or the mirror failed. | none (public pages) |
 
 **Identity.** The scripts sign in as you through the Access login
@@ -241,9 +281,33 @@ delete, schema writes, live metadata and every admin route answer 404. The agent
 the preview link and the admin link; you edit and publish. The identity for
 this lane is a later slice with its own gates.
 
-**Structure changes** (block types, components, image slugs, new fields)
-still ship from the repository: PR, merge, deploy, then `npm run cms:sync`
-for block types. Never sync before the deploy.
+**Structure changes** (block types, components, the approved captures, new
+fields) still ship from the repository: PR, merge, deploy, then `npm run
+cms:sync` for block types and `npm run cms:media -- --apply` for the
+captures. Never sync before the deploy.
+
+### Gates for the Media Library (maintainer, one sitting)
+
+The deploy of `media-library-014` replaces the `screenshot` select with the
+`image` field, so between the deploy and the last step below the live
+pages render no images (their blocks still carry the old slug and no
+reference). Do the four in one sitting:
+
+1. Deploy (below).
+2. `cloudflared access login https://repoglance.com/_emdash`.
+3. `npm run cms:sync`: the breaking block-type change (hero and feature get
+   a new activated version with the `image` field).
+4. `npm run cms:media -- --apply`: uploads the 25 approved captures with
+   their alt text, connects the six slots from the old slugs (publishing
+   both pages as you, which purges the edge), then re-checks.
+5. `npm run check:live`: both pages equal, live source `cms`. Then
+   `npm run cms:mirror` once, so `seed/media.json` records the library and
+   the usage (the Worker mirror is dormant until the slice-2 gates of
+   `cms-first-013`).
+
+Until step 4 `npm run cms:mirror:check` reports the pages as differing
+(the old slug against the new reference); that is the migration, not an
+admin edit.
 
 ### Gates for the mirror (maintainer, one sitting)
 
@@ -304,5 +368,6 @@ hard gate from `AGENTS.md`.
    `REPOGLANCE_WORKERS_DEV` unset) and deploy again. Wrangler creates the
    DNS records for the custom domains in the zone and turns workers.dev off.
 5. The CMS stays denied until the Access steps above are done.
-6. After a deploy that changed block types: `npm run cms:sync`. After any
+6. After a deploy that changed block types: `npm run cms:sync`; one that
+   changed the approved captures: `npm run cms:media -- --apply`. After any
    deploy: `npm run check:live` (the section above).

@@ -1,0 +1,282 @@
+{
+  "base": "https://raw.githubusercontent.com/saari-co/repoglance-site/main/public/screenshots",
+  "approved": [
+    {
+      "file": "catalog-pinned-dark.webp",
+      "capture": "catalog-pinned",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1920,
+      "size": 39818,
+      "sha256": "d2df03f76c2bfb3a717bb860613858788241b772ab8174ef7363d69c5a0f8b9a",
+      "contentHash": "sha1:1f689e15c704b3eb47d8f8c3d8519d47e6ff25a6",
+      "alt": "The RepoGlance catalog: made-up repositories under fictional owners, pinned ones first, with the account filter, search and sort"
+    },
+    {
+      "file": "catalog-pinned-light.webp",
+      "capture": "catalog-pinned",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1920,
+      "size": 39644,
+      "sha256": "e5495bac0ca48b8ad03f2af6e5d72cbccce10ebe7a0d8366e069a6908c655d11",
+      "contentHash": "sha1:48ed7d926f6ad0f964fea613352794d9676a3b21",
+      "alt": "The RepoGlance catalog: made-up repositories under fictional owners, pinned ones first, with the account filter, search and sort"
+    },
+    {
+      "file": "catalog-rows-dark.webp",
+      "capture": "catalog-rows",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1080,
+      "size": 23436,
+      "sha256": "2f1f5c50d642047d4c6354bfd73e0a4f28e035831270f5699050baddbe816e22",
+      "contentHash": "sha1:44651914dbfc7f3c6335d586afa5cc8efdaeebf6",
+      "alt": "Rows of the RepoGlance catalog: made-up repositories with their visibility and last push, pinned ones first"
+    },
+    {
+      "file": "catalog-rows-light.webp",
+      "capture": "catalog-rows",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1080,
+      "size": 23622,
+      "sha256": "4b06155e176df79d152b71b19189d5cab6504bb684bdae60a91c0947c371364a",
+      "contentHash": "sha1:557a25435fb8459d6ef4e2d2aceceaa775fc9ffc",
+      "alt": "Rows of the RepoGlance catalog: made-up repositories with their visibility and last push, pinned ones first"
+    },
+    {
+      "file": "connect-or-explore-sample-dark.webp",
+      "capture": "connect-or-explore-sample",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1920,
+      "size": 26470,
+      "sha256": "dbe1409777a3279a80d8c28d919443b84b89544ed4ac1c99b0a76843189877fb",
+      "contentHash": "sha1:883c6b96640b0f36795f36c485da87413e5b1f2f",
+      "alt": "The first RepoGlance screen with Sign in with GitHub and Explore with sample data"
+    },
+    {
+      "file": "connect-or-explore-sample-light.webp",
+      "capture": "connect-or-explore-sample",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1920,
+      "size": 26010,
+      "sha256": "add22fd1c879463624ecdfa46894f28a1467b5165a62ec336e48641e0fe16fe7",
+      "contentHash": "sha1:8342dfd95541717583ff8578dc400b383e09fa44",
+      "alt": "The first RepoGlance screen with Sign in with GitHub and Explore with sample data"
+    },
+    {
+      "file": "home-widgets-dark.webp",
+      "capture": "home-widgets",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1920,
+      "size": 45466,
+      "sha256": "5876b15225855859c6a2b26dbe9e623f8bfdc8671295be0fba7ff968f343e473",
+      "contentHash": "sha1:1817242bfb9c1c81c8dc506be2f381d0eb5b4e78",
+      "alt": "A Pixel home screen with the RepoGlance Pinned repos widget listing three made-up repositories and the compact Repository widget below it, each row with the time of its data and its open issue and pull request counts"
+    },
+    {
+      "file": "home-widgets-light.webp",
+      "capture": "home-widgets",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1920,
+      "size": 47322,
+      "sha256": "9eb67b24e490b246f83de0243b2d77ad7d63af4b1c2117cc4ba30d87a69bd7bf",
+      "contentHash": "sha1:06447324803252675bb27c15190c15a0e109a2d5",
+      "alt": "A Pixel home screen with the RepoGlance Pinned repos widget listing three made-up repositories and the compact Repository widget below it, each row with the time of its data and its open issue and pull request counts"
+    },
+    {
+      "file": "pinned-widget-dark.webp",
+      "capture": "pinned-widget",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1573,
+      "size": 31088,
+      "sha256": "1e2601d8a1d9511d0c6cc38a9f929e15acd53f58a5781aa6d98fddd598e039cd",
+      "contentHash": "sha1:3daf7fdc4562cd7855d52ef9c342d6c5db9fab02",
+      "alt": "The RepoGlance Pinned repos widget: three made-up repositories, each with the time of its data and its open issue and pull request counts"
+    },
+    {
+      "file": "pinned-widget-light.webp",
+      "capture": "pinned-widget",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1573,
+      "size": 32310,
+      "sha256": "7d3c36545a3894f1bbc5e02d01af688f6d5245e629d2e8a93afb4ce0fd6ae4c4",
+      "contentHash": "sha1:15ca023dc8fd2801185ea87266a79b54609549ed",
+      "alt": "The RepoGlance Pinned repos widget: three made-up repositories, each with the time of its data and its open issue and pull request counts"
+    },
+    {
+      "file": "quick-settings-tile-dark.webp",
+      "capture": "quick-settings-tile",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1920,
+      "size": 31612,
+      "sha256": "b7597e6dcabad8da3e043ec06c75cc8eeccda46735c4cc629f39e4fed9b39d23",
+      "contentHash": "sha1:afae970fffdf82e847fdeac6cceedf3d456df33f",
+      "alt": "The Quick Settings panel with the RepoGlance tile reading the latest push to a made-up repository"
+    },
+    {
+      "file": "quick-settings-tile-light.webp",
+      "capture": "quick-settings-tile",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1920,
+      "size": 35400,
+      "sha256": "27f9726ecc489d365fbdd11dd25628195c67f8a974d30464c2df7cb97e00726e",
+      "contentHash": "sha1:6a631f1129f8c35d3093b3e886dd8ce2214337d0",
+      "alt": "The Quick Settings panel with the RepoGlance tile reading the latest push to a made-up repository"
+    },
+    {
+      "file": "repository-issues-and-prs-dark.webp",
+      "capture": "repository-issues-and-prs",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1920,
+      "size": 74340,
+      "sha256": "09c9762f0bcd0baf433c9893ed94702a1c53c5824f9319ad8c7f801c0f4d76ad",
+      "contentHash": "sha1:c035ff8b8aa1aebb2d1bfb042b7b9355d492f6b4",
+      "alt": "A made-up repository in RepoGlance showing its open issues and pull requests in one list, with authors, labels and ages"
+    },
+    {
+      "file": "repository-issues-and-prs-light.webp",
+      "capture": "repository-issues-and-prs",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1920,
+      "size": 72034,
+      "sha256": "7fcee54c5f48b24d0c917645564cb2d14cfb457b3c011ad3ddca6e192d2dec3e",
+      "contentHash": "sha1:ac4d57aac2061da1c67dc3f512ed93f05bec7f54",
+      "alt": "A made-up repository in RepoGlance showing its open issues and pull requests in one list, with authors, labels and ages"
+    },
+    {
+      "file": "repository-prs-dark.webp",
+      "capture": "repository-prs",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1920,
+      "size": 45724,
+      "sha256": "47a390e574ca60c83b4eeec46426f46083da671b1ecd88b3b74bdc7a8a486a27",
+      "contentHash": "sha1:95c343c657aab52a23b699b259e2cf4ed9deca6a",
+      "alt": "A made-up repository in RepoGlance filtered to open pull requests, one of them marked Draft"
+    },
+    {
+      "file": "repository-rows-dark.webp",
+      "capture": "repository-rows",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1080,
+      "size": 58128,
+      "sha256": "9b89b03d5d7ca1a28b9c7eee661f3d1b4739085ad27f54199c29f6f2f10ae7d2",
+      "contentHash": "sha1:ba73ec0c70686de5b39c9636648dadbb83e79206",
+      "alt": "Open issues of a made-up repository in RepoGlance, each with its number, title, author, comment count and age"
+    },
+    {
+      "file": "repository-rows-light.webp",
+      "capture": "repository-rows",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1080,
+      "size": 55616,
+      "sha256": "b092f798cb95bf7b8db403219c518a6a11fe93a181fff6ee0345263b40f22283",
+      "contentHash": "sha1:ef39ba3fff37126c8074a2d378ea909eb9e428f0",
+      "alt": "Open issues of a made-up repository in RepoGlance, each with its number, title, author, comment count and age"
+    },
+    {
+      "file": "repository-widget-dark.webp",
+      "capture": "repository-widget",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 609,
+      "size": 6902,
+      "sha256": "f6f599dd4588174aa11350012398c6b8518297ba623e568bd44efbfcbb28091c",
+      "contentHash": "sha1:5d5d4dab5e511170eda45ac59dff005d64256f52",
+      "alt": "The compact RepoGlance Repository widget for a made-up repository: the time of its data, open issues 5, pull requests 3"
+    },
+    {
+      "file": "repository-widget-light.webp",
+      "capture": "repository-widget",
+      "scheme": "light",
+      "width": 1080,
+      "height": 609,
+      "size": 8016,
+      "sha256": "d279178749d8e5dacc9e30d5369ec0857e886617617dabf44e3654b013f72f1a",
+      "contentHash": "sha1:2f158bed486a444fc6c85ac35c069cb99a083c1a",
+      "alt": "The compact RepoGlance Repository widget for a made-up repository: the time of its data, open issues 5, pull requests 3"
+    },
+    {
+      "file": "signin-code-dark.webp",
+      "capture": "signin-code",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1920,
+      "size": 32984,
+      "sha256": "cae13dd3b79487fc779ba59db60c3e2e520045d4d7137366fe8272609fb3fda4",
+      "contentHash": "sha1:741986841826ccfc79abccb3a0343aac5e7f1b57",
+      "alt": "The RepoGlance sign-in screen: a short code to enter on GitHub, how long it lasts, and the Copy code & open GitHub button; the code shown is made up"
+    },
+    {
+      "file": "signin-code-light.webp",
+      "capture": "signin-code",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1920,
+      "size": 32410,
+      "sha256": "65c61d74018f31dea6b2a864e777363debac08bf2c16955463197fec78b21db7",
+      "contentHash": "sha1:8a010514ee3e82df46279554bbbb0aab5afe26a9",
+      "alt": "The RepoGlance sign-in screen: a short code to enter on GitHub, how long it lasts, and the Copy code & open GitHub button; the code shown is made up"
+    },
+    {
+      "file": "tile-row-dark.webp",
+      "capture": "tile-row",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 840,
+      "size": 21224,
+      "sha256": "2791d23be2bb14cbc32cc831e63e14f6b5fe99125fe85cdbe537f88f7dfd6743",
+      "contentHash": "sha1:b2d6c413a3d2afb870026279960290c3186cba03",
+      "alt": "The Quick Settings row with the RepoGlance tile showing the latest push to a made-up repository, beside the Internet tile"
+    },
+    {
+      "file": "tile-row-light.webp",
+      "capture": "tile-row",
+      "scheme": "light",
+      "width": 1080,
+      "height": 840,
+      "size": 24048,
+      "sha256": "a0db3657249408c6e37bc32722b0241b60366d09471ffe37a57d078e504dfbb0",
+      "contentHash": "sha1:48dae0b8f96bc54b462ebf72cf9237c16a81a913",
+      "alt": "The Quick Settings row with the RepoGlance tile showing the latest push to a made-up repository, beside the Internet tile"
+    },
+    {
+      "file": "widgets-cutout-dark.webp",
+      "capture": "widgets-cutout",
+      "scheme": "dark",
+      "width": 1080,
+      "height": 1963,
+      "size": 35646,
+      "sha256": "69962fc85fedef65d1efe8568fc6b0566d2923fdb8483839d596ffe2887379df",
+      "contentHash": "sha1:aee7e34ed9e1b63f99a99b1dfcff02c6b6ecf5fe",
+      "alt": "The RepoGlance Pinned repos widget listing three made-up repositories with their open issue and pull request counts, and the compact Repository widget below it, cut from a Pixel home screen"
+    },
+    {
+      "file": "widgets-cutout-light.webp",
+      "capture": "widgets-cutout",
+      "scheme": "light",
+      "width": 1080,
+      "height": 1963,
+      "size": 37980,
+      "sha256": "52c6b7c43b55858ac73e0c0c8a67fa148a183354718125b7b523e2e11fdf1fd4",
+      "contentHash": "sha1:96b65fc51813a6b7c3469cfa241a13b252c73a1b",
+      "alt": "The RepoGlance Pinned repos widget listing three made-up repositories with their open issue and pull request counts, and the compact Repository widget below it, cut from a Pixel home screen"
+    }
+  ],
+  "library": [],
+  "usage": []
+}

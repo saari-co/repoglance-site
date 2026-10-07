@@ -4,7 +4,7 @@
  * response, how to read the live pages from D1, and how to build the failure
  * email. No Astro or Cloudflare imports, so the unit tests run them.
  */
-import type { LivePage } from '../content/cms-shape.ts';
+import type { LibraryItem, LivePage } from '../content/cms-shape.ts';
 import type { MirrorEmail, MirrorTrigger } from './mirror.ts';
 
 export type LiveChangeAction = Exclude<MirrorTrigger['action'], 'manual'>;
@@ -97,6 +97,31 @@ export async function readLivePagesFromD1(db: D1Like, fields: FieldDeclaration[]
   return results.map((row) => ({
     slug: String(row.slug),
     data: Object.fromEntries(fields.map((field) => [field.slug, deserializeField(row[field.slug], field.type)])),
+  }));
+}
+
+/**
+ * The Media Library's ready items from EmDash's `media` table, as the manifest
+ * records them (decision media-library-014): never the author, never a
+ * pending or failed upload.
+ */
+export async function readLibraryFromD1(db: D1Like): Promise<LibraryItem[]> {
+  const { results } = await db
+    .prepare(`SELECT "id", "filename", "mime_type", "size", "width", "height", "alt", "content_hash", "storage_key", "status" FROM "media" WHERE status = 'ready' ORDER BY filename, id`)
+    .all();
+  const number = (value: unknown): number | null => (typeof value === 'number' && Number.isFinite(value) ? value : null);
+  const text = (value: unknown): string | null => (typeof value === 'string' ? value : null);
+  return results.map((row) => ({
+    id: String(row.id),
+    filename: String(row.filename),
+    mimeType: String(row.mime_type),
+    size: number(row.size),
+    width: number(row.width),
+    height: number(row.height),
+    alt: text(row.alt),
+    contentHash: text(row.content_hash),
+    storageKey: String(row.storage_key),
+    status: String(row.status),
   }));
 }
 

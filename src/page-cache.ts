@@ -103,3 +103,48 @@ export function applyPageResponse(astro: PageResponseContext, input: PageRespons
   astro.cache.set(publicPageCacheOptions(hint, input.buildTime));
   astro.response.headers.set('Vary', PUBLIC_PAGE_VARY);
 }
+
+/** The purge tag of every media response (decision media-library-014). */
+export const MEDIA_TAG = 'media';
+/**
+ * Media varies by Host for the same reason the pages do (the cache keys by
+ * path, not host, and the www host must keep answering the redirect) and not
+ * by Cookie: a file is the same bytes for an editor and a visitor.
+ */
+export const MEDIA_VARY = 'Host';
+
+/**
+ * The edge policy of a media response: the public media-file route and the
+ * image endpoint are cached like the pages, five minutes fresh and one
+ * minute stale, tagged `media`. The route's own validators (EmDash sends a
+ * weak ETag and Last-Modified for a stored file and its renditions) stay on
+ * the response, so a browser revalidates against them. A replaced original
+ * is stale at the edge for at most the fresh window.
+ */
+export function mediaCacheOptions(): PageCacheOptions {
+  return { maxAge: PUBLIC_PAGE_MAX_AGE, swr: PUBLIC_PAGE_SWR, tags: [MEDIA_TAG] };
+}
+
+/** The slice of a middleware context the media policy needs. */
+export interface MediaResponseContext {
+  cache?: { set(options: PageCacheOptions | false): void };
+}
+
+/**
+ * Opt a served media response into the edge cache. Only a full or
+ * not-modified answer is cached; an error, a partial-content answer and
+ * anything else stay no-store (the adapter's default). Must run after
+ * `next()`, once the route has answered, since EmDash's own middleware
+ * settles the cache state while rendering. Returns whether it applied.
+ */
+export function applyMediaResponse(context: MediaResponseContext, response: Response): boolean {
+  if (response.status !== 200 && response.status !== 304) return false;
+  if (!context.cache?.set) return false;
+  context.cache.set(mediaCacheOptions());
+  try {
+    response.headers.set('Vary', MEDIA_VARY);
+  } catch {
+    // an immutable response keeps its own headers; the edge policy still applies
+  }
+  return true;
+}

@@ -21,15 +21,16 @@ no "stack" as a widget name, CI mentioned only as "not yet" or "does not
 fetch", no watched-run notification or production-release claim,
 "read-only" and "never changes anything on GitHub" present, the build
 version named, the privacy, Google Group, repository and issues links
-present, no Play opt-in URL; and for the images, every screenshot option
-shipped at both widths with dimensions and an alt text that says the data
-is made up (or shows the sign-in screen), never "live", the fixture
-code kept out of the copy and the alt text, the light cut shipped at
-both widths exactly for the slugs `src/content/screenshots.ts` declares
-(every slug the pages use), and the hero asking for the band policy on
-the home page only; and for the Open Graph image,
-a 1200x630 PNG whose hash this file records, declared with its size and a
-made-up-data alt in `src/layouts/Site.astro`.
+present, no Play opt-in URL; and for the images, every image in the seed a
+`$media` reference to an approved capture with the capture's alt text and
+its dark cut as the dark variant, and the hero asking for the band policy
+on the home page only; `tests/media.test.mjs` judges the approved
+captures (the record in `seed/media.json` equals the files, the hashes
+below, an alt text that says the data is made up or shows the sign-in
+screen, never "live", no fixture code) and, once the mirror has recorded
+it, the live Media Library and which block uses which item; and for the
+Open Graph image, a 1200x630 PNG whose hash this file records, declared
+with its size and a made-up-data alt in `src/layouts/Site.astro`.
 
 The wording was decided in GrillTrack `site-copy-006` (2026-10-01): one
 five-candidate round on the real pages and a confirmed hybrid
@@ -45,9 +46,15 @@ fallback, not an authoring surface.
 
 ## Screenshots
 
-Every image under `public/screenshots/` is a cut of a RepoGlance showcase
-capture (GrillTrack `site-imagery-007`; the app's `showcase-048`): sample
-mode rendered without its marker under the fictional owners
+The site's images live in EmDash's Media Library (GrillTrack
+`media-library-014`, 2026-10-07): a hero or feature block carries an
+`image` field whose media item, with its `darkVariant`, the editor picks
+under Content > Media in the admin; `src/components/Screenshot.astro`
+renders the reference through Astro's image endpoint, which serves the
+widths from one source per capture. The repository keeps the approved
+captures: every image under `public/screenshots/` is a cut of a RepoGlance
+showcase capture (GrillTrack `site-imagery-007`; the app's `showcase-048`):
+sample mode rendered without its marker under the fictional owners
 `saltmarsh-io`, `ferrywood` and `elin-tidewater` (each a 404 on GitHub on
 2026-10-01), on the approved emulator (AVD `Pixel_10_Pro_Fold`, API 36)
 cover display at 1080x2364, SystemUI demo clock at 9:30 with the device
@@ -81,24 +88,75 @@ the dark files and the light files are cut (the dark ones since
 | `signin-code-dark.png` | `3954cb4c329822dd7855da54428d8fe42aa3e2b95b23373cf01a314483fa6681` |
 | `signin-code-light.png` | `39dccaa44875f763f7d93c5c845d2aa141da50268261384a7a89b1be056ef07b` |
 
-The cuts (Pillow, WebP quality 84, 540 and 1080 px wide): phone frames are
-9:16 crops of the 1080x2364 capture from the top (`home-widgets` from
-y = 120 so the smartspace, both widgets, the hotseat and the search bar
-stay in frame); cut-outs are the element's own box from the launcher and
-app dumps: `widgets-cutout` (30,436)-(796,1828), `pinned-widget`
+The cuts (Pillow, WebP quality 84, 1080 px wide): phone frames are 9:16
+crops of the 1080x2364 capture from the top (`home-widgets` from y = 120
+so the smartspace, both widgets, the hotseat and the search bar stay in
+frame); cut-outs are the element's own box from the launcher and app
+dumps: `widgets-cutout` (30,436)-(796,1828), `pinned-widget`
 (30,436)-(796,1552), `repository-widget` (30,1540)-(541,1828),
 `catalog-rows` (0,840)-(1080,1920), `repository-rows` (0,600)-(1080,1680),
-`tile-row` (0,560)-(1080,1400). The same box cuts both themes, so a
-light cut has its dark cut's dimensions. Files: `<slug>-540.webp` and
-`<slug>-1080.webp` are the dark cuts, `<slug>-light-540.webp` and
-`<slug>-light-1080.webp` the light ones; `repository-prs` has no light
-capture in the release and ships dark only. `src/content/screenshots.ts`
-carries each slug's alt text, the 540 px file's dimensions and whether
-its light cut ships. The cutter is development tooling under ignored
-`.grilltrack/work/` (`scheme-round-1/build-assets.py` on 2026-10-06,
-which checks the fifteen hashes above before cutting and reproduced the
-shipped dark files byte for byte); the proof files under
+`tile-row` (0,560)-(1080,1400). The same box cuts both themes, so a light
+cut has its dark cut's dimensions. The cutter is development tooling under
+ignored `.grilltrack/work/` (`scheme-round-1/build-assets.py` on
+2026-10-06, which checks the fifteen hashes above before cutting and
+reproduced the shipped dark files byte for byte); the proof files under
 `.grilltrack/proof/` record the output hashes.
+
+### Approved captures
+
+One source per capture (`media-library-014`): `<capture>-dark.webp` is the
+dark cut and `<capture>-light.webp` the light cut, the 1080 px files that
+shipped before this decision under `<slug>-1080.webp` and
+`<slug>-light-1080.webp`, byte for byte (the hand-cut 540 px files
+retired; the image endpoint serves the widths). `repository-prs` has no
+light capture in the release and ships dark only. `seed/media.json`
+records each file's dimensions, size, SHA-256, EmDash content hash
+(`sha1:`, the key the Media Library deduplicates on) and alt text in its
+`approved` section (`node scripts/approved-captures.mjs --write` rewrites
+the facts from the files and keeps the alt text; `npm run captures:check`
+runs in `verify`). The 25 files and their SHA-256s:
+
+| Source file | SHA-256 |
+| --- | --- |
+| `catalog-pinned-dark.webp` | `d2df03f76c2bfb3a717bb860613858788241b772ab8174ef7363d69c5a0f8b9a` |
+| `catalog-pinned-light.webp` | `e5495bac0ca48b8ad03f2af6e5d72cbccce10ebe7a0d8366e069a6908c655d11` |
+| `catalog-rows-dark.webp` | `2f1f5c50d642047d4c6354bfd73e0a4f28e035831270f5699050baddbe816e22` |
+| `catalog-rows-light.webp` | `4b06155e176df79d152b71b19189d5cab6504bb684bdae60a91c0947c371364a` |
+| `connect-or-explore-sample-dark.webp` | `dbe1409777a3279a80d8c28d919443b84b89544ed4ac1c99b0a76843189877fb` |
+| `connect-or-explore-sample-light.webp` | `add22fd1c879463624ecdfa46894f28a1467b5165a62ec336e48641e0fe16fe7` |
+| `home-widgets-dark.webp` | `5876b15225855859c6a2b26dbe9e623f8bfdc8671295be0fba7ff968f343e473` |
+| `home-widgets-light.webp` | `9eb67b24e490b246f83de0243b2d77ad7d63af4b1c2117cc4ba30d87a69bd7bf` |
+| `pinned-widget-dark.webp` | `1e2601d8a1d9511d0c6cc38a9f929e15acd53f58a5781aa6d98fddd598e039cd` |
+| `pinned-widget-light.webp` | `7d3c36545a3894f1bbc5e02d01af688f6d5245e629d2e8a93afb4ce0fd6ae4c4` |
+| `quick-settings-tile-dark.webp` | `b7597e6dcabad8da3e043ec06c75cc8eeccda46735c4cc629f39e4fed9b39d23` |
+| `quick-settings-tile-light.webp` | `27f9726ecc489d365fbdd11dd25628195c67f8a974d30464c2df7cb97e00726e` |
+| `repository-issues-and-prs-dark.webp` | `09c9762f0bcd0baf433c9893ed94702a1c53c5824f9319ad8c7f801c0f4d76ad` |
+| `repository-issues-and-prs-light.webp` | `7fcee54c5f48b24d0c917645564cb2d14cfb457b3c011ad3ddca6e192d2dec3e` |
+| `repository-prs-dark.webp` | `47a390e574ca60c83b4eeec46426f46083da671b1ecd88b3b74bdc7a8a486a27` |
+| `repository-rows-dark.webp` | `9b89b03d5d7ca1a28b9c7eee661f3d1b4739085ad27f54199c29f6f2f10ae7d2` |
+| `repository-rows-light.webp` | `b092f798cb95bf7b8db403219c518a6a11fe93a181fff6ee0345263b40f22283` |
+| `repository-widget-dark.webp` | `f6f599dd4588174aa11350012398c6b8518297ba623e568bd44efbfcbb28091c` |
+| `repository-widget-light.webp` | `d279178749d8e5dacc9e30d5369ec0857e886617617dabf44e3654b013f72f1a` |
+| `signin-code-dark.webp` | `cae13dd3b79487fc779ba59db60c3e2e520045d4d7137366fe8272609fb3fda4` |
+| `signin-code-light.webp` | `65c61d74018f31dea6b2a864e777363debac08bf2c16955463197fec78b21db7` |
+| `tile-row-dark.webp` | `2791d23be2bb14cbc32cc831e63e14f6b5fe99125fe85cdbe537f88f7dfd6743` |
+| `tile-row-light.webp` | `a0db3657249408c6e37bc32722b0241b60366d09471ffe37a57d078e504dfbb0` |
+| `widgets-cutout-dark.webp` | `69962fc85fedef65d1efe8568fc6b0566d2923fdb8483839d596ffe2887379df` |
+| `widgets-cutout-light.webp` | `52c6b7c43b55858ac73e0c0c8a67fa148a183354718125b7b523e2e11fdf1fd4` |
+
+The seed (`seed/seed.json`) names each capture a page uses as a `$media`
+reference to the repository's file on `main`
+(`https://raw.githubusercontent.com/saari-co/repoglance-site/main/public/screenshots/<file>`),
+with the alt text, the light cut as the primary and the dark cut as its
+`darkVariant`, so a brand-new site sideloads them into its Media Library
+at EmDash setup. EmDash 1.2.0's seed resolver stores the primary and
+drops the nested dark variant; `npm run cms:media -- --apply` completes
+the pairing from the library, and imports the captures the pages do not
+use. `seed/media.json` also carries the mirror's record of the live
+library (`library`) and which block uses which item (`usage`), written
+by `npm run cms:mirror` and the site's own mirror after every publish;
+`tests/media.test.mjs` judges that record: approved captures only on the
+pages, honest alt text, the locked dark pairing, every slot filled.
 
 ### Colour scheme
 
@@ -106,16 +164,16 @@ Decided in GrillTrack `site-scheme-imagery-010` (2026-10-06): one
 five-candidate round on the real pages and a confirmed hybrid
 (`.grilltrack/proof/scheme-round-1-captures-20261006.md`,
 `scheme-hybrid-1-captures-20261006.md`); `design.md` v5 records the
-rule. `src/components/Screenshot.astro` renders every image whose slug
-ships a light cut as a `<picture>`: a `(prefers-color-scheme: dark)`
-source and the `<img>` for the light scheme, both with the 540 and
-1080 px files. The default policy, `page`, shows the light cut on the
-light scheme and the dark cut on the dark scheme; `band`, which
-`Hero.astro` asks for on the home page only, is the inverse, because the
-hero band itself inverts (ink on the light scheme, near-white on the
-dark one) and the home-screen phone was chosen to match it. A slug
-without a light cut renders its dark cut alone. `scripts/smoke.mjs`
-checks the served pictures on both pages.
+rule. `src/components/Screenshot.astro` renders every image whose value
+carries a dark variant as a `<picture>`: a `(prefers-color-scheme: dark)`
+source and the `<img>` for the light scheme, each a 540 and a 1080 px
+rendition through the image endpoint. The default policy, `page`, shows
+the primary (the light cut) on the light scheme and the dark variant on
+the dark scheme; `band`, which `Hero.astro` asks for on the home page
+only, is the inverse, because the hero band itself inverts (ink on the
+light scheme, near-white on the dark one) and the home-screen phone was
+chosen to match it. A value without a dark variant renders its primary
+alone. `scripts/smoke.mjs` checks the served pictures on both pages.
 
 `public/icon-512.png` is the Play icon from the same release. The marks in
 `public/mark.svg` and `public/favicon.svg` are hand conversions of the
@@ -134,7 +192,7 @@ records the composition. It is generated, not drawn:
   eyebrow and the hero line of the home hero injected from
   `seed/seed.json` by the script (the copy lock stays the single source),
   the Pinned repos widget cut-out from the shipped
-  `public/screenshots/pinned-widget-1080.webp` (header and three rows of
+  `public/screenshots/pinned-widget-dark.webp` (header and three rows of
   made-up repositories), and `repoglance.com` in mono.
 - `node scripts/og-image.mjs` renders it through Google Chrome's DevTools
   protocol (headless, 1200x630, device scale factor 1, after fonts and the
