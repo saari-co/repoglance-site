@@ -20,8 +20,22 @@
     "binding": "CF_VERSION_METADATA"
   },
   "vars": {
-    "EMDASH_SITE_URL": "https://repoglance.com"
+    "EMDASH_SITE_URL": "https://repoglance.com",
+    // The CMS mirror (src/cms/mirror.ts): the repository it opens cms-edit
+    // PRs against and the sender of its failure emails. The GitHub token is
+    // a secret (GITHUB_MIRROR_TOKEN) and the recipient a deploy-time var
+    // (MIRROR_EMAIL_TO, scripts/prepare-deploy.mjs); neither is in source.
+    "GITHUB_MIRROR_REPO": "saari-co/repoglance-site",
+    "MIRROR_EMAIL_FROM": "mirror@repoglance.com"
   },
+  // Cloudflare Email Routing: the mirror's failure email. The recipient
+  // comes from MIRROR_EMAIL_TO and must be a verified destination address of
+  // the account; sending needs Email Routing enabled on repoglance.com.
+  "send_email": [
+    {
+      "name": "MIRROR_EMAIL"
+    }
+  ],
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist/client"

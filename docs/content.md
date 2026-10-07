@@ -35,12 +35,13 @@ The wording was decided in GrillTrack `site-copy-006` (2026-10-01): one
 five-candidate round on the real pages and a confirmed hybrid
 (`.grilltrack/proof/copy-round-1-captures-20261001.md`,
 `copy-hybrid-1-captures-20261001.md`); `design.md` v2 records the voice.
-The hero heading on `/` is also asserted by `scripts/smoke.mjs`, so change
-the seed and that check together. The CMS on repoglance.com is kept equal to
-the seed by `scripts/cms-sync.mjs` after every deploy, and `npm run
-check:live` proves the live pages equal a seed render (decision
-`cms-sync-011`, `docs/cms-access.md`); a seed change reaches the live site
-only through that sequence.
+The hero heading on `/` is also asserted by `scripts/smoke.mjs`; the smoke
+renders the seed, so a copy change that reaches the seed through the mirror
+must update that check too. The CMS owns the copy (decision `cms-first-013`,
+`docs/cms-access.md`): edits are made and published in the EmDash admin, the
+site mirrors them into `seed/seed.json` as a `cms-edit` PR, and these tests
+run on that PR. The seed is the record, the first-boot bootstrap and the
+fallback, not an authoring surface.
 
 ## Screenshots
 

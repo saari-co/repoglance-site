@@ -6,10 +6,14 @@
  *
  * Renders each page from the seed on local workerd (the production build on
  * an empty D1, as the smoke test does) and fetches the same path from the
- * live site, then compares the two <main> elements byte for byte. The live
- * body's data-content-source (cms or seed) and the edge-cache status are
- * reported; a difference fails the check and the first mismatch is printed
- * with context. Both bodies are written under ignored runs/live-check-runs/.
+ * live site, then compares the two <main> elements byte for byte. The CMS
+ * owns content (cms-first-013), so the live source is expected to be cms and
+ * a difference means the repository is behind the CMS: the mirror the site
+ * runs after each publish has not landed, or failed (check the failure
+ * email) and `npm run cms:mirror` brings the repository up to date. The
+ * live body's data-content-source and the edge-cache status are reported;
+ * the first mismatch is printed with context. Both bodies are written under
+ * ignored runs/live-check-runs/.
  *
  * The edge keeps a page for up to five minutes after a publish or deploy
  * purge fails, so a difference on a cache HIT may be stale: the check then
@@ -115,5 +119,7 @@ try {
 await writeFile(join(runDir, 'summary.json'), `${JSON.stringify({ at: new Date().toISOString(), live, results }, null, 2)}\n`);
 if (process.exitCode === 2) process.exit(2);
 const allEqual = results.length === paths.length && results.every((result) => result.equal);
-console.log(allEqual ? `Result: the live site equals the seed render on ${paths.join(' and ')}. Bodies in ${runDir}.` : `Result: the live site DIFFERS from the seed render. Bodies in ${runDir}.`);
+const fromCms = results.every((result) => result.live.source === 'cms');
+if (results.length && !fromCms) console.log('Note: the live pages do not all render from the CMS; after the one-time bootstrap the CMS owns content (docs/cms-access.md).');
+console.log(allEqual ? `Result: the repository equals the live site on ${paths.join(' and ')}. Bodies in ${runDir}.` : `Result: the repository is BEHIND the live site (or the mirror failed): run npm run cms:mirror. Bodies in ${runDir}.`);
 process.exit(allEqual ? 0 : 1);

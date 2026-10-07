@@ -1,0 +1,43 @@
+name: CMS edit auto-merge
+
+# Decision cms-first-013: an edit published in the EmDash admin is mirrored
+# into seed/seed.json by the site itself, as a PR labelled cms-edit on a
+# cms-edit/* branch. The review already happened in the editor, so this arms
+# GitHub's auto-merge (merge commit) for such a PR; GitHub merges it only
+# when the branch's required checks are green, which is what keeps a
+# published edit that breaks a truth test open and red. The mirror's own
+# token never merges anything. Needs the repository setting "Allow
+# auto-merge" and a ruleset on main requiring the site checks (maintainer).
+on:
+  pull_request:
+    types: [opened, reopened, labeled, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  arm:
+    name: Arm auto-merge for a CMS edit
+    if: >-
+      startsWith(github.event.pull_request.head.ref, 'cms-edit/') &&
+      contains(github.event.pull_request.labels.*.name, 'cms-edit') &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      !github.event.pull_request.draft
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Arm auto-merge (merge commit)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh pr merge "$PR_NUMBER" --repo "$REPO" --auto --merge; then
+            echo "Auto-merge armed for #$PR_NUMBER; GitHub merges it when the required checks pass."
+          else
+            echo "::error::Could not arm auto-merge for #$PR_NUMBER. The repository needs 'Allow auto-merge' on and a ruleset on main requiring the site checks (docs/cms-access.md). The PR stays open for a manual merge."
+            exit 1
+          fi

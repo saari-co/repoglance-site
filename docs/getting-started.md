@@ -49,12 +49,16 @@ See the README for what it covers. `npm run test:smoke` alone needs a build.
 
 ## The CMS and the live site
 
-`npm run cms:check` reports every difference between `seed/seed.json` and
-the CMS, `npm run cms:sync` writes the seed into the CMS and publishes it,
-and `npm run check:live` (after a build) compares the live pages with a seed
-render. The runbook, the identity each needs and when to run them are in
-[cms-access.md](cms-access.md#keeping-the-cms-equal-to-the-seed). Against
-the local dev server pass `-- --url http://127.0.0.1:<port>`.
+The CMS owns content and the repository owns structure
+([cms-access.md](cms-access.md#content-structure-and-the-mirror)).
+`npm run cms:mirror` writes the live CMS pages into `seed/seed.json` and
+opens the `cms-edit` PR (`npm run cms:mirror:check` only reports);
+`npm run cms:check` and `npm run cms:sync` compare and write the block
+types; `npm run check:live` (after a build) compares the live pages with a
+seed render. Against the local dev server pass
+`-- --url http://127.0.0.1:<port>`. The mirror the site runs itself after a
+publish can be exercised locally by pointing `GITHUB_API_BASE` in an
+ignored `.dev.vars` at a stub.
 
 ## Captures
 

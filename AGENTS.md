@@ -16,8 +16,11 @@ closed test. Assume every committed byte is public.
 - The site describes only behaviour that `saari-co/RepoGlance`'s `main`
   README lists as available and proven. No CI column, no GitHub writes, no
   Play opt-in link until Play Console shows one.
-- Product copy lives in `seed/seed.json`; `tests/content.test.mjs` checks it
-  for banned claims and required links. Change the copy and the test together.
+- The CMS owns the copy; `seed/seed.json` is its record, the first-boot
+  bootstrap and the fallback. `tests/content.test.mjs` checks the seed for
+  banned claims and required links, so an admin edit that breaks a rule
+  shows up red on the mirror PR that follows it; fix the wording in the
+  admin or change the rule in that PR.
 - Imagery is RepoGlance's showcase captures: sample mode rendered without
   its marker under fictional owners on the approved emulator (the app's
   debug-only `showcase-048`), with a made-up sign-in code. Never a live
@@ -29,11 +32,18 @@ closed test. Assume every committed byte is public.
 
 ## Boundaries
 
-- The seed is the only source of the CMS: `scripts/cms-sync.mjs` is the only
-  writer of block types and pages on repoglance.com, run by the maintainer
-  after a deploy from their own Access login; `npm run check:live` is the
-  proof that the live pages equal the seed (`docs/cms-access.md`). Nothing
-  else, and no agent through a browser session, edits the CMS.
+- CMS-first (decision `cms-first-013`): the CMS owns content and the
+  repository owns structure. A human edits and publishes in the EmDash
+  admin; the site mirrors every publish and unpublish into `seed/seed.json`
+  as a `cms-edit` PR that auto-merges when the checks are green, and emails
+  the maintainer when the mirror fails. After the one-time bootstrap by
+  EmDash setup nothing writes copy from the seed into the CMS: `npm run
+  cms:sync` writes block types only, `npm run cms:mirror` brings the live
+  pages into the repository, `npm run check:live` proves the repository
+  equals the live site (`docs/cms-access.md`). Agents never publish: a
+  machine identity may read and stage drafts against the revision it read,
+  and the maintainer reviews and publishes in the admin. No agent edits the
+  CMS through a browser session.
 - Native upstream EmDash blocks only: block types are declared in
   `seed/seed.json` and rendered with `Blocks` from `emdash/ui`. No
   `@dinkuskit/*` package may be added; the DinkusKit blocks package is being
