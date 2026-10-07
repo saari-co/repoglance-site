@@ -154,3 +154,22 @@ the round-2 record against the diff. Findings and adjudication:
 Ledger: `cms-first-013` reviewed with findings (required_fix, defer) at
 `git:46af3218…`, returned to implementation for the one line; round 4
 below.
+
+## Review round 4
+
+Source identity: `git:9a7fbb4b5e2abc44bc181b0e521723a5dbcc4109` (the
+round-3 fix commit; parent `46af321`). A separate read-only agent
+verified: only the runbook, this note and the tool-owned ledger files
+changed; the runbook sentence matches the gate's allow-list exactly
+(`data`, `_rev`, `migrateBlocks`, `replaceBlocks`, never a status, with a
+non-empty `_rev`); the round-3 record names the exact source identity,
+classifies both findings and states the resolution truthfully; the commit
+message is accurate. Result: clean, no findings.
+
+Delivery: PR saari-co/repoglance-site#13 (`claude/cms-authoring`), opened
+on the maintainer's instruction; CI green on every push; ClawSweeper on the
+first head: no findings. Merge, the slice-2 gates (the GitHub token secret,
+repository auto-merge and a ruleset on `main` requiring a pull request and
+the site checks, Email Routing with the recipient verified and the
+deploy-time var, the deploy, one real edit and one forced failure) and
+slice 3 are the maintainer's.
