@@ -26,6 +26,6 @@ const isHome = (Astro.url.pathname.replace(/\/+$/, '') || '/') === '/';
       )}
     </div>
   </div>
-  <Screenshot slug={value.screenshot} priority scheme={isHome ? 'band' : 'page'} />
+  <Screenshot image={value.image} heading={text('heading')} priority scheme={isHome ? 'band' : 'page'} />
 </section>
 </div>

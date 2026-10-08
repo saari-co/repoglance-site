@@ -25,7 +25,14 @@ closed test. Assume every committed byte is public.
   its marker under fictional owners on the approved emulator (the app's
   debug-only `showcase-048`), with a made-up sign-in code. Never a live
   account's data, never a screen that says sample, never a GitHub-issued
-  code; `docs/content.md` names the source release and hashes.
+  code. The pictures live in the CMS's Media Library (decision
+  `media-library-014`) and the rules apply to what is live: the repository
+  keeps the approved captures and their hashes (`public/screenshots/`,
+  `seed/media.json`, `docs/content.md`), the mirror records the live
+  library and which block uses which item in `seed/media.json`, and
+  `tests/media.test.mjs` judges that record on the mirror PR (approved
+  captures only on the pages, honest alt text, the locked dark pairing,
+  every slot filled). A new picture enters through the repository first.
 - The privacy policy stays at `https://saari-co.github.io/RepoGlance/privacy/`,
   where the Play listing points. This site links to it and serves no copy.
 - The tester signup link is the maintainer's. Never guess a URL.
@@ -40,7 +47,11 @@ closed test. Assume every committed byte is public.
   EmDash setup nothing writes copy from the seed into the CMS: `npm run
   cms:sync` writes block types only, `npm run cms:mirror` brings the live
   pages into the repository, `npm run check:live` proves the repository
-  equals the live site (`docs/cms-access.md`). Agents never publish: a
+  equals the live site, and `npm run cms:media -- --apply` imports the
+  approved captures into the Media Library once and, for the migration of
+  `media-library-014`, connects the pages' slots from their old slugs and
+  publishes them under the maintainer's own login (`docs/cms-access.md`).
+  Agents never publish: a
   machine identity may read and stage drafts against the revision it read,
   and the maintainer reviews and publishes in the admin. No agent edits the
   CMS through a browser session.

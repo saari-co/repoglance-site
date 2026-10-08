@@ -11,5 +11,5 @@ const text = (field: string) => stringField(value, field);
     <h2>{text('heading')}</h2>
     <p>{text('body')}</p>
   </div>
-  <Screenshot slug={value.screenshot} />
+  <Screenshot image={value.image} heading={text('heading')} />
 </section>

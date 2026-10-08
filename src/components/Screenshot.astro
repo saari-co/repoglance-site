@@ -1,38 +1,46 @@
 ---
-import { isScreenshotSlug, screenshots } from '../content/screenshots';
+import { imageConfig } from 'astro:assets';
+import manifest from '../../seed/media.json';
+import { RENDER_SIZES, RENDER_WIDTHS, approvedByFile, imageEndpointUrl, imageSrcset, resolveImageValue, type MediaManifest } from '../content/media';
 
-// Scheme-matched imagery (GrillTrack site-scheme-imagery-010, design.md v5):
-// a slug that ships a light cut renders as a <picture> whose image follows
-// the colour scheme. 'page' shows the light cut on the light scheme and the
-// dark cut on the dark scheme; 'band' is the inverse, for the home hero's
-// phone on the band that itself inverts (ink on the light scheme, near-white
-// on the dark one). A slug without a light cut renders the dark cut alone.
+// The image of a hero or feature block, rendered from its media reference
+// (decision media-library-014): a media value from the CMS, or the seed's
+// `$media` reference when the page renders from the fallback. Every width
+// comes from Astro's image endpoint, which serves one source per capture.
+//
+// Scheme-matched imagery (site-scheme-imagery-010, design.md v5): a value
+// that carries a dark variant renders as a <picture> whose image follows the
+// colour scheme. 'page' shows the primary (the light cut) on the light scheme
+// and the dark variant on the dark scheme; 'band' is the inverse, for the
+// home hero's phone on the band that itself inverts. A value without a dark
+// variant renders its primary alone. Alt text is the media item's, with the
+// block's own heading as the fallback; a block whose reference is gone
+// renders no figure.
 interface Props {
-  slug: unknown;
+  image: unknown;
+  heading?: string;
   priority?: boolean;
   scheme?: 'page' | 'band';
 }
-const { slug, priority = false, scheme = 'page' } = Astro.props;
-const shot = isScreenshotSlug(slug) ? { slug, ...screenshots[slug] } : null;
-const file = (variant: 'dark' | 'light', width: 540 | 1080) =>
-  `/screenshots/${shot?.slug}${variant === 'light' ? '-light' : ''}-${width}.webp`;
-const srcset = (variant: 'dark' | 'light') => `${file(variant, 540)} 540w, ${file(variant, 1080)} 1080w`;
-const sizes = '(min-width: 760px) 320px, 70vw';
-const policy = shot?.light ? scheme : 'dark';
-const onLight = policy === 'band' ? 'dark' : policy === 'page' ? 'light' : 'dark';
-const onDark = policy === 'band' ? 'light' : 'dark';
+const { image, heading = '', priority = false, scheme = 'page' } = Astro.props;
+const { primary, dark } = resolveImageValue(image, approvedByFile(manifest as unknown as MediaManifest));
+const route = imageConfig.endpoint.route ?? '/_image';
+const policy = primary && dark ? scheme : 'single';
+const onLight = policy === 'band' ? dark : primary;
+const onDark = policy === 'band' ? primary : dark;
+const alt = (primary?.alt ?? '').trim() || heading;
 ---
-{shot && (
-  <figure class="shot" data-shot={shot.slug} data-scheme={policy}>
+{primary && onLight && (
+  <figure class="shot" data-shot={primary.name} data-scheme={policy}>
     <picture>
-      {policy !== 'dark' && <source media="(prefers-color-scheme: dark)" srcset={srcset(onDark)} sizes={sizes} />}
+      {policy !== 'single' && onDark && <source media="(prefers-color-scheme: dark)" srcset={imageSrcset(route, onDark.href)} sizes={RENDER_SIZES} />}
       <img
-        src={file(onLight, 540)}
-        srcset={srcset(onLight)}
-        sizes={sizes}
-        width={shot.width}
-        height={shot.height}
-        alt={shot.alt}
+        src={imageEndpointUrl(route, onLight.href, RENDER_WIDTHS[0])}
+        srcset={imageSrcset(route, onLight.href)}
+        sizes={RENDER_SIZES}
+        width={onLight.width}
+        height={onLight.height}
+        alt={alt}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
         fetchpriority={priority ? 'high' : 'auto'}

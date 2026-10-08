@@ -17,7 +17,13 @@ const buildTime = new Date().toISOString();
 export default defineConfig({
   site: 'https://repoglance.com',
   output: 'server',
-  adapter: cloudflare({ imageService: 'passthrough' }),
+  // The Images binding serves every width of the site's imagery from one
+  // source per capture (decision media-library-014): EmDash wraps the
+  // adapter's transform endpoint so a Media Library file is read straight
+  // from R2, and the repository's own captures (the seed fallback) go
+  // through the adapter's endpoint and the ASSETS binding. Nothing is
+  // transformed at build time: the site imports no images.
+  adapter: cloudflare({ imageService: 'cloudflare-binding' }),
   // Route cache with the Cloudflare provider: the public pages opt in from
   // src/page-cache.ts; every other response is no-store at the edge. The
   // adapter turns on Cloudflare's Workers Cache in the generated deploy config.

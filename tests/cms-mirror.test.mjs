@@ -1,17 +1,21 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { BRANCH_PREFIX, LABEL, RERUN_INSTRUCTIONS, SEED_PATH, decodeContent, describeChange, runMirror } from '../src/cms/mirror.ts';
-import { mirrorPages, serializeSeed } from '../src/content/cms-shape.ts';
+import { BRANCH_PREFIX, LABEL, MEDIA_MANIFEST_PATH, RERUN_INSTRUCTIONS, SEED_PATH, decodeContent, describeChange, emptyManifest, runMirror } from '../src/cms/mirror.ts';
+import { mirrorManifest, mirrorPages, serializeManifest, serializeSeed } from '../src/content/cms-shape.ts';
 
 const seedText = readFileSync(new URL('../seed/seed.json', import.meta.url), 'utf8');
 const seed = JSON.parse(seedText);
+const manifest = JSON.parse(readFileSync(new URL('../seed/media.json', import.meta.url), 'utf8'));
 const REPO = 'saari-co/repoglance-site';
 const live = () => seed.content.pages.map((page) => ({ slug: page.slug, data: structuredClone(page.data) }));
+const library = () => [];
+/** The manifest main holds once a mirror has recorded a CMS equal to the seed with an empty library. */
+const manifestText = serializeManifest(mirrorManifest(manifest, library(), live(), seed));
 const encode = (text) => Buffer.from(text, 'utf8').toString('base64').replace(/(.{60})/g, '$1\n');
 
 /** A fake GitHub: records every call and answers like the REST API would. */
-function fakeGitHub({ mainSeedText = seedText, openPulls = [], failOn } = {}) {
+function fakeGitHub({ mainSeedText = seedText, mainManifestText = manifestText, openPulls = [], failOn } = {}) {
   const calls = [];
   const fetchImpl = async (url, init = {}) => {
     const { pathname, search } = new URL(url);
@@ -22,6 +26,7 @@ function fakeGitHub({ mainSeedText = seedText, openPulls = [], failOn } = {}) {
     if (failOn && failOn(method, pathname)) return new Response(JSON.stringify({ message: 'Bad credentials' }), { status: 401 });
     if (method === 'GET' && pathname === `/repos/${REPO}/git/ref/heads/main`) return json({ object: { sha: 'main000' } });
     if (method === 'GET' && pathname === `/repos/${REPO}/contents/${SEED_PATH}`) return json({ content: encode(mainSeedText), encoding: 'base64' });
+    if (method === 'GET' && pathname === `/repos/${REPO}/contents/${MEDIA_MANIFEST_PATH}`) return mainManifestText === null ? json({ message: 'Not Found' }, 404) : json({ content: encode(mainManifestText), encoding: 'base64' });
     if (method === 'GET' && pathname === `/repos/${REPO}/pulls`) return json(openPulls);
     if (method === 'GET' && pathname.startsWith(`/repos/${REPO}/git/commits/`)) return json({ tree: { sha: `tree-of-${pathname.split('/').pop()}` } });
     if (method === 'POST' && pathname === `/repos/${REPO}/git/blobs`) return json({ sha: 'blob111' });
@@ -46,18 +51,18 @@ const channel = async () => {};
 test('unconfigured: a missing token, repo or email channel means no calls, a log line naming what is missing, nothing else', async () => {
   const github = fakeGitHub();
   const lines = [];
-  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { GITHUB_MIRROR_REPO: REPO }, fetch: github.fetch, readLivePages: async () => live(), log: (line) => lines.push(line) });
+  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { GITHUB_MIRROR_REPO: REPO }, fetch: github.fetch, readLivePages: async () => live(), readLibrary: library, log: (line) => lines.push(line) });
   assert.equal(outcome.status, 'unconfigured');
   assert.equal(github.calls.length, 0);
   assert.match(lines[0], /GITHUB_MIRROR_TOKEN, the send_email binding, MIRROR_EMAIL_TO missing/);
   assert.match(lines[0], /npm run cms:mirror/);
-  const noChannel = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { ...env, MIRROR_EMAIL_TO: undefined }, fetch: github.fetch, readLivePages: async () => live(), sendEmail: channel, log: quiet });
+  const noChannel = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { ...env, MIRROR_EMAIL_TO: undefined }, fetch: github.fetch, readLivePages: async () => live(), readLibrary: library, sendEmail: channel, log: quiet });
   assert.equal(noChannel.status, 'unconfigured');
   assert.match(noChannel.detail, /MIRROR_EMAIL_TO missing/);
-  const noBinding = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), log: quiet });
+  const noBinding = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), readLibrary: library, log: quiet });
   assert.equal(noBinding.status, 'unconfigured');
   assert.match(noBinding.detail, /the send_email binding missing/);
-  const noRepo = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { ...env, GITHUB_MIRROR_REPO: ' ' }, fetch: github.fetch, readLivePages: async () => live(), sendEmail: channel, log: quiet });
+  const noRepo = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env: { ...env, GITHUB_MIRROR_REPO: ' ' }, fetch: github.fetch, readLivePages: async () => live(), readLibrary: library, sendEmail: channel, log: quiet });
   assert.equal(noRepo.status, 'unconfigured');
   assert.match(noRepo.detail, /\(GITHUB_MIRROR_REPO missing\)/);
   assert.equal(github.calls.length, 0, 'never silent: without a channel the mirror does not run at all');
@@ -65,19 +70,19 @@ test('unconfigured: a missing token, repo or email channel means no calls, a log
 
 test('equal: when main already equals the live CMS and no mirror PR is open, nothing is pushed', async () => {
   const github = fakeGitHub();
-  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), sendEmail: channel, log: quiet, now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), readLibrary: library, sendEmail: channel, log: quiet, now: () => at });
   assert.equal(outcome.status, 'equal');
-  assert.deepEqual(github.calls.map((call) => call.method), ['GET', 'GET', 'GET'], 'only the ref, the file and the open PRs were read');
+  assert.deepEqual(github.calls.map((call) => call.method), ['GET', 'GET', 'GET', 'GET'], 'only the ref, the two files and the open PRs were read');
 });
 
 test('closed: when live comes back to what main holds, the open mirror PR is closed and its branch deleted', async () => {
   const open = [{ number: 7, html_url: 'https://github.com/saari-co/repoglance-site/pull/7', head: { ref: `${BRANCH_PREFIX}20261007-140000z`, sha: 'head777', repo: { full_name: REPO } } }];
   const github = fakeGitHub({ openPulls: open });
-  const outcome = await runMirror({ collection: 'pages', id: '01ABC', slug: 'home', action: 'publish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => live(), sendEmail: channel, log: quiet, now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: '01ABC', slug: 'home', action: 'publish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => live(), readLibrary: library, sendEmail: channel, log: quiet, now: () => at });
   assert.equal(outcome.status, 'closed');
   assert.equal(outcome.prUrl, open[0].html_url);
   const methods = github.calls.map((call) => `${call.method} ${call.path.split('?')[0]}`);
-  assert.deepEqual(methods.slice(3), [`PATCH /repos/${REPO}/pulls/7`, `DELETE /repos/${REPO}/git/refs/heads/${open[0].head.ref}`]);
+  assert.deepEqual(methods.slice(4), [`PATCH /repos/${REPO}/pulls/7`, `DELETE /repos/${REPO}/git/refs/heads/${open[0].head.ref}`]);
   const patch = github.calls.find((call) => call.method === 'PATCH').body;
   assert.equal(patch.state, 'closed');
   assert.match(patch.body, /`main` already equals the live CMS/);
@@ -88,7 +93,7 @@ test('opened: an admin edit becomes a branch, a commit of the mirrored seed, a l
   const github = fakeGitHub();
   const pages = live();
   pages[0].data.layout[0].heading = 'Edited in the admin';
-  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => pages, sendEmail: channel, log: quiet, now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => pages, readLibrary: library, sendEmail: channel, log: quiet, now: () => at });
   assert.equal(outcome.status, 'opened');
   assert.equal(outcome.prUrl, 'https://github.com/saari-co/repoglance-site/pull/42');
   assert.ok(outcome.branch.startsWith(BRANCH_PREFIX));
@@ -96,6 +101,7 @@ test('opened: an admin edit becomes a branch, a commit of the mirrored seed, a l
   assert.deepEqual(methods, [
     `GET /repos/${REPO}/git/ref/heads/main`,
     `GET /repos/${REPO}/contents/${SEED_PATH}`,
+    `GET /repos/${REPO}/contents/${MEDIA_MANIFEST_PATH}`,
     `GET /repos/${REPO}/pulls`,
     `GET /repos/${REPO}/git/commits/main000`,
     `POST /repos/${REPO}/git/blobs`,
@@ -111,7 +117,7 @@ test('opened: an admin edit becomes a branch, a commit of the mirrored seed, a l
   assert.equal(blob.content, serializeSeed(mirrorPages(seed, pages)), 'the blob is the mirrored seed built on main');
   assert.equal(JSON.parse(blob.content).content.pages[0].data.layout[0].heading, 'Edited in the admin');
   const tree = github.calls.find((call) => call.path === `/repos/${REPO}/git/trees`).body;
-  assert.deepEqual(tree, { base_tree: 'tree-of-main000', tree: [{ path: SEED_PATH, mode: '100644', type: 'blob', sha: 'blob111' }] });
+  assert.deepEqual(tree, { base_tree: 'tree-of-main000', tree: [{ path: SEED_PATH, mode: '100644', type: 'blob', sha: 'blob111' }] }, 'only the seed changed, so only the seed is in the tree');
   const commit = github.calls.find((call) => call.path === `/repos/${REPO}/git/commits`).body;
   assert.deepEqual(commit.parents, ['main000']);
   assert.match(commit.message, /^CMS edit: home \(publish by Bobby, 2026-10-07\)/);
@@ -129,7 +135,7 @@ test('updated: an open cms-edit PR receives the new commit instead of a second P
   const github = fakeGitHub({ openPulls: open });
   const pages = live();
   pages[1].data.description = 'Changed again';
-  const outcome = await runMirror({ collection: 'pages', id: 'testers', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => pages, sendEmail: channel, log: quiet, now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: 'testers', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => pages, readLibrary: library, sendEmail: channel, log: quiet, now: () => at });
   assert.equal(outcome.status, 'updated');
   assert.equal(outcome.branch, open[0].head.ref);
   const methods = github.calls.map((call) => `${call.method} ${call.path.split('?')[0]}`);
@@ -146,7 +152,7 @@ test('failed: a GitHub error sends the failure email with the page, the error an
   const pages = live();
   pages[0].data.title = 'Changed';
   const sent = [];
-  const outcome = await runMirror({ collection: 'pages', id: '01ABC', slug: 'home', action: 'unpublish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => pages, sendEmail: async (message) => sent.push(message), log: quiet, now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: '01ABC', slug: 'home', action: 'unpublish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => pages, readLibrary: library, sendEmail: async (message) => sent.push(message), log: quiet, now: () => at });
   assert.equal(outcome.status, 'failed');
   assert.equal(outcome.emailed, true);
   assert.equal(sent.length, 1);
@@ -161,7 +167,7 @@ test('failed: a GitHub error sends the failure email with the page, the error an
 test('failed when the email itself cannot be sent: the failure and the email error are logged, the outcome says it was not emailed', async () => {
   const github = fakeGitHub({ failOn: (method) => method === 'GET' });
   const lines = [];
-  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), sendEmail: async () => { throw new Error('Email Routing refused the destination'); }, log: (line) => lines.push(line), now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => live(), readLibrary: library, sendEmail: async () => { throw new Error('Email Routing refused the destination'); }, log: (line) => lines.push(line), now: () => at });
   assert.equal(outcome.status, 'failed');
   assert.equal(outcome.emailed, false);
   assert.ok(lines.some((line) => /the failure email could not be sent: Email Routing refused the destination/.test(line)));
@@ -170,7 +176,7 @@ test('failed when the email itself cannot be sent: the failure and the email err
 test('failed: a page reader error is reported the same way', async () => {
   const github = fakeGitHub();
   const sent = [];
-  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => { throw new Error('the DB binding is missing'); }, sendEmail: async (message) => sent.push(message), log: quiet, now: () => at });
+  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: github.fetch, readLivePages: async () => { throw new Error('the DB binding is missing'); }, readLibrary: library, sendEmail: async (message) => sent.push(message), log: quiet, now: () => at });
   assert.equal(outcome.status, 'failed');
   assert.match(sent[0].text, /Error: the DB binding is missing/);
 });
@@ -186,4 +192,51 @@ test('describeChange names the pages and the manual run; decodeContent handles G
   assert.match(trashed.title, /^CMS edit: home, testers \(delete by Bobby, 2026-10-07\)/);
   assert.deepEqual(change.slugs, ['home']);
   assert.equal(decodeContent(encode('héllo\n{"a":1}')), 'héllo\n{"a":1}');
+  // The PR body compares with the manifest's base, the one the mirrored seed is written with.
+  const base = 'https://captures.example.invalid/files';
+  const rebased = structuredClone(seed);
+  const hero = rebased.content.pages[0].data.layout[0];
+  hero.image.$media.url = hero.image.$media.url.replace(manifest.base, base);
+  hero.image.darkVariant.$media.url = hero.image.darkVariant.$media.url.replace(manifest.base, base);
+  const item = { id: '01MEDIA', filename: 'home-widgets-light.webp', mimeType: 'image/webp', size: 47322, width: 1080, height: 1920, alt: rebased.content.pages[0].data.layout[0].image.$media.alt, contentHash: 'sha1:x', storageKey: '01MEDIA.webp', status: 'ready' };
+  const dark = { ...item, id: '01DARK', filename: 'home-widgets-dark.webp', storageKey: '01DARK.webp' };
+  const livePages = live();
+  livePages[0].data.layout[0].image = { id: item.id, provider: 'local', meta: { storageKey: item.storageKey }, darkVariant: { id: dark.id, provider: 'local', meta: { storageKey: dark.storageKey } } };
+  const before = { ...manifest, base };
+  const rebasedChange = describeChange(rebased, livePages, { collection: 'pages', id: 'home', action: 'publish' }, at, { library: [item, dark], before, after: mirrorManifest(before, [item, dark], livePages, rebased) });
+  assert.ok(!/`home`: content/.test(rebasedChange.body), rebasedChange.body);
+});
+
+test('media: a new library item used by a page commits the seed and the manifest together; a repository without a manifest starts from an empty one', async () => {
+  const pages = live();
+  const item = { id: '01MEDIA', filename: 'catalog-rows-light.webp', mimeType: 'image/webp', size: 23622, width: 1080, height: 1080, alt: 'Rows of the catalog, made-up repositories', contentHash: 'sha1:x', storageKey: '01MEDIA.webp', status: 'ready' };
+  pages[0].data.layout[1].image = { id: item.id, provider: 'local', meta: { storageKey: item.storageKey } };
+  const github = fakeGitHub();
+  const outcome = await runMirror({ collection: 'pages', id: 'home', action: 'publish', editor: 'Bobby' }, { env, fetch: github.fetch, readLivePages: async () => pages, readLibrary: async () => [item], sendEmail: channel, log: quiet, now: () => at });
+  assert.equal(outcome.status, 'opened');
+  const blobs = github.calls.filter((call) => call.path === `/repos/${REPO}/git/blobs`).map((call) => call.body.content);
+  assert.equal(blobs.length, 2);
+  const mirroredSeed = JSON.parse(blobs[0]);
+  assert.deepEqual(mirroredSeed.content.pages[0].data.layout[1].image, { $media: { url: `${manifest.base}/catalog-rows-light.webp`, alt: item.alt } }, 'the seed names the library file on main with the library alt');
+  const mirroredManifest = JSON.parse(blobs[1]);
+  assert.deepEqual(mirroredManifest.library, [item]);
+  assert.deepEqual(mirroredManifest.usage[1], { page: 'home', block: 'home-pin', type: 'feature', field: 'image', image: { id: '01MEDIA', filename: 'catalog-rows-light.webp' }, darkVariant: null });
+  assert.equal(mirroredManifest.approved, undefined === mirroredManifest.approved ? undefined : mirroredManifest.approved);
+  assert.deepEqual(mirroredManifest.approved, manifest.approved, 'the approved captures stay as main records them');
+  const tree = github.calls.find((call) => call.path === `/repos/${REPO}/git/trees`).body;
+  assert.deepEqual(tree.tree.map((entry) => entry.path), [SEED_PATH, MEDIA_MANIFEST_PATH]);
+  const pr = github.calls.find((call) => call.path === `/repos/${REPO}/pulls` && call.method === 'POST').body;
+  assert.match(pr.body, /`home`: content \(layout\[1\]\.image/);
+  assert.match(pr.body, /library: 01MEDIA catalog-rows-light\.webp added/);
+  assert.match(pr.body, /usage: home\/home-pin\.image .* -> catalog-rows-light\.webp/);
+  assert.match(pr.body, /seed\/media\.json/);
+
+  const bare = fakeGitHub({ mainManifestText: null });
+  const first = await runMirror({ collection: 'pages', id: 'home', action: 'publish' }, { env, fetch: bare.fetch, readLivePages: async () => live(), readLibrary: library, sendEmail: channel, log: quiet, now: () => at });
+  assert.equal(first.status, 'opened', 'a repository without a manifest receives one');
+  const written = JSON.parse(bare.calls.filter((call) => call.path === `/repos/${REPO}/git/blobs`).map((call) => call.body.content).at(-1));
+  assert.deepEqual(written.approved, []);
+  assert.equal(written.base, emptyManifest().base);
+  assert.equal(written.usage.length, 6);
+  assert.deepEqual(bare.calls.find((call) => call.path === `/repos/${REPO}/git/trees`).body.tree.map((entry) => entry.path), [MEDIA_MANIFEST_PATH], 'the seed itself was already equal');
 });

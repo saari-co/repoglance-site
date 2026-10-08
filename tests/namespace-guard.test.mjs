@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { canonicalPathname, deniedResponse, evaluateGate, evaluateMachineRequest, isEmdashNamespace } from '../src/namespace-gate.ts';
+import { canonicalPathname, deniedResponse, evaluateGate, evaluateImageRequest, evaluateMachineRequest, isEmdashNamespace, isImageEndpoint, isSiteRendition, publicMediaRead } from '../src/namespace-gate.ts';
 
 const configured = {
   EMDASH_ACCESS_TEAM_DOMAIN: 'example-team.cloudflareaccess.invalid',
@@ -167,6 +167,122 @@ test('a machine can never publish, unpublish, schedule, delete, or write schema'
     assert.equal(decision.allow, false, `${method} ${path}`);
     assert.equal(decision.reason, 'machine-forbidden', `${method} ${path}`);
   }
+});
+
+test('an anonymous GET or HEAD of the public media-file route is admitted whatever Access says, and nothing else about media is', async () => {
+  const key = '01ARZ3NDEKTSV4RRFFQ69G5FAV.webp';
+  const path = `/_emdash/api/media/file/${key}`;
+  for (const env of [{}, configured]) {
+    for (const method of ['GET', 'HEAD']) {
+      const decision = await evaluateGate({ pathname: path, request: request(path, { method }), env, authenticate: neverCalled });
+      assert.deepEqual(decision, { allow: true, reason: 'public-media' }, `${method} ${JSON.stringify(env)}`);
+    }
+  }
+  assert.equal(publicMediaRead('get', [path, path]), key);
+  assert.equal(publicMediaRead('GET', [path, '/_emdash/api/media/file/other.webp']), null, 'every candidate must name the same file');
+  assert.equal(publicMediaRead('GET', ['/', path]), null, 'a parsed pathname that is not the media route is not admitted on the raw one alone');
+  assert.deepEqual(await evaluateGate({ pathname: path, request: request(`${path}?download=1`), env: {}, authenticate: neverCalled }), { allow: true, reason: 'public-media' }, 'a query string changes nothing: the route ignores it');
+  for (const [method, candidate] of [
+    ['POST', path],
+    ['PUT', path],
+    ['DELETE', path],
+    ['GET', '/_emdash/api/media'],
+    ['GET', '/_emdash/api/media/'],
+    ['GET', '/_emdash/api/media/file'],
+    ['GET', '/_emdash/api/media/file/'],
+    ['GET', '/_emdash/api/media/file/.'],
+    ['GET', '/_emdash/api/media/file/..'],
+    ['GET', '/_emdash/api/media/file/../x.webp'],
+    ['GET', '/_emdash/api/media/file/a/b.webp'],
+    ['GET', '/_emdash/api/media/file/a%2Fb.webp'],
+    ['GET', '/_emdash/api/media/file/a%252Fb.webp'],
+    ['GET', '/_emdash/api/media/file/transfers%2Fexports%2Fx'],
+    ['GET', '/_emdash/api/media/01ABC'],
+    ['GET', '/_emdash/api/media/upload-url'],
+    ['GET', '/_emdash/api/media/asset/01ABC/x.webp'],
+    ['GET', '/_EMDASH/api/media/file/x.webp'],
+    ['GET', '/_emdash//api/media/file/x.webp'],
+  ]) {
+    const pathname = new URL(`https://repoglance.com${candidate}`).pathname;
+    assert.equal(publicMediaRead(method, [pathname, pathname]), null, `${method} ${candidate}`);
+    const decision = await evaluateGate({ pathname, request: request(candidate, { method }), env: {}, authenticate: neverCalled });
+    assert.equal(decision.reason, 'access-not-configured', `${method} ${candidate} is denied before Access is consulted`);
+  }
+  const machine = await evaluateMachineRequest(request(path, { headers: bearer }), path);
+  assert.deepEqual(machine, { allow: false, reason: 'machine-forbidden' }, 'the machine path never admits media; the public path already did');
+});
+
+test("Astro's image endpoint is recognised by its route, in canonical form only", () => {
+  assert.equal(isImageEndpoint('/_image'), true);
+  assert.equal(isImageEndpoint('/_image/'), true);
+  assert.equal(isImageEndpoint('/%5Fimage'), true);
+  assert.equal(isImageEndpoint('/_images'), false);
+  assert.equal(isImageEndpoint('/x/_image'), false);
+  assert.equal(isImageEndpoint('/_image', '/pictures'), false);
+  assert.equal(isImageEndpoint('/pictures', 'pictures/'), true);
+});
+
+test("the image endpoint's public renditions are exactly the URLs the pages emit: a capture or a library file at 540 or 1080 px as WebP, keys in order, nothing else", () => {
+  const url = (query) => new URL(`https://repoglance.com/_image?${query}`);
+  const approved = new Set(['home-widgets-dark.webp', 'home-widgets-light.webp', 'tile-row-dark.webp']);
+  for (const query of [
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-light.webp&w=1080&f=webp',
+    'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2F01ARZ3NDEKTSV4RRFFQ69G5FAV.webp&w=540&f=webp',
+  ]) {
+    assert.equal(isSiteRendition(url(query)), true, query);
+    assert.equal(isSiteRendition(url(query), approved), true, `${query} (approved)`);
+  }
+  assert.equal(isSiteRendition(url('href=%2Fscreenshots%2Fother.webp&w=540&f=webp')), true, 'any capture name without the approved set');
+  assert.equal(isSiteRendition(url('href=%2Fscreenshots%2Fother.webp&w=540&f=webp'), approved), false, 'not an approved capture');
+  for (const query of [
+    'f=webp&w=540&href=%2Fscreenshots%2Ftile-row-dark.webp',
+    'href=/screenshots/home-widgets-dark.webp&w=540&f=webp',
+    'href=%2fscreenshots%2fhome-widgets-dark.webp&w=540&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=0540&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=5.4e2&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=0x21c&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=%2B540&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540.0&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=%20540&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=333&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=avif',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&q=100',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp&h=10',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&w=1080&f=webp',
+    'href=%2Fscreenshots%2Fhome-widgets-dark.png&w=540&f=webp',
+    'href=%2Fscreenshots%2F..%2Fmark.svg&w=540&f=webp',
+    'href=%2Fscreenshots%2Fa%2Fb.webp&w=540&f=webp',
+    'href=%2Fmark.svg&w=540&f=webp',
+    'href=https%3A%2F%2Fexample.com%2Fx.webp&w=540&f=webp',
+    'href=https%3A%2F%2Frepoglance.com%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp',
+    'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2Fa%2Fb.webp&w=540&f=webp',
+    'href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2F&w=540&f=webp',
+    'w=540&f=webp',
+    '',
+  ]) {
+    assert.equal(isSiteRendition(url(query)), false, query || '(empty)');
+  }
+});
+
+test("the image endpoint: a public rendition for everyone, anything else only for an operator Access admits (the admin's thumbnails), never for a machine or a POST", async () => {
+  const rendition = 'https://repoglance.com/_image?href=%2Fscreenshots%2Fhome-widgets-dark.webp&w=540&f=webp';
+  const thumbnail = 'https://repoglance.com/_image?href=https%3A%2F%2Frepoglance.com%2F_emdash%2Fapi%2Fmedia%2Ffile%2F01ARZ3NDEKTSV4RRFFQ69G5FAV.webp%3F_emdash_media%3Dabc&w=400&f=webp';
+  const input = (url, extra = {}) => ({ pathname: '/_image', request: new Request(url, extra.init), env: extra.env ?? {}, authenticate: extra.authenticate ?? neverCalled, dev: extra.dev, approvedFiles: new Set(['home-widgets-dark.webp']) });
+  assert.deepEqual(await evaluateImageRequest(input(rendition)), { allow: true, reason: 'public-rendition' });
+  assert.deepEqual(await evaluateImageRequest(input(rendition, { init: { method: 'HEAD' } })), { allow: true, reason: 'public-rendition' });
+  assert.deepEqual(await evaluateImageRequest(input(rendition, { env: configured, authenticate: identity('owner@example.invalid') })), { allow: true, reason: 'public-rendition' }, 'a rendition never consults Access');
+  assert.deepEqual(await evaluateImageRequest(input('https://repoglance.com/_image?href=%2Fscreenshots%2Fother.webp&w=540&f=webp')), { allow: false, reason: 'access-not-configured' }, 'not an approved capture');
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail)), { allow: false, reason: 'access-not-configured' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { env: configured, authenticate: identity(null) })), { allow: false, reason: 'no-identity' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { env: configured, authenticate: throwing })), { allow: false, reason: 'no-identity' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { env: configured, authenticate: identity('owner@example.invalid') })), { allow: true, reason: 'operator' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { env: { ...configured, EMDASH_OPERATOR_ALLOWLIST: 'owner@example.invalid' }, authenticate: identity('someone@example.invalid') })), { allow: false, reason: 'not-on-allowlist' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { dev: true })), { allow: true, reason: 'dev' });
+  assert.deepEqual(await evaluateImageRequest(input(thumbnail, { init: { method: 'POST' }, env: configured, authenticate: identity('owner@example.invalid') })), { allow: false, reason: 'machine-forbidden' });
+  assert.deepEqual(await evaluateImageRequest(input(rendition, { init: { method: 'POST' } })), { allow: false, reason: 'machine-forbidden' });
 });
 
 test('the denied response is a small, uncached 404 without a redirect', async () => {

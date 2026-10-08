@@ -109,6 +109,38 @@ export async function readEntries(client, collection) {
   return entries;
 }
 
+/**
+ * Every ready item of the Media Library, as the manifest records it
+ * (media-library-014): id, file name, type, size, dimensions, alt, EmDash's
+ * content hash and the storage key; never the author.
+ */
+export async function readLibrary(client) {
+  const items = [];
+  let cursor;
+  do {
+    const query = new URLSearchParams({ limit: '100' });
+    if (cursor) query.set('cursor', cursor);
+    const page = await client.request('GET', `/media?${query}`);
+    for (const item of page.items ?? []) {
+      if (item.status !== 'ready') continue;
+      items.push({
+        id: item.id,
+        filename: item.filename,
+        mimeType: item.mimeType,
+        size: item.size ?? null,
+        width: item.width ?? null,
+        height: item.height ?? null,
+        alt: item.alt ?? null,
+        contentHash: item.contentHash ?? null,
+        storageKey: item.storageKey,
+        status: item.status,
+      });
+    }
+    cursor = page.nextCursor;
+  } while (cursor);
+  return items;
+}
+
 /** The pages that are live: published entries with their live data. */
 export function livePages(entries) {
   return entries.filter((entry) => entry.status === 'published' && entry.live).map((entry) => ({ slug: entry.slug, data: entry.live }));

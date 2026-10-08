@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { deserializeField, matchTrigger, rawEmail, readLivePagesFromD1, slugFromResponse } from '../src/cms/trigger-helpers.ts';
+import { deserializeField, matchTrigger, rawEmail, readLibraryFromD1, readLivePagesFromD1, slugFromResponse } from '../src/cms/trigger-helpers.ts';
 
 test('the trigger matches exactly the requests that change live content', () => {
   assert.deepEqual(matchTrigger('POST', '/_emdash/api/content/pages/01ABC/publish'), { collection: 'pages', id: '01ABC', action: 'publish' });
@@ -74,4 +74,31 @@ test('the raw email is a plain-text RFC 5322 message with folded-out header inje
   assert.ok(headers.includes('Message-ID: <id123@repoglance.com>'));
   assert.ok(headers.includes('Date: Wed, 07 Oct 2026 15:00:00 GMT'));
   assert.ok(headers.includes('Content-Type: text/plain; charset=utf-8'));
+});
+
+test('the D1 library reader records the ready media items without their author', async () => {
+  const queries = [];
+  const db = {
+    prepare(query) {
+      queries.push(query);
+      return {
+        async all() {
+          return {
+            results: [
+              { id: '01A', filename: 'home-widgets-light.webp', mime_type: 'image/webp', size: 47322, width: 1080, height: 1920, alt: 'alt', content_hash: 'sha1:abc', storage_key: '01A.webp', status: 'ready', author_id: 'someone' },
+              { id: '01B', filename: 'x.png', mime_type: 'image/png', size: null, width: null, height: null, alt: null, content_hash: null, storage_key: '01B.png', status: 'ready' },
+            ],
+          };
+        },
+      };
+    },
+  };
+  const items = await readLibraryFromD1(db);
+  assert.equal(queries.length, 1);
+  assert.match(queries[0], /FROM "media" WHERE status = 'ready' ORDER BY filename, id$/);
+  assert.ok(!/author/.test(queries[0]));
+  assert.deepEqual(items, [
+    { id: '01A', filename: 'home-widgets-light.webp', mimeType: 'image/webp', size: 47322, width: 1080, height: 1920, alt: 'alt', contentHash: 'sha1:abc', storageKey: '01A.webp', status: 'ready' },
+    { id: '01B', filename: 'x.png', mimeType: 'image/png', size: null, width: null, height: null, alt: null, contentHash: null, storageKey: '01B.png', status: 'ready' },
+  ]);
 });

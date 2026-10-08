@@ -1,18 +1,27 @@
+import { imageConfig } from 'astro:assets';
 import { defineMiddleware } from 'astro:middleware';
 import { authenticate as accessAuthenticate } from '@emdash-cms/cloudflare/auth';
 import { env as workerEnv } from 'cloudflare:workers';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
+import manifest from '../seed/media.json';
 import {
   ALLOWLIST_ENV,
   AUDIENCE_ENV,
   TEAM_DOMAIN_ENV,
   deniedResponse,
   evaluateGate,
+  evaluateImageRequest,
   isEmdashNamespace,
+  isImageEndpoint,
+  publicMediaRead,
   requestPathname,
   type GateEnv,
   type MachineIdentity,
 } from './namespace-gate.ts';
+import { applyMediaResponse } from './page-cache.ts';
+
+/** The approved captures (seed/media.json): the repository files the endpoint may render for everyone. */
+const approvedFiles: ReadonlySet<string> = new Set(((manifest as { approved?: { file: string }[] }).approved ?? []).map((capture) => capture.file));
 
 /**
  * The team domain is the build input that also wires EmDash's `access()` in
@@ -73,20 +82,59 @@ async function verifyMachine(request: Request, config: { teamDomain: string; aud
   };
 }
 
+/** The image endpoint's route as Astro configured it. */
+const imageEndpointRoute: string = imageConfig.endpoint?.route ?? '/_image';
+
 /**
  * Outer middleware, registered before EmDash. Production builds answer 404 for
  * the whole /_emdash namespace, including setup and login, unless Cloudflare
  * Access is configured, the official Access authentication succeeds, and the
  * identity is on the operator allowlist when one is set; a verified service
- * token is admitted only to the machine routes the gate allows. Development
- * builds pass the namespace through so the local editor works. Host,
- * forwarded headers, Origin, cookies and query strings are never an unlock.
+ * token is admitted only to the machine routes the gate allows. The one
+ * anonymous exception is a read of the public media-file route (decision
+ * media-library-014), which, like Astro's image endpoint outside the
+ * namespace, is then cached at the edge like the pages. Development builds
+ * pass the namespace through so the local editor works. Host, forwarded
+ * headers, Origin, cookies and query strings are never an unlock.
  */
 export const onRequest = defineMiddleware(async (context, next) => {
   const pathname = context.url.pathname;
-  const inNamespace = isEmdashNamespace(pathname) || isEmdashNamespace(requestPathname(context.request));
-  if (!inNamespace) return next();
-  if (import.meta.env.DEV) return next();
+  const candidates = [pathname, requestPathname(context.request)];
+  const inNamespace = candidates.some(isEmdashNamespace);
+  if (!inNamespace) {
+    if (!candidates.every((candidate) => isImageEndpoint(candidate, imageEndpointRoute))) return next();
+    // The endpoint serves the site's own renditions to everyone, cached
+    // like the pages; anything else only to an operator, uncached.
+    let decision: Awaited<ReturnType<typeof evaluateImageRequest>>;
+    try {
+      decision = await evaluateImageRequest({
+        pathname,
+        request: context.request,
+        env: readEnv(),
+        authenticate: (request, config) => accessAuthenticate(request, config),
+        dev: Boolean(import.meta.env.DEV),
+        approvedFiles,
+      });
+    } catch {
+      return deniedResponse();
+    }
+    if (!decision.allow) return deniedResponse();
+    if (decision.reason !== 'public-rendition') return next();
+    // EmDash's own middleware already returns a fresh copy of every
+    // response; this second copy keeps the route cache's header writes
+    // independent of that.
+    const served = await next();
+    const response = new Response(served.body, served);
+    applyMediaResponse(context, response);
+    return response;
+  }
+  const publicMedia = publicMediaRead(context.request.method, candidates) !== null;
+  if (import.meta.env.DEV) {
+    const response = await next();
+    if (publicMedia) applyMediaResponse(context, response);
+    return response;
+  }
+  let allow = false;
   try {
     const decision = await evaluateGate({
       pathname,
@@ -96,8 +144,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
       verifyMachine,
       dev: false,
     });
-    return decision.allow ? next() : deniedResponse();
+    allow = decision.allow;
   } catch {
-    return deniedResponse();
+    allow = false;
   }
+  if (!allow) return deniedResponse();
+  const response = await next();
+  if (publicMedia) applyMediaResponse(context, response);
+  return response;
 });

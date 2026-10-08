@@ -2,10 +2,11 @@
  * The site mirrors itself into the repository (decision cms-first-013).
  *
  * After an edit is published or unpublished in the EmDash admin, the Worker
- * reads the live pages, rebuilds `seed/seed.json` on top of the
- * repository's `main`, and, through a GitHub fine-grained token that may
- * push a branch and open a pull request and never merges, opens or updates
- * one PR titled "CMS edit: …" labelled `cms-edit`. The repository's own
+ * reads the live pages and the Media Library, rebuilds `seed/seed.json` and
+ * the media manifest `seed/media.json` on top of the repository's `main`,
+ * and, through a GitHub fine-grained token that may push a branch and open
+ * a pull request and never merges, opens or updates one PR titled "CMS
+ * edit: …" labelled `cms-edit`. The repository's own
  * workflow arms auto-merge and GitHub merges it when the checks are green;
  * a published edit that fails a truth test leaves the PR open and red.
  *
@@ -15,7 +16,8 @@
  * else. Pure: `fetch`, the page reader, the email sender and the clock are
  * injected, so the unit tests run it under Node.
  */
-import { mirrorPages, pageDifferences, serializeSeed, type LivePage, type SeedFile } from '../content/cms-shape.ts';
+import { SEED_MEDIA_BASE } from '../content/media.ts';
+import { manifestDifferences, mirrorManifest, mirrorPages, pageDifferences, serializeManifest, serializeSeed, type LibraryItem, type LivePage, type MediaManifest, type SeedFile } from '../content/cms-shape.ts';
 
 export interface MirrorEnv {
   GITHUB_MIRROR_TOKEN?: string;
@@ -48,6 +50,8 @@ export interface MirrorDeps {
   fetch: typeof fetch;
   /** The pages that are live in the CMS right now. */
   readLivePages: () => Promise<LivePage[]>;
+  /** The Media Library's ready items (decision media-library-014). */
+  readLibrary: () => Promise<LibraryItem[]>;
   /** Sends one email through the configured channel; absent when none is configured. */
   sendEmail?: (message: MirrorEmail) => Promise<void>;
   log?: (line: string) => void;
@@ -61,6 +65,7 @@ export type MirrorOutcome =
   | { status: 'failed'; detail: string; emailed: boolean };
 
 export const SEED_PATH = 'seed/seed.json';
+export const MEDIA_MANIFEST_PATH = 'seed/media.json';
 export const BRANCH_PREFIX = 'cms-edit/';
 export const LABEL = 'cms-edit';
 export const DEFAULT_EMAIL_FROM = 'mirror@repoglance.com';
@@ -68,7 +73,7 @@ export const RERUN_INSTRUCTIONS =
   'To mirror by hand, from a checkout of main on a machine with cloudflared:\n' +
   '  cloudflared access login https://repoglance.com/_emdash\n' +
   '  npm run cms:mirror\n' +
-  'It writes the live CMS pages into seed/seed.json and opens the cms-edit PR (docs/cms-access.md).';
+  'It writes the live CMS pages into seed/seed.json and the Media Library into seed/media.json, and opens the cms-edit PR (docs/cms-access.md).';
 
 class GitHubError extends Error {
   readonly method: string;
@@ -135,9 +140,18 @@ interface PullRequest {
   head: { ref: string; sha: string; repo?: { full_name?: string } | null };
 }
 
+/** What the mirror compares and writes: the seed and the media manifest, before and after. */
+export interface MirrorMedia {
+  library: LibraryItem[];
+  before: MediaManifest;
+  after: MediaManifest;
+}
+
 /** The PR title and body for a mirror of `live` on top of `baseSeed`. */
-export function describeChange(baseSeed: SeedFile, live: LivePage[], trigger: MirrorTrigger, at: Date): { title: string; body: string; message: string; slugs: string[] } {
-  const differences = pageDifferences(baseSeed, live);
+export function describeChange(baseSeed: SeedFile, live: LivePage[], trigger: MirrorTrigger, at: Date, media?: MirrorMedia): { title: string; body: string; message: string; slugs: string[] } {
+  const mediaById = new Map((media?.library ?? []).map((item) => [item.id, item]));
+  const differences = pageDifferences(baseSeed, live, 'pages', { mediaById, base: media?.before.base });
+  const mediaLines = media ? manifestDifferences(media.before, media.after) : [];
   const slugs = [...new Set(differences.map((difference) => difference.slug))];
   const subject = slugs.length ? slugs.join(', ') : (trigger.slug ?? trigger.id);
   const day = at.toISOString().slice(0, 10);
@@ -149,28 +163,53 @@ export function describeChange(baseSeed: SeedFile, live: LivePage[], trigger: Mi
       ? `Mirrored by \`npm run cms:mirror\`${who} on ${at.toISOString()}.`
       : `A page was ${verbs[trigger.action]} in the EmDash admin${who} on ${at.toISOString()} (page \`${trigger.slug ?? trigger.id}\`).`,
     '',
-    'This PR mirrors the live CMS pages into `seed/seed.json`, opened by the site itself (decision `cms-first-013`, `src/cms/mirror.ts`). The CMS owns content; the repository keeps this record and the fallback.',
+    'This PR mirrors the live CMS pages into `seed/seed.json` and the Media Library into `seed/media.json`, opened by the site itself (decisions `cms-first-013` and `media-library-014`, `src/cms/mirror.ts`). The CMS owns content; the repository keeps this record and the fallback.',
     '',
     '## What changed',
     '',
-    ...(differences.length ? differences.map((difference) => `- \`${difference.slug}\`: ${difference.kind === 'content' ? `content (${difference.detail})` : difference.detail}`) : ['- No difference against `main` at the time of the mirror (a previous mirror already carried this edit).']),
+    ...(differences.length ? differences.map((difference) => `- \`${difference.slug}\`: ${difference.kind === 'content' ? `content (${difference.detail})` : difference.detail}`) : []),
+    ...mediaLines.map((line) => `- ${line}`),
+    ...(differences.length || mediaLines.length ? [] : ['- No difference against `main` at the time of the mirror (a previous mirror already carried this edit).']),
     '',
     '## What happens next',
     '',
     'The truth tests run on this PR. The `CMS edit auto-merge` workflow arms auto-merge and GitHub merges when the checks are green. If a check fails, the published edit is already live: fix the wording in the admin (the next publish updates this PR) or change the rule in this PR.',
   ];
-  return { title, body: lines.join('\n'), message: `${title}\n\nMirror of the live EmDash content into seed/seed.json (cms-first-013).`, slugs };
+  return { title, body: lines.join('\n'), message: `${title}\n\nMirror of the live EmDash content into seed/seed.json and seed/media.json (cms-first-013, media-library-014).`, slugs };
 }
 
-async function commitSeed(gh: GitHubClient, repo: string, parentSha: string, text: string, message: string): Promise<string> {
+/** The media manifest a repository without one starts from. */
+export function emptyManifest(): MediaManifest {
+  return { base: SEED_MEDIA_BASE, approved: [], library: [], usage: [] };
+}
+
+interface MirrorFile {
+  path: string;
+  text: string;
+}
+
+async function commitFiles(gh: GitHubClient, repo: string, parentSha: string, files: MirrorFile[], message: string): Promise<string> {
   const parent = await gh.request<{ tree: { sha: string } }>('GET', `/repos/${repo}/git/commits/${parentSha}`);
-  const blob = await gh.request<{ sha: string }>('POST', `/repos/${repo}/git/blobs`, { content: text, encoding: 'utf-8' });
-  const tree = await gh.request<{ sha: string }>('POST', `/repos/${repo}/git/trees`, {
-    base_tree: parent.tree.sha,
-    tree: [{ path: SEED_PATH, mode: '100644', type: 'blob', sha: blob.sha }],
-  });
+  const entries = [];
+  for (const file of files) {
+    const blob = await gh.request<{ sha: string }>('POST', `/repos/${repo}/git/blobs`, { content: file.text, encoding: 'utf-8' });
+    entries.push({ path: file.path, mode: '100644', type: 'blob', sha: blob.sha });
+  }
+  const tree = await gh.request<{ sha: string }>('POST', `/repos/${repo}/git/trees`, { base_tree: parent.tree.sha, tree: entries });
   const commit = await gh.request<{ sha: string }>('POST', `/repos/${repo}/git/commits`, { message, tree: tree.sha, parents: [parentSha] });
   return commit.sha;
+}
+
+/** A file of `main` through the contents API; null when it does not exist there. */
+async function readFile(gh: GitHubClient, repo: string, sha: string, path: string): Promise<string | null> {
+  try {
+    const file = await gh.request<{ content: string; encoding: string }>('GET', `/repos/${repo}/contents/${path}?ref=${sha}`);
+    if (file.encoding !== 'base64') throw new Error(`unexpected encoding ${file.encoding} for ${path}`);
+    return decodeContent(file.content);
+  } catch (error) {
+    if (error instanceof GitHubError && error.status === 404) return null;
+    throw error;
+  }
 }
 
 /**
@@ -201,16 +240,26 @@ export async function runMirror(trigger: MirrorTrigger, deps: MirrorDeps): Promi
   const gh = githubClient(deps.fetch, env.GITHUB_API_BASE?.trim() || 'https://api.github.com', token);
   try {
     const live = await deps.readLivePages();
+    const library = await deps.readLibrary();
     const ref = await gh.request<{ object: { sha: string } }>('GET', `/repos/${repo}/git/ref/heads/${baseBranch}`);
     const baseSha = ref.object.sha;
-    const file = await gh.request<{ content: string; encoding: string }>('GET', `/repos/${repo}/contents/${SEED_PATH}?ref=${baseSha}`);
-    if (file.encoding !== 'base64') throw new Error(`unexpected encoding ${file.encoding} for ${SEED_PATH}`);
-    const baseText = decodeContent(file.content);
+    const baseText = await readFile(gh, repo, baseSha, SEED_PATH);
+    if (baseText === null) throw new Error(`${SEED_PATH} is missing on ${baseBranch}`);
     const baseSeed = JSON.parse(baseText) as SeedFile;
-    const mirrored = serializeSeed(mirrorPages(baseSeed, live));
+    const baseManifestText = await readFile(gh, repo, baseSha, MEDIA_MANIFEST_PATH);
+    const baseManifest = baseManifestText === null ? emptyManifest() : (JSON.parse(baseManifestText) as MediaManifest);
+    const mediaById = new Map(library.map((item) => [item.id, item]));
+    const mirrored = serializeSeed(mirrorPages(baseSeed, live, 'pages', { mediaById, base: baseManifest.base }));
+    const manifest = mirrorManifest(baseManifest, library, live, baseSeed);
+    const mirroredManifest = serializeManifest(manifest);
+    const media: MirrorMedia = { library, before: baseManifest, after: manifest };
+    const files: MirrorFile[] = [
+      ...(mirrored === baseText ? [] : [{ path: SEED_PATH, text: mirrored }]),
+      ...(mirroredManifest === baseManifestText ? [] : [{ path: MEDIA_MANIFEST_PATH, text: mirroredManifest }]),
+    ];
     const open = await gh.request<PullRequest[]>('GET', `/repos/${repo}/pulls?state=open&base=${encodeURIComponent(baseBranch)}&per_page=50`);
     const existing = open.find((pr) => pr.head.ref.startsWith(BRANCH_PREFIX) && (pr.head.repo?.full_name ?? repo) === repo);
-    if (mirrored === baseText) {
+    if (!files.length) {
       if (existing) {
         // The live CMS came back to what main holds (an edit was reverted or
         // fixed in the admin): the open mirror PR would merge content the
@@ -229,9 +278,9 @@ export async function runMirror(trigger: MirrorTrigger, deps: MirrorDeps): Promi
       return { status: 'equal', detail };
     }
     const at = now();
-    const change = describeChange(baseSeed, live, trigger, at);
+    const change = describeChange(baseSeed, live, trigger, at, media);
     if (existing) {
-      const sha = await commitSeed(gh, repo, existing.head.sha, mirrored, change.message);
+      const sha = await commitFiles(gh, repo, existing.head.sha, files, change.message);
       await gh.request('PATCH', `/repos/${repo}/git/refs/heads/${existing.head.ref}`, { sha, force: false });
       await gh.request('PATCH', `/repos/${repo}/pulls/${existing.number}`, { title: change.title, body: change.body });
       const detail = `updated ${existing.html_url} (${existing.head.ref}) with ${change.slugs.join(', ') || trigger.slug || trigger.id}`;
@@ -239,7 +288,7 @@ export async function runMirror(trigger: MirrorTrigger, deps: MirrorDeps): Promi
       return { status: 'updated', detail, prUrl: existing.html_url, branch: existing.head.ref };
     }
     const branch = `${BRANCH_PREFIX}${timestamp(at)}`;
-    const sha = await commitSeed(gh, repo, baseSha, mirrored, change.message);
+    const sha = await commitFiles(gh, repo, baseSha, files, change.message);
     await gh.request('POST', `/repos/${repo}/git/refs`, { ref: `refs/heads/${branch}`, sha });
     const pr = await gh.request<PullRequest>('POST', `/repos/${repo}/pulls`, { title: change.title, head: branch, base: baseBranch, body: change.body });
     await gh.request('POST', `/repos/${repo}/issues/${pr.number}/labels`, { labels: [LABEL] });
@@ -274,7 +323,7 @@ export async function notifyFailure(trigger: MirrorTrigger, message: string, dep
       `When: ${(deps.now ?? (() => new Date()))().toISOString()}`,
       `Error: ${message}`,
       '',
-      'The published edit is live. The repository (seed/seed.json) is behind it until the mirror runs.',
+      'The published edit is live. The repository (seed/seed.json, seed/media.json) is behind it until the mirror runs.',
       '',
       RERUN_INSTRUCTIONS,
     ].join('\n'),

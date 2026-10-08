@@ -4,7 +4,7 @@ import { env as workerEnv, waitUntil } from 'cloudflare:workers';
 import seed from '../../seed/seed.json';
 import type { SeedFile } from '../content/cms-shape.ts';
 import { runMirror, type MirrorEnv, type MirrorTrigger } from './mirror.ts';
-import { matchTrigger, rawEmail, readLivePagesFromD1, slugFromResponse, type D1Like, type FieldDeclaration } from './trigger-helpers.ts';
+import { matchTrigger, rawEmail, readLibraryFromD1, readLivePagesFromD1, slugFromResponse, type D1Like, type FieldDeclaration } from './trigger-helpers.ts';
 
 /**
  * Outer middleware after the namespace guard (src/outer-middleware.ts). A
@@ -64,6 +64,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     readLivePages: async () => {
       if (!env.DB) throw new Error('the DB binding is missing');
       return readLivePagesFromD1(env.DB, fields, COLLECTION);
+    },
+    readLibrary: async () => {
+      if (!env.DB) throw new Error('the DB binding is missing');
+      return readLibraryFromD1(env.DB);
     },
     sendEmail: env.MIRROR_EMAIL
       ? async (message) => {

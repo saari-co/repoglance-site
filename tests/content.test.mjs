@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
+import { isSeedMediaRef, seedRefFile } from '../src/content/media.ts';
 
 const seed = JSON.parse(readFileSync(new URL('../seed/seed.json', import.meta.url), 'utf8'));
 const pages = seed.content.pages;
@@ -110,45 +111,62 @@ test('copy follows the honest-main rules', () => {
   assert.ok(/not affiliated/i.test(readFileSync(new URL('../src/layouts/Site.astro', import.meta.url), 'utf8')));
 });
 
-function screenshotOptions(typeSlug) {
-  return seed.blockTypes.find((type) => type.slug === typeSlug).versions[0].fields.find((field) => field.slug === 'screenshot').validation.options;
-}
+const manifest = JSON.parse(readFileSync(new URL('../seed/media.json', import.meta.url), 'utf8'));
+const approvedCaptures = new Map(manifest.approved.map((capture) => [capture.file, capture]));
 
-test('every screenshot reference is a shipped showcase capture with alt text, dimensions and its light cut when declared', () => {
-  const options = screenshotOptions('hero');
-  assert.deepEqual(screenshotOptions('feature'), options, 'hero and feature offer the same screenshots');
-  const source = readFileSync(new URL('../src/content/screenshots.ts', import.meta.url), 'utf8');
-  const entryOf = (option) => {
-    const start = source.indexOf(`'${option}': {`);
-    assert.ok(start >= 0, `${option} has an entry in src/content/screenshots.ts`);
-    return source.slice(start, source.indexOf('},', start));
-  };
-  const shipsLight = (option) => {
-    const flag = entryOf(option).match(/light: (true|false),/)?.[1];
-    assert.ok(flag, `${option} declares whether its light cut ships`);
-    return flag === 'true';
-  };
-  const shipped = (name) => existsSync(new URL(`../public/screenshots/${name}`, import.meta.url));
+test('the hero and feature block types carry an image field with a dark variant in place of the screenshot select', () => {
+  for (const slug of ['hero', 'feature']) {
+    const fields = seed.blockTypes.find((type) => type.slug === slug).versions[0].fields;
+    assert.ok(!fields.some((field) => field.slug === 'screenshot'), `${slug}: the screenshot select is gone (media-library-014)`);
+    const image = fields.find((field) => field.slug === 'image');
+    assert.ok(image, `${slug}: an image field`);
+    assert.equal(image.type, 'image');
+    assert.deepEqual(image.options, { darkVariant: true });
+    assert.notEqual(image.required, true, 'a block without an image renders no figure');
+  }
+  for (const type of seed.blockTypes) {
+    if (type.slug === 'hero' || type.slug === 'feature') continue;
+    assert.ok(!type.versions[0].fields.some((field) => field.type === 'image'), `${type.slug} has no image field`);
+  }
+});
+
+test('every image in the seed is a $media reference to an approved capture on main, with its alt text and the locked dark pairing', () => {
+  let slots = 0;
   for (const page of pages) {
     for (const block of page.data.layout) {
-      if (!('screenshot' in block)) continue;
-      assert.ok(options.includes(block.screenshot), `${block._key}: ${block.screenshot} is an option`);
-      if (block.screenshot === 'none') continue;
-      assert.ok(shipsLight(block.screenshot), `${block._key}: ${block.screenshot} ships a light cut, so the page follows the colour scheme (site-scheme-imagery-010)`);
+      assert.ok(!('screenshot' in block), `${block._key}: no legacy slug`);
+      if (block._type !== 'hero' && block._type !== 'feature') {
+        assert.ok(!('image' in block), `${block._key}: no image on a ${block._type}`);
+        continue;
+      }
+      if (!('image' in block)) continue;
+      slots += 1;
+      const image = block.image;
+      assert.ok(isSeedMediaRef(image), `${block._key}: the image is a $media reference`);
+      const file = seedRefFile(image);
+      assert.equal(image.$media.url, `${manifest.base}/${file}`, `${block._key}: the reference is the repository's capture on main`);
+      const capture = approvedCaptures.get(file);
+      assert.ok(capture, `${block._key}: ${file} is an approved capture`);
+      assert.equal(image.$media.alt, capture.alt, `${block._key}: the reference carries the capture's alt text`);
+      assert.deepEqual(Object.keys(image.$media).sort(), ['alt', 'url']);
+      const light = `${capture.capture}-light.webp`;
+      const dark = `${capture.capture}-dark.webp`;
+      if (approvedCaptures.has(light) && approvedCaptures.has(dark)) {
+        assert.equal(file, light, `${block._key}: the primary is the light cut, the page follows the colour scheme (site-scheme-imagery-010)`);
+        assert.ok(isSeedMediaRef(image.darkVariant), `${block._key}: the dark cut is the dark variant`);
+        assert.equal(seedRefFile(image.darkVariant), dark);
+        assert.equal(image.darkVariant.$media.url, `${manifest.base}/${dark}`);
+        assert.equal(image.darkVariant.$media.alt, capture.alt);
+        assert.deepEqual(Object.keys(image).sort(), ['$media', 'darkVariant']);
+      } else {
+        assert.equal(file, dark, `${block._key}: a capture without a light cut renders its dark cut alone`);
+        assert.equal('darkVariant' in image, false);
+      }
     }
   }
-  for (const option of options.filter((option) => option !== 'none')) {
-    const entry = entryOf(option);
-    assert.match(entry, /width: \d+,\s*height: \d+,\s*alt: '[^']*(made.up|fixture|Sign in with GitHub)[^']*'/i, `${option} has dimensions and an alt text that says the data is made up (or shows the sign-in screen)`);
-    assert.ok(!/\blive\b/i.test(entry) && !/HK7N/.test(entry), `${option}: alt text never claims live data and never carries the fixture code`);
-    const light = shipsLight(option);
-    for (const width of [540, 1080]) {
-      assert.ok(shipped(`${option}-${width}.webp`), `${option}-${width}.webp exists`);
-      assert.equal(shipped(`${option}-light-${width}.webp`), light, `${option}-light-${width}.webp ${light ? 'exists' : 'does not exist, as declared'}`);
-    }
-  }
+  assert.equal(slots, 6, 'the two heroes and the four cards carry an image');
   for (const text of allText) {
-    assert.ok(!/HK7N/.test(text), 'the fixture code stays out of the copy');
+    assert.ok(!/HK7N/.test(text), 'the fixture code stays out of the copy and the alt text');
   }
 });
 
@@ -156,6 +174,9 @@ test('the hero image follows the band on the home page and the page elsewhere; e
   const shot = readFileSync(new URL('../src/components/Screenshot.astro', import.meta.url), 'utf8');
   assert.match(shot, /<source media="\(prefers-color-scheme: dark\)"/, 'Screenshot.astro renders a dark-scheme source');
   assert.match(shot, /scheme = 'page'/, "Screenshot.astro follows the page unless told otherwise");
+  assert.match(shot, /resolveImageValue\(image/, 'Screenshot.astro renders from the media reference');
+  assert.match(shot, /\|\| heading/, 'the alt text falls back to the block heading');
+  assert.ok(!/screenshots\.ts|isScreenshotSlug/.test(shot), 'no slug registry');
   const hero = readFileSync(new URL('../src/components/Hero.astro', import.meta.url), 'utf8');
   assert.match(hero, /scheme=\{isHome \? 'band' : 'page'\}/, 'Hero.astro asks for the band policy on the home page only');
   const feature = readFileSync(new URL('../src/components/Feature.astro', import.meta.url), 'utf8');

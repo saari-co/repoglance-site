@@ -2,7 +2,8 @@
 
 - **Version:** 5 (2026-10-06): scheme-matched page imagery
   [site-scheme-imagery-010], decided in one five-candidate round on the
-  real pages and a confirmed hybrid. Version 4 (2026-10-01) locked the
+  real pages and a confirmed hybrid; with a note of 2026-10-07 on where
+  the images live [media-library-014], which changed no look. Version 4 (2026-10-01) locked the
   Open Graph image [og-image-009], decided in one five-candidate round
   judged as link-preview cards; version 3 (2026-10-01) locked the imagery [site-imagery-007], decided in
   one five-candidate round and a confirmed hybrid, with one card's copy
@@ -96,6 +97,20 @@
     cut-outs kept dark with only the phones following (D, kept for the
     join page only); the join hero following the band (E, kept for the
     home page only); and the shipped dark-throughout state, the control.
+- **Where the images live [media-library-014, 2026-10-07, not a look
+  decision]:** the subject and crop of every slot above are unchanged;
+  only the file mechanics moved. A hero or feature block carries an
+  `image` field (EmDash's Media Library, with a `darkVariant`) in place
+  of the `screenshot` select; the primary is the light cut and the dark
+  variant the dark cut, and `Screenshot.astro` keeps the `<picture>`,
+  the `page` and `band` policies and the per-subject card rules (keyed
+  by the capture's name, `data-shot`). One source per capture
+  (`public/screenshots/<capture>-{light,dark}.webp`, the former 1080 px
+  cuts) and Astro's image endpoint serves the 540 and 1080 px widths;
+  alt text lives on the media item with the block heading as the
+  fallback; a block whose image is gone renders no figure.
+  `docs/content.md` and `docs/cms-access.md` carry the rules and the
+  runbook.
 - **Content structure:** `seed/seed.json` blocks `hero`, `feature`,
   `fact_list`, `steps`, `cta`, `text_section`, rendered through EmDash's
   native `Blocks`. `ContentPage.astro` groups consecutive `feature` blocks
@@ -222,7 +237,9 @@
   `site-og-image-009-verify-20261001.md`; for the colour scheme of the
   imagery, `scheme-round-1-captures-20261006.md`,
   `scheme-hybrid-1-captures-20261006.md` and
-  `site-scheme-imagery-010-verify-20261006.md`.
+  `site-scheme-imagery-010-verify-20261006.md`; for the media library,
+  `media-library-014-verify-20261007.md` and
+  `proof/media-library-20261007/PROOF.md`.
 
 ## Unresolved (decided by GrillTrack, one slot per round)
 
