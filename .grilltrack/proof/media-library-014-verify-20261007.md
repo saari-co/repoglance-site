@@ -286,7 +286,10 @@ head needs a session with that tooling.
 
 Delivery: PR saari-co/repoglance-site#16 (`claude/media-library-014`
 against `main`, head `1bd0fb8` at opening, `63a67ee` reviewed clean with
-CI green), opened on the task's instruction; the PR body names the
+CI green), opened on the task's instruction; merged on the maintainer's
+instruction on 2026-10-08 as `78974b3`, deployed as Worker version
+`29b5e177-8300-4591-85f0-f13d04baffbb`, and the gates run in one sitting
+(the packet's "Deploy and the gates"); the PR body names the
 maintainer's one decision (the `cms:media --apply` connection, round-1
 finding 3) and the gates. Merge, the deploy, `cloudflared access login`,
 `npm run cms:sync`, `npm run cms:media -- --apply`, `npm run cms:mirror

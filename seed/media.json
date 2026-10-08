@@ -277,6 +277,392 @@
       "alt": "The RepoGlance Pinned repos widget listing three made-up repositories with their open issue and pull request counts, and the compact Repository widget below it, cut from a Pixel home screen"
     }
   ],
-  "library": [],
-  "usage": []
+  "library": [
+    {
+      "id": "01M4DNHVHWAY7TDS5GFQWR39HZ",
+      "filename": "catalog-pinned-dark.webp",
+      "mimeType": "image/webp",
+      "size": 39818,
+      "width": 1080,
+      "height": 1920,
+      "alt": "The RepoGlance catalog: made-up repositories under fictional owners, pinned ones first, with the account filter, search and sort",
+      "contentHash": "sha1:1f689e15c704b3eb47d8f8c3d8519d47e6ff25a6",
+      "storageKey": "01M4DNHVAGV4BVWN4NDD23S1HY.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNHW8416F0D18YQXAW8JWQ",
+      "filename": "catalog-pinned-light.webp",
+      "mimeType": "image/webp",
+      "size": 39644,
+      "width": 1080,
+      "height": 1920,
+      "alt": "The RepoGlance catalog: made-up repositories under fictional owners, pinned ones first, with the account filter, search and sort",
+      "contentHash": "sha1:48ed7d926f6ad0f964fea613352794d9676a3b21",
+      "storageKey": "01M4DNHW1YD5T5QRBQGM7SBAK6.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNHX2SWP95VFJKQYXS8X7D",
+      "filename": "catalog-rows-dark.webp",
+      "mimeType": "image/webp",
+      "size": 23436,
+      "width": 1080,
+      "height": 1080,
+      "alt": "Rows of the RepoGlance catalog: made-up repositories with their visibility and last push, pinned ones first",
+      "contentHash": "sha1:44651914dbfc7f3c6335d586afa5cc8efdaeebf6",
+      "storageKey": "01M4DNHWPA2S3MP9J9R370K31J.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNHXPZWG6M6VWD74QCTNVW",
+      "filename": "catalog-rows-light.webp",
+      "mimeType": "image/webp",
+      "size": 23622,
+      "width": 1080,
+      "height": 1080,
+      "alt": "Rows of the RepoGlance catalog: made-up repositories with their visibility and last push, pinned ones first",
+      "contentHash": "sha1:557a25435fb8459d6ef4e2d2aceceaa775fc9ffc",
+      "storageKey": "01M4DNHXGE20A9J44GAW3WQJJH.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNHYCNPCM43BPECZ1Z5R3Q",
+      "filename": "connect-or-explore-sample-dark.webp",
+      "mimeType": "image/webp",
+      "size": 26470,
+      "width": 1080,
+      "height": 1920,
+      "alt": "The first RepoGlance screen with Sign in with GitHub and Explore with sample data",
+      "contentHash": "sha1:883c6b96640b0f36795f36c485da87413e5b1f2f",
+      "storageKey": "01M4DNHY50FMEE0ZMY7ENKVF20.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNHZ043XR7J53JZRN0TF6D",
+      "filename": "connect-or-explore-sample-light.webp",
+      "mimeType": "image/webp",
+      "size": 26010,
+      "width": 1080,
+      "height": 1920,
+      "alt": "The first RepoGlance screen with Sign in with GitHub and Explore with sample data",
+      "contentHash": "sha1:8342dfd95541717583ff8578dc400b383e09fa44",
+      "storageKey": "01M4DNHYSW39TXS3WR23GK28FG.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNHZPWSXWSD3E52XX69KC2",
+      "filename": "home-widgets-dark.webp",
+      "mimeType": "image/webp",
+      "size": 45466,
+      "width": 1080,
+      "height": 1920,
+      "alt": "A Pixel home screen with the RepoGlance Pinned repos widget listing three made-up repositories and the compact Repository widget below it, each row with the time of its data and its open issue and pull request counts",
+      "contentHash": "sha1:1817242bfb9c1c81c8dc506be2f381d0eb5b4e78",
+      "storageKey": "01M4DNHZGZ90QHB0SNT99RE8Z1.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ0E5K93RG68AXDBZY6RN",
+      "filename": "home-widgets-light.webp",
+      "mimeType": "image/webp",
+      "size": 47322,
+      "width": 1080,
+      "height": 1920,
+      "alt": "A Pixel home screen with the RepoGlance Pinned repos widget listing three made-up repositories and the compact Repository widget below it, each row with the time of its data and its open issue and pull request counts",
+      "contentHash": "sha1:06447324803252675bb27c15190c15a0e109a2d5",
+      "storageKey": "01M4DNJ071SGKY37P755906RNK.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ17B8PRHQJ2Z5628SDCY",
+      "filename": "pinned-widget-dark.webp",
+      "mimeType": "image/webp",
+      "size": 31088,
+      "width": 1080,
+      "height": 1573,
+      "alt": "The RepoGlance Pinned repos widget: three made-up repositories, each with the time of its data and its open issue and pull request counts",
+      "contentHash": "sha1:3daf7fdc4562cd7855d52ef9c342d6c5db9fab02",
+      "storageKey": "01M4DNJ0ZVPQDDCJ3FMAMW415H.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ1YQMF0K11W3SFWFVX8K",
+      "filename": "pinned-widget-light.webp",
+      "mimeType": "image/webp",
+      "size": 32310,
+      "width": 1080,
+      "height": 1573,
+      "alt": "The RepoGlance Pinned repos widget: three made-up repositories, each with the time of its data and its open issue and pull request counts",
+      "contentHash": "sha1:15ca023dc8fd2801185ea87266a79b54609549ed",
+      "storageKey": "01M4DNJ1S6F0YTDCNZ07M91534.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ2M5VCHDKTYY6GZFYQ3X",
+      "filename": "quick-settings-tile-dark.webp",
+      "mimeType": "image/webp",
+      "size": 31612,
+      "width": 1080,
+      "height": 1920,
+      "alt": "The Quick Settings panel with the RepoGlance tile reading the latest push to a made-up repository",
+      "contentHash": "sha1:afae970fffdf82e847fdeac6cceedf3d456df33f",
+      "storageKey": "01M4DNJ2DKX52CE44W05K3HADB.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ37SQWWEEV06KE1NEZVE",
+      "filename": "quick-settings-tile-light.webp",
+      "mimeType": "image/webp",
+      "size": 35400,
+      "width": 1080,
+      "height": 1920,
+      "alt": "The Quick Settings panel with the RepoGlance tile reading the latest push to a made-up repository",
+      "contentHash": "sha1:6a631f1129f8c35d3093b3e886dd8ce2214337d0",
+      "storageKey": "01M4DNJ32A7XADZP90ZYJ34MG2.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ3XQ04XFKKKVE94WF3BM",
+      "filename": "repository-issues-and-prs-dark.webp",
+      "mimeType": "image/webp",
+      "size": 74340,
+      "width": 1080,
+      "height": 1920,
+      "alt": "A made-up repository in RepoGlance showing its open issues and pull requests in one list, with authors, labels and ages",
+      "contentHash": "sha1:c035ff8b8aa1aebb2d1bfb042b7b9355d492f6b4",
+      "storageKey": "01M4DNJ3P78N6VYPK9R55G9RM0.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ4PXVH39DP9MVFB0837V",
+      "filename": "repository-issues-and-prs-light.webp",
+      "mimeType": "image/webp",
+      "size": 72034,
+      "width": 1080,
+      "height": 1920,
+      "alt": "A made-up repository in RepoGlance showing its open issues and pull requests in one list, with authors, labels and ages",
+      "contentHash": "sha1:ac4d57aac2061da1c67dc3f512ed93f05bec7f54",
+      "storageKey": "01M4DNJ4BWQCEZC40RFSV80X2E.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ5BBV26BST3YZS33X2M4",
+      "filename": "repository-prs-dark.webp",
+      "mimeType": "image/webp",
+      "size": 45724,
+      "width": 1080,
+      "height": 1920,
+      "alt": "A made-up repository in RepoGlance filtered to open pull requests, one of them marked Draft",
+      "contentHash": "sha1:95c343c657aab52a23b699b259e2cf4ed9deca6a",
+      "storageKey": "01M4DNJ565GZD553GDPK3EM76K.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ5WK37RB3VQ198M9PQAS",
+      "filename": "repository-rows-dark.webp",
+      "mimeType": "image/webp",
+      "size": 58128,
+      "width": 1080,
+      "height": 1080,
+      "alt": "Open issues of a made-up repository in RepoGlance, each with its number, title, author, comment count and age",
+      "contentHash": "sha1:ba73ec0c70686de5b39c9636648dadbb83e79206",
+      "storageKey": "01M4DNJ5Q4VZEJ942T59P30P6S.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ6JANE4S69X6BGQD7JA0",
+      "filename": "repository-rows-light.webp",
+      "mimeType": "image/webp",
+      "size": 55616,
+      "width": 1080,
+      "height": 1080,
+      "alt": "Open issues of a made-up repository in RepoGlance, each with its number, title, author, comment count and age",
+      "contentHash": "sha1:ef39ba3fff37126c8074a2d378ea909eb9e428f0",
+      "storageKey": "01M4DNJ6CGRVRBPSVGZFV6NR44.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ75T45Z3Z6MKVHZNMV49",
+      "filename": "repository-widget-dark.webp",
+      "mimeType": "image/webp",
+      "size": 6902,
+      "width": 1080,
+      "height": 609,
+      "alt": "The compact RepoGlance Repository widget for a made-up repository: the time of its data, open issues 5, pull requests 3",
+      "contentHash": "sha1:5d5d4dab5e511170eda45ac59dff005d64256f52",
+      "storageKey": "01M4DNJ7025QNS5S5WVQAYDZHS.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ7SRPKJB0JYTZQPVET6K",
+      "filename": "repository-widget-light.webp",
+      "mimeType": "image/webp",
+      "size": 8016,
+      "width": 1080,
+      "height": 609,
+      "alt": "The compact RepoGlance Repository widget for a made-up repository: the time of its data, open issues 5, pull requests 3",
+      "contentHash": "sha1:2f158bed486a444fc6c85ac35c069cb99a083c1a",
+      "storageKey": "01M4DNJ7MDMQZ4R2FTHC1MTQBX.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ8E5MY1HW2X6SWVDR1KV",
+      "filename": "signin-code-dark.webp",
+      "mimeType": "image/webp",
+      "size": 32984,
+      "width": 1080,
+      "height": 1920,
+      "alt": "The RepoGlance sign-in screen: a short code to enter on GitHub, how long it lasts, and the Copy code & open GitHub button; the code shown is made up",
+      "contentHash": "sha1:741986841826ccfc79abccb3a0343aac5e7f1b57",
+      "storageKey": "01M4DNJ88ZQ8M24YHPNXEJ4PPG.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ91SVHN222RB7YR42CC2",
+      "filename": "signin-code-light.webp",
+      "mimeType": "image/webp",
+      "size": 32410,
+      "width": 1080,
+      "height": 1920,
+      "alt": "The RepoGlance sign-in screen: a short code to enter on GitHub, how long it lasts, and the Copy code & open GitHub button; the code shown is made up",
+      "contentHash": "sha1:8a010514ee3e82df46279554bbbb0aab5afe26a9",
+      "storageKey": "01M4DNJ8VXCB1JWADP4ED5490E.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJ9NTMQR02WC6STJ352YS",
+      "filename": "tile-row-dark.webp",
+      "mimeType": "image/webp",
+      "size": 21224,
+      "width": 1080,
+      "height": 840,
+      "alt": "The Quick Settings row with the RepoGlance tile showing the latest push to a made-up repository, beside the Internet tile",
+      "contentHash": "sha1:b2d6c413a3d2afb870026279960290c3186cba03",
+      "storageKey": "01M4DNJ9G2GHYV00R865BX52SY.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJDXEKZVQBNHTFZ2HYPA4",
+      "filename": "tile-row-light.webp",
+      "mimeType": "image/webp",
+      "size": 24048,
+      "width": 1080,
+      "height": 840,
+      "alt": "The Quick Settings row with the RepoGlance tile showing the latest push to a made-up repository, beside the Internet tile",
+      "contentHash": "sha1:48dae0b8f96bc54b462ebf72cf9237c16a81a913",
+      "storageKey": "01M4DNJDR1AABYB9YAVXE6FRYV.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJF8X60KAMRHCFQBY1FD6",
+      "filename": "widgets-cutout-dark.webp",
+      "mimeType": "image/webp",
+      "size": 35646,
+      "width": 1080,
+      "height": 1963,
+      "alt": "The RepoGlance Pinned repos widget listing three made-up repositories with their open issue and pull request counts, and the compact Repository widget below it, cut from a Pixel home screen",
+      "contentHash": "sha1:aee7e34ed9e1b63f99a99b1dfcff02c6b6ecf5fe",
+      "storageKey": "01M4DNJF1XATK5BBMPFKYM3ESK.webp",
+      "status": "ready"
+    },
+    {
+      "id": "01M4DNJGHH6BXRPQF6HECP1RYW",
+      "filename": "widgets-cutout-light.webp",
+      "mimeType": "image/webp",
+      "size": 37980,
+      "width": 1080,
+      "height": 1963,
+      "alt": "The RepoGlance Pinned repos widget listing three made-up repositories with their open issue and pull request counts, and the compact Repository widget below it, cut from a Pixel home screen",
+      "contentHash": "sha1:96b65fc51813a6b7c3469cfa241a13b252c73a1b",
+      "storageKey": "01M4DNJGBRD5NZYSTAXT9436MM.webp",
+      "status": "ready"
+    }
+  ],
+  "usage": [
+    {
+      "page": "home",
+      "block": "home-hero",
+      "type": "hero",
+      "field": "image",
+      "image": {
+        "id": "01M4DNJ0E5K93RG68AXDBZY6RN",
+        "filename": "home-widgets-light.webp"
+      },
+      "darkVariant": {
+        "id": "01M4DNHZPWSXWSD3E52XX69KC2",
+        "filename": "home-widgets-dark.webp"
+      }
+    },
+    {
+      "page": "home",
+      "block": "home-pin",
+      "type": "feature",
+      "field": "image",
+      "image": {
+        "id": "01M4DNJ1YQMF0K11W3SFWFVX8K",
+        "filename": "pinned-widget-light.webp"
+      },
+      "darkVariant": {
+        "id": "01M4DNJ17B8PRHQJ2Z5628SDCY",
+        "filename": "pinned-widget-dark.webp"
+      }
+    },
+    {
+      "page": "home",
+      "block": "home-navigator",
+      "type": "feature",
+      "field": "image",
+      "image": {
+        "id": "01M4DNHXPZWG6M6VWD74QCTNVW",
+        "filename": "catalog-rows-light.webp"
+      },
+      "darkVariant": {
+        "id": "01M4DNHX2SWP95VFJKQYXS8X7D",
+        "filename": "catalog-rows-dark.webp"
+      }
+    },
+    {
+      "page": "home",
+      "block": "home-widgets",
+      "type": "feature",
+      "field": "image",
+      "image": {
+        "id": "01M4DNJDXEKZVQBNHTFZ2HYPA4",
+        "filename": "tile-row-light.webp"
+      },
+      "darkVariant": {
+        "id": "01M4DNJ9NTMQR02WC6STJ352YS",
+        "filename": "tile-row-dark.webp"
+      }
+    },
+    {
+      "page": "home",
+      "block": "home-sample",
+      "type": "feature",
+      "field": "image",
+      "image": {
+        "id": "01M4DNJ91SVHN222RB7YR42CC2",
+        "filename": "signin-code-light.webp"
+      },
+      "darkVariant": {
+        "id": "01M4DNJ8E5MY1HW2X6SWVDR1KV",
+        "filename": "signin-code-dark.webp"
+      }
+    },
+    {
+      "page": "testers",
+      "block": "testers-hero",
+      "type": "hero",
+      "field": "image",
+      "image": {
+        "id": "01M4DNJ91SVHN222RB7YR42CC2",
+        "filename": "signin-code-light.webp"
+      },
+      "darkVariant": {
+        "id": "01M4DNJ8E5MY1HW2X6SWVDR1KV",
+        "filename": "signin-code-dark.webp"
+      }
+    }
+  ]
 }
