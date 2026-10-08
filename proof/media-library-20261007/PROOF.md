@@ -259,3 +259,29 @@ PR saari-co/repoglance-site#16 (`claude/media-library-014` against
 review rounds (`.grilltrack/proof/media-library-014-verify-20261007.md`).
 Merge and the gates above are the maintainer's; nothing was deployed,
 synced or uploaded to production.
+
+## Deploy and the gates (2026-10-08, on the maintainer's instruction)
+
+"merge 16 and run the media library gates for me", in one sitting:
+
+| Step | Result |
+| --- | --- |
+| Merge | PR #16 merged with a merge commit, `78974b3d9e2153b1f8b555225a6df133a47810ac`, at 11:46:04 UTC, after CI green on the head and ClawSweeper's auto-lane review of that head (no findings). |
+| Deploy | `main` at that commit built in this worktree with the Access team domain from the ignored deploy config (sourced into the shell, never printed or copied), `prepare:deploy` with both custom domains, the production D1 and R2 names, worker loaders, cache, version metadata, the `IMAGES` binding and the `send_email` binding (no recipient var yet); `wrangler deploy`: Worker version `29b5e177-8300-4591-85f0-f13d04baffbb` at 11:46:49 UTC on `repoglance.com` and `www.repoglance.com`. |
+| Live after the deploy | Both pages 200 from the CMS with `last-modified` of this build and, as the runbook warned, no figures (the live blocks still carried the old slugs). A repository-capture rendition through `/_image` answered 200 `image/webp` (21 180 bytes; Cloudflare's Images binding encodes differently from Miniflare's 17 500), `Vary: Host`, the adapter's immutable policy; another width answered 404; anonymous `/_emdash/admin` answered the Access login redirect. Anonymous `GET /_emdash/api/media/file/<key>` answered Access's 302 as well: the Access application covers the whole `_emdash` path at the edge, before the Worker's guard; the pages' images go through `/_image`, which reads R2 directly, so nothing on the site depends on the raw route (an Access bypass rule for that path is the maintainer's option, not needed). |
+| Access login | `cloudflared access login https://repoglance.com/_emdash` completed in the maintainer's browser; the token cached (never printed). |
+| `npm run cms:check` / `npm run cms:sync` | Before: `hero` and `feature` differed at field 7 and field 2 (the `screenshot` select against the `image` field). Apply: both a breaking change, version 3 created and activated (was 2). After: all six block types equal. |
+| `npm run cms:media -- --check` | The 25 approved captures missing; the six slots `MISSING legacy slug <capture>; the capture is not in the library (upload first)`; exit 1. |
+| `npm run cms:media -- --apply` | 25 uploads with alt text and dimensions (ids `01M4DNHV…` to `01M4DNJG…`); `page testers: connected and published`, `page home: connected and published`; after: every capture present, every slot its light cut with its dark cut as the variant; exit 0. |
+| Live after the import | Both pages from the CMS (`last-modified` 11:50 UTC): five and one `<picture>` with their dark sources, 25 and 5 media renditions, `home-widgets` with `data-scheme="band"`, the others `page`. The hero's first rendition `/_image?href=%2F_emdash%2Fapi%2Fmedia%2Ffile%2F01M4DNJ8VX….webp&w=540&f=webp`: 200 `image/webp`, 16 232 bytes, `Cache-Control: public, max-age=0, must-revalidate`, EmDash's weak ETag and Last-Modified, `Vary: Host`; the same answer on a second fetch. |
+| `npm run cms:mirror -- --no-pr` | Pages: the repository equals the live CMS (the seed unchanged); `seed/media.json` rewritten with the 25 library items (all with content hashes, no duplicate: production was imported, not seeded) and the six usage rows. |
+| `npm run check:live` | `/` and `/testers` equal; live 200 from `cms` (edge HIT); local 200 from the seed. |
+| The audit on the production record | `npm run test:content` on the mirrored manifest: 20/20, the library and usage judged (approved captures only, honest alt text, the locked pairing, every slot filled). |
+| Captures | The live site after the import at 375 and 1280 px in both schemes against the dev render and the site before: mean difference 0.02 to 0.17 of 255, no pixel band above 40 (under ignored `runs/media-library/live-after/`). |
+
+The window in which the live pages rendered no images ran from the
+deploy (11:46:49 UTC) to the import's publishes (11:50 UTC). The Worker
+mirror logged its dormant line for the two publishes (no token, no
+recipient); the mirror above was run by hand and its two files ship in
+the proof PR. The slice-2 gates of `cms-first-013` and the `cms:media`
+decision (kept as built: the direct publish) are unchanged.

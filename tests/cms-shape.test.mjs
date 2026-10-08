@@ -133,7 +133,10 @@ test('a CMS whose media values point at the approved captures mirrors back to th
 
 test('the manifest records the sorted library without authors and which block uses which item; the approved captures stay the repository\'s', () => {
   const { live, library } = liveWithMedia();
-  const after = mirrorManifest(manifest, [...library].reverse(), live, seed);
+  // The record before any mirror: the approved captures and nothing else
+  // (the repository's manifest may already hold a mirrored library).
+  const bare = { ...manifest, library: [], usage: [] };
+  const after = mirrorManifest(bare, [...library].reverse(), live, seed);
   assert.deepEqual(Object.keys(after), ['base', 'approved', 'library', 'usage']);
   assert.equal(after.base, manifest.base);
   assert.equal(after.approved, manifest.approved);
@@ -148,10 +151,11 @@ test('the manifest records the sorted library without authors and which block us
   delete empty[0].data.layout[0].image;
   assert.deepEqual(mediaUsageOf(seed, empty)[0].image, null, 'a block without an image records null, which the audit flags');
   assert.equal(serializeManifest(after).endsWith('\n'), true);
-  const lines = manifestDifferences(manifest, after);
+  const lines = manifestDifferences(bare, after);
   assert.ok(lines.some((line) => /^library: .* home-widgets-light\.webp added$/.test(line)), lines.join('\n'));
   assert.ok(lines.some((line) => line === `usage: home/home-hero.image now home-widgets-light.webp with dark variant home-widgets-dark.webp`), lines.join('\n'));
   assert.deepEqual(manifestDifferences(after, after), []);
+  assert.deepEqual(manifestDifferences(manifest, mirrorManifest(manifest, manifest.library, live.length ? [] : [], seed)).filter((line) => line.startsWith('library:')), [], 'a library mirrored again is no difference');
   const changed = structuredClone(after);
   changed.library[0].alt = 'edited';
   changed.usage.pop();
