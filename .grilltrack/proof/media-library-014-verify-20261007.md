@@ -262,6 +262,28 @@ failed CI runs and the green run 37704918297 on this head (audit
 23, smoke 223); the ledger's events and transitions are consistent.
 Result: clean, no findings.
 
+## Review rails on the PR
+
+CI (`Site checks`, `Workflow validation`): red on `1bd0fb8` and
+`77e8b8d` (round 5 above), green on `63a67ee` and `f2ade74`.
+ClawSweeper's auto lane reviewed the exact head `f2ade74` on 2026-10-08
+at 00:07 UTC: no findings, no security items, proof "sufficient",
+"ready for maintainer look"; blocked before merge only on the
+maintainer's own decisions, listed as merge risks (the deploy is
+upgrade-sensitive until the one-sitting migration, the public
+media-file route and the exact renditions change the public boundary,
+`cms:media --apply` publishes the connected slots under the maintainer's
+identity), with the recommendation to keep the direct publish. The
+command lane (`@clawsweeper review` posted by the maintainer's login on
+the task's instruction, relay run 37708526285) answered a receipt, not a
+review: the repository is not enrolled on spark-2
+(`target_not_enrolled`; private relay run 37708537968), so that lane
+needs the enrolment step the workflow's header names (the repository
+listed with a `checkout_dir` in spark-dgx's overlay and a clean clone on
+spark-2) or the manual fallback it prints. The auto lane's review above
+is ClawSweeper's evidence for this PR. An OpenClaw review of the exact
+head needs a session with that tooling.
+
 Delivery: PR saari-co/repoglance-site#16 (`claude/media-library-014`
 against `main`, head `1bd0fb8` at opening, `63a67ee` reviewed clean with
 CI green), opened on the task's instruction; the PR body names the
