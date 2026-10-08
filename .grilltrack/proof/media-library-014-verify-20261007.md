@@ -244,8 +244,27 @@ Ledger: `media-library-014` reviewed with findings (required_fix) at
 `git:1bd0fb88…` (the rail's evidence), returned to implementation; round
 6 below.
 
+## Review round 6
+
+Source identity: `git:63a67eeb06f13cd390efd25038b11133bd99efcd` (the CI
+fix; parent `77e8b8d`, the ledger commit after round 4). A separate
+read-only agent verified: only `src/page-cache.ts`, this record and the
+tool-owned ledger files changed; the type change is sound (both the
+adapter's `Runtime` locals and EmDash's `App.Locals` with `user` are
+assignable to `object`, the cast tolerates an undefined `locals`), and it
+reproduced the failure and the cure with a scratch TypeScript config
+excluding the generated declarations (three `TS2345` on the parent's
+source, none on this commit); the behaviour of `applyMediaResponse` is
+unchanged and the edge suite (15/15) and guard suite (19/19) pass; the
+round-5 section and the commit message are accurate against the two
+failed CI runs and the green run 37704918297 on this head (audit
+147/113, `astro check` 0/0, content and media 20, guard 19, edge 15, CMS
+23, smoke 223); the ledger's events and transitions are consistent.
+Result: clean, no findings.
+
 Delivery: PR saari-co/repoglance-site#16 (`claude/media-library-014`
-against `main`, head `1bd0fb8` at opening), opened on the task's instruction; the PR body names the
+against `main`, head `1bd0fb8` at opening, `63a67ee` reviewed clean with
+CI green), opened on the task's instruction; the PR body names the
 maintainer's one decision (the `cms:media --apply` connection, round-1
 finding 3) and the gates. Merge, the deploy, `cloudflared access login`,
 `npm run cms:sync`, `npm run cms:media -- --apply`, `npm run cms:mirror
